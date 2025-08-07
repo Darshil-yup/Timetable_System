@@ -6,6 +6,7 @@ import { User, Book, MapPin, Users, FlaskConical, Pencil } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+const TIME_SLOT_COUNT = TIME_SLOTS.length + 1;
 
 type TimetableProps = {
   entries: ScheduleEntry[];
@@ -16,35 +17,36 @@ type TimetableProps = {
 
 export function Timetable({ entries, view, isEditMode = false, onEdit = () => {} }: TimetableProps) {
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
+    <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div 
         className="grid relative"
         style={{
-            gridTemplateColumns: '80px repeat(6, 1fr)',
+            gridTemplateColumns: 'minmax(80px, auto) repeat(6, minmax(140px, 1fr))',
             gridTemplateRows: `auto repeat(${TIME_SLOTS.length}, minmax(100px, auto))`
         }}
       >
         {/* Empty corner */}
-        <div className="p-2 border-r border-b font-semibold bg-muted/50 sticky top-0 z-10"></div>
+        <div className="p-2 border-r border-b font-semibold bg-muted/50 sticky top-0 left-0 z-20"></div>
 
         {/* Day Headers */}
         {DAYS.map((day) => (
-          <div key={day} className="p-3 text-center border-b font-bold text-foreground bg-muted/50 sticky top-0 z-10">
+          <div key={day} className="p-3 text-center border-r border-b font-bold text-foreground bg-muted/50 sticky top-0 z-10">
             {day}
           </div>
         ))}
 
-        {/* Time Slots and Grid Cells */}
-        {TIME_SLOTS.map((time, timeIndex) => (
-          <React.Fragment key={time}>
-            <div className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center">
+        {/* Time Slots */}
+        {TIME_SLOTS.map((time) => (
+            <div key={time} className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center sticky left-0 bg-muted/50 z-10">
               {time}
             </div>
-            {DAYS.map((_, dayIndex) => (
-              <div key={`${dayIndex}-${timeIndex}`} className={cn("border-l border-b p-1", dayIndex === 0 && "border-l-0")}></div>
-            ))}
-          </React.Fragment>
         ))}
+        
+        {/* Grid Background Cells */}
+        {Array.from({ length: DAYS.length * TIME_SLOTS.length }).map((_, index) => (
+          <div key={index} className="border-r border-b"></div>
+        ))}
+
 
         {/* Schedule Entries */}
         {entries.map((entry) => {
@@ -72,28 +74,17 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
           return (
             <div
               key={entry.id}
-              className="p-1 absolute w-full h-full"
+              className="p-1"
               style={{
                 gridColumnStart: dayIndex + 2,
                 gridRowStart: timeIndex + 2,
                 gridRowEnd: `span ${duration}`,
-                width: `calc(100% / 6)`, // Assuming 6 days
-                left: `calc(80px + (100% - 80px) / 6 * ${dayIndex})`,
-                top: `calc(57px + ${timeIndex * 100}px)`, // Header height + row index * row height
-                height: `${duration * 100}px` // duration * row height
               }}
               onClick={() => isEditMode && onEdit(entry)}
             >
-              <div
-                className="p-1"
-                style={{
-                  width: '100%',
-                  height: '100%'
-                }}
-              >
                 <Card 
                   className={cn(
-                    "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col",
+                    "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col relative",
                     isEditMode && "cursor-pointer hover:border-primary"
                   )}
                   style={cardStyle}
@@ -122,13 +113,12 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
                       </div>
                     )}
                   </CardContent>
+                   {isEditMode && (
+                      <div className="absolute top-1 right-1 p-1 bg-background/80 rounded-full">
+                          <Pencil className="h-4 w-4 text-primary" />
+                      </div>
+                    )}
                 </Card>
-                {isEditMode && (
-                  <div className="absolute top-2 right-2 p-1 bg-background/80 rounded-full">
-                      <Pencil className="h-4 w-4 text-primary" />
-                  </div>
-                )}
-              </div>
             </div>
           );
         })}

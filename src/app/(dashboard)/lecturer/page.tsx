@@ -35,30 +35,28 @@ export default function LecturerDashboardPage() {
   return (
     <div className="container mx-auto">
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <div className="flex items-center gap-4 flex-wrap">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">My Timetable</h1>
-           <div className="flex items-center gap-2">
-             <Select defaultValue={departmentNames[0]}>
-              <SelectTrigger className="w-[280px]">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">My Timetable</h1>
+        <div className="flex items-center gap-2 flex-wrap">
+            <Select defaultValue={departmentNames[0]}>
+            <SelectTrigger className="w-auto md:w-[280px]">
                 <SelectValue placeholder="Select Department" />
-              </SelectTrigger>
-              <SelectContent>
+            </SelectTrigger>
+            <SelectContent>
                 {departmentNames.map(name => (
-                  <SelectItem key={name} value={name}>{name}</SelectItem>
+                <SelectItem key={name} value={name}>{name}</SelectItem>
                 ))}
-              </SelectContent>
+            </SelectContent>
             </Select>
             <Select defaultValue={YEARS[0]}>
-              <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-auto md:w-[180px]">
                 <SelectValue placeholder="Select Year" />
-              </SelectTrigger>
-              <SelectContent>
+            </SelectTrigger>
+            <SelectContent>
                 {YEARS.map(year => (
-                  <SelectItem key={year} value={year}>{year}</SelectItem>
+                <SelectItem key={year} value={year}>{year}</SelectItem>
                 ))}
-              </SelectContent>
+            </SelectContent>
             </Select>
-          </div>
         </div>
       </div>
        <div className="border rounded-lg bg-card text-card-foreground shadow-sm">

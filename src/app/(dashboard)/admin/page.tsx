@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast';
-import type { ScheduleEntry, TimetableData } from '@/lib/types';
+import type { ScheduleEntry } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { useTimetables } from '@/context/TimetableContext';
 
@@ -101,30 +101,28 @@ export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <div className="flex items-center gap-4 flex-wrap">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Master Timetables</h1>
-          <div className="flex items-center gap-2">
-             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
-              <SelectTrigger className="w-[280px]">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Master Timetables</h1>
+        <div className="flex items-center gap-2 flex-wrap">
+            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
+            <SelectTrigger className="w-auto md:w-[280px]">
                 <SelectValue placeholder="Select Department" />
-              </SelectTrigger>
-              <SelectContent>
+            </SelectTrigger>
+            <SelectContent>
                 {timetables.map(timetable => (
-                  <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
+                <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
                 ))}
-              </SelectContent>
+            </SelectContent>
             </Select>
             <Select defaultValue={YEARS[0]}>
-              <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-auto md:w-[180px]">
                 <SelectValue placeholder="Select Year" />
-              </SelectTrigger>
-              <SelectContent>
+            </SelectTrigger>
+            <SelectContent>
                 {YEARS.map(year => (
-                  <SelectItem key={year} value={year}>{year}</SelectItem>
+                <SelectItem key={year} value={year}>{year}</SelectItem>
                 ))}
-              </SelectContent>
+            </SelectContent>
             </Select>
-          </div>
         </div>
       </div>
      
