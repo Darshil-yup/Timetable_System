@@ -12,9 +12,16 @@ type TimetableProps = {
   view: 'admin' | 'lecturer';
   isEditMode?: boolean;
   onEdit?: (entry: ScheduleEntry) => void;
+  highlightedLecturer?: string;
 };
 
-export function Timetable({ entries, view, isEditMode = false, onEdit = () => {} }: TimetableProps) {
+export function Timetable({ 
+  entries, 
+  view, 
+  isEditMode = false, 
+  onEdit = () => {}, 
+  highlightedLecturer 
+}: TimetableProps) {
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div 
@@ -63,9 +70,11 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
           if (dayIndex === -1 || timeIndex === -1) {
             return null;
           }
+          
+          const isHighlighted = view === 'lecturer' && highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
 
           const cardStyle = {
-            backgroundColor: entry.color ? `${entry.color}1A` : 'hsl(var(--primary-light))', // Use color with opacity
+            backgroundColor: entry.color ? `${entry.color}1A` : 'hsl(var(--primary-light))',
             borderColor: entry.color || 'hsl(var(--primary))',
           };
           
@@ -91,7 +100,8 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
                 <Card 
                   className={cn(
                     "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col relative",
-                    isEditMode && "cursor-pointer hover:border-primary"
+                    isEditMode && "cursor-pointer hover:border-primary",
+                    isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background"
                   )}
                   style={cardStyle}
                 >
@@ -102,12 +112,10 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-2 text-xs text-foreground/80 space-y-1 flex-grow">
-                    {view === 'admin' && (
                       <div className="flex items-start gap-2">
                         <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
                         <span>{entry.lecturer}</span>
                       </div>
-                    )}
                     <div className="flex items-start gap-2">
                       <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
                       <span>Room: {entry.room}</span>
