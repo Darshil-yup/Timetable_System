@@ -19,24 +19,55 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import type { ScheduleEntry } from '@/lib/types';
-
+import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 
 export default function AdminDashboardPage() {
+  const [schedule, setSchedule] = useState<ScheduleEntry[]>(MASTER_SCHEDULE);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleEditClass = (classEntry: ScheduleEntry) => {
-    // In a real app, you would open a dialog pre-filled with classEntry data.
-    // For this example, we'll just log to console and show a toast.
-    console.log("Editing class:", classEntry);
+  const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
+    const newEntry: ScheduleEntry = {
+      ...newClass,
+      id: `c${schedule.length + 1}`, // simple id generation
+    };
+    setSchedule([...schedule, newEntry]);
     toast({
-        title: "Editing Class",
-        description: `You are now editing "${classEntry.subject}". (Functionality to be fully implemented)`,
+      title: "Class Added!",
+      description: `"${newClass.subject}" has been added to the master timetable.`,
     });
   };
+
+  const handleEditClass = (entry: ScheduleEntry) => {
+    setSelectedClass(entry);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateClass = (updatedClass: ScheduleEntry) => {
+    setSchedule(schedule.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
+    toast({
+        title: "Class Updated!",
+        description: `"${updatedClass.subject}" has been successfully updated.`,
+    });
+    setIsEditDialogOpen(false);
+    setSelectedClass(null);
+  };
   
+  const handleDeleteClass = (classId: string) => {
+     setSchedule(schedule.filter(entry => entry.id !== classId));
+     toast({
+        title: "Class Deleted",
+        description: "The class has been removed from the timetable.",
+        variant: "destructive",
+     });
+     setIsEditDialogOpen(false);
+     setSelectedClass(null);
+  }
+
   const handleDeleteTimetable = () => {
-    // In a real app, this would trigger a backend call to delete data.
+    setSchedule([]);
     toast({
       title: "Timetable Deleted",
       description: "The master timetable has been cleared.",
@@ -51,7 +82,7 @@ export default function AdminDashboardPage() {
       </div>
       <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
         <div className="p-6 flex items-center justify-end gap-2 flex-wrap">
-            <AddClassDialog />
+            <AddClassDialog onAddClass={handleAddClass} />
             <Button variant="outline" onClick={() => setIsEditMode(!isEditMode)}>
               {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
               {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
@@ -88,13 +119,22 @@ export default function AdminDashboardPage() {
                 {isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
             </p>
             <Timetable 
-                entries={MASTER_SCHEDULE} 
+                entries={schedule} 
                 view="admin" 
                 isEditMode={isEditMode}
                 onEdit={handleEditClass}
             />
         </div>
       </div>
+      {selectedClass && (
+        <EditClassDialog
+            isOpen={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            classEntry={selectedClass}
+            onUpdateClass={handleUpdateClass}
+            onDeleteClass={handleDeleteClass}
+        />
+      )}
     </div>
   );
 }

@@ -1,15 +1,22 @@
+"use client";
+
 import { Timetable } from '@/components/shared/timetable';
 import { MASTER_SCHEDULE, LECTURERS } from '@/lib/mock-data';
 import type { ScheduleEntry } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
+import { useState } from 'react';
 
 export default function LecturerDashboardPage() {
   // In a real app, you'd get the logged-in user's ID. Here we mock it.
   const currentLecturerName = LECTURERS[0].name;
 
-  const lecturerSchedule = MASTER_SCHEDULE.filter(
-    (entry: ScheduleEntry) => entry.lecturer === currentLecturerName
+  // In a real app, this would likely be fetched or managed globally.
+  // For now, we use a local state initialized with mock data.
+  const [schedule] = useState<ScheduleEntry[]>(MASTER_SCHEDULE);
+
+  const lecturerSchedule = schedule.filter(
+    (entry: ScheduleEntry) => entry.lecturer.includes(currentLecturerName)
   );
 
   return (
