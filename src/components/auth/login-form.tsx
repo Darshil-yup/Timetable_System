@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RegisterDialog } from './register-dialog';
 
 export function LoginForm() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export function LoginForm() {
       <CardFooter className="flex flex-col gap-3">
         <Button className="w-full" onClick={() => handleLogin('admin')}>Login as Admin</Button>
         <Button variant="secondary" className="w-full" onClick={() => handleLogin('lecturer')}>Login as Lecturer</Button>
+        <RegisterDialog />
       </CardFooter>
     </Card>
   );
