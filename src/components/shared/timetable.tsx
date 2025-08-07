@@ -3,7 +3,7 @@ import type { ScheduleEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { User, Book, MapPin } from "lucide-react";
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
 
 type TimetableProps = {
@@ -14,7 +14,7 @@ type TimetableProps = {
 export function Timetable({ entries, view }: TimetableProps) {
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
-      <div className="grid grid-cols-[80px_repeat(5,_minmax(0,_1fr))] grid-rows-[auto_repeat(9,_minmax(100px,_auto))]">
+      <div className="grid grid-cols-[80px_repeat(6,_minmax(0,_1fr))] grid-rows-[auto_repeat(9,_minmax(100px,_auto))]">
         {/* Empty corner */}
         <div className="p-2 border-r border-b font-semibold bg-muted/50"></div>
 

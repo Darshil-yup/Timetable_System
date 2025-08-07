@@ -3,7 +3,7 @@ export type ScheduleEntry = {
   subject: string;
   lecturer: string;
   room: string;
-  day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday';
+  day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
   time: string;
 };
 

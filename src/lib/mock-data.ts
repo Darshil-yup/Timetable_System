@@ -20,4 +20,5 @@ export const MASTER_SCHEDULE: ScheduleEntry[] = [
   { id: 'c10', subject: 'Advanced Algorithms', lecturer: 'Prof. Samuel Cruz', room: '305-A', day: 'Friday', time: '10:00 AM' },
   { id: 'c11', subject: 'Creative Writing', lecturer: 'Mr. Benjamin Carter', room: '401', day: 'Friday', time: '1:00 PM' },
   { id: 'c12', subject: 'Physical Chemistry', lecturer: 'Dr. Alisha Khan', room: '203', day: 'Friday', time: '3:00 PM' },
+  { id: 'c13', subject: 'Astrophysics', lecturer: 'Dr. Evelyn Reed', room: '101', day: 'Saturday', time: '11:00 AM' },
 ];
