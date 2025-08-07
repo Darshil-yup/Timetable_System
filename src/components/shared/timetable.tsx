@@ -17,13 +17,19 @@ type TimetableProps = {
 export function Timetable({ entries, view, isEditMode = false, onEdit = () => {} }: TimetableProps) {
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
-      <div className="grid grid-cols-[80px_repeat(6,_minmax(0,_1fr))] grid-rows-[auto_repeat(9,_minmax(100px,_auto))]">
+      <div 
+        className="grid relative"
+        style={{
+            gridTemplateColumns: '80px repeat(6, 1fr)',
+            gridTemplateRows: `auto repeat(${TIME_SLOTS.length}, minmax(100px, auto))`
+        }}
+      >
         {/* Empty corner */}
-        <div className="p-2 border-r border-b font-semibold bg-muted/50"></div>
+        <div className="p-2 border-r border-b font-semibold bg-muted/50 sticky top-0 z-10"></div>
 
         {/* Day Headers */}
         {DAYS.map((day) => (
-          <div key={day} className="p-3 text-center border-b font-bold text-foreground bg-muted/50">
+          <div key={day} className="p-3 text-center border-b font-bold text-foreground bg-muted/50 sticky top-0 z-10">
             {day}
           </div>
         ))}
@@ -31,11 +37,11 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
         {/* Time Slots and Grid Cells */}
         {TIME_SLOTS.map((time, timeIndex) => (
           <React.Fragment key={time}>
-            <div className="p-2 text-center text-sm font-semibold text-muted-foreground border-r bg-muted/50 flex items-center justify-center">
+            <div className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center">
               {time}
             </div>
             {DAYS.map((_, dayIndex) => (
-              <div key={`${dayIndex}-${timeIndex}`} className={cn("border-l p-1", dayIndex === 0 && "border-l-0")}></div>
+              <div key={`${dayIndex}-${timeIndex}`} className={cn("border-l border-b p-1", dayIndex === 0 && "border-l-0")}></div>
             ))}
           </React.Fragment>
         ))}
@@ -66,51 +72,63 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
           return (
             <div
               key={entry.id}
-              className="p-1 relative"
+              className="p-1 absolute w-full h-full"
               style={{
                 gridColumnStart: dayIndex + 2,
                 gridRowStart: timeIndex + 2,
                 gridRowEnd: `span ${duration}`,
+                width: `calc(100% / 6)`, // Assuming 6 days
+                left: `calc(80px + (100% - 80px) / 6 * ${dayIndex})`,
+                top: `calc(57px + ${timeIndex * 100}px)`, // Header height + row index * row height
+                height: `${duration * 100}px` // duration * row height
               }}
               onClick={() => isEditMode && onEdit(entry)}
             >
-              <Card 
-                className={cn(
-                  "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col",
-                  isEditMode && "cursor-pointer hover:border-primary"
-                )}
-                style={cardStyle}
+              <div
+                className="p-1"
+                style={{
+                  width: '100%',
+                  height: '100%'
+                }}
               >
-                <CardHeader className="p-2">
-                  <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
-                     {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
-                    <span>{entry.subject}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-2 text-xs text-foreground/80 space-y-1 flex-grow">
-                  {view === 'admin' && (
+                <Card 
+                  className={cn(
+                    "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col",
+                    isEditMode && "cursor-pointer hover:border-primary"
+                  )}
+                  style={cardStyle}
+                >
+                  <CardHeader className="p-2">
+                    <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
+                      {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
+                      <span>{entry.subject}</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-2 text-xs text-foreground/80 space-y-1 flex-grow">
+                    {view === 'admin' && (
+                      <div className="flex items-start gap-2">
+                        <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
+                        <span>{entry.lecturer}</span>
+                      </div>
+                    )}
                     <div className="flex items-start gap-2">
-                      <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
-                      <span>{entry.lecturer}</span>
+                      <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
+                      <span>Room: {entry.room}</span>
                     </div>
-                  )}
-                  <div className="flex items-start gap-2">
-                    <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
-                    <span>Room: {entry.room}</span>
+                    {entry.batches && entry.batches.length > 0 && (
+                      <div className="flex items-start gap-2">
+                        <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
+                        <span>Batches: {entry.batches.join(', ')}</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+                {isEditMode && (
+                  <div className="absolute top-2 right-2 p-1 bg-background/80 rounded-full">
+                      <Pencil className="h-4 w-4 text-primary" />
                   </div>
-                  {entry.batches && (
-                     <div className="flex items-start gap-2">
-                      <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle}/>
-                      <span>Batches: {entry.batches.join(', ')}</span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-               {isEditMode && (
-                <div className="absolute top-2 right-2 p-1 bg-background/80 rounded-full">
-                    <Pencil className="h-4 w-4 text-primary" />
-                </div>
-              )}
+                )}
+              </div>
             </div>
           );
         })}
