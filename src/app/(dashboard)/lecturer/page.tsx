@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
@@ -30,7 +31,7 @@ export default function LecturerDashboardPage() {
   return (
     <div className="container mx-auto">
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">My Timetable</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Lecturer Dashboard</h1>
         <div className="flex items-center gap-2 flex-wrap">
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
               <SelectTrigger className="w-auto md:w-[280px]">
@@ -57,20 +58,45 @@ export default function LecturerDashboardPage() {
       </div>
 
       {activeTimetable ? (
-        <Card>
-            <CardHeader>
-                <CardTitle>Schedule for {currentLecturerName}</CardTitle>
-                <CardDescription>
-                    Displaying the personalized timetable for {currentLecturerName} from the {activeTimetable.name} schedule.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Timetable 
-                    entries={lecturerSchedule} 
-                    view="lecturer"
-                />
-            </CardContent>
-        </Card>
+        <Tabs defaultValue="my-timetable">
+            <TabsList className="mb-4">
+                <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>
+                <TabsTrigger value="master-timetable">Master Timetable</TabsTrigger>
+            </TabsList>
+            <TabsContent value="my-timetable">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Schedule for {currentLecturerName}</CardTitle>
+                        <CardDescription>
+                            Displaying the personalized timetable for {currentLecturerName} from the {activeTimetable.name} schedule.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Timetable 
+                            entries={lecturerSchedule} 
+                            view="lecturer"
+                        />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+             <TabsContent value="master-timetable">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Master Schedule: {activeTimetable.name}</CardTitle>
+                        <CardDescription>
+                            This is the full, read-only timetable. Your classes are highlighted for convenience.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Timetable 
+                            entries={activeTimetable.schedule} 
+                            view="lecturer"
+                            highlightedLecturer={currentLecturerName}
+                        />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+        </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
             <p className="text-muted-foreground mb-4">No timetable selected.</p>
@@ -79,3 +105,4 @@ export default function LecturerDashboardPage() {
     </div>
   );
 }
+
