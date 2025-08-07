@@ -113,6 +113,14 @@ export default function AdminDashboardPage() {
         description: `Timetable for "${newTimetable.name}" has been created.`
     });
   };
+
+  React.useEffect(() => {
+    if (!selectedTimetableId && timetables.length > 0) {
+      setSelectedTimetableId(timetables[0].id);
+    } else if (timetables.length === 0) {
+      setSelectedTimetableId('');
+    }
+  }, [timetables, selectedTimetableId]);
   
   return (
     <div className="container mx-auto">
@@ -197,4 +205,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

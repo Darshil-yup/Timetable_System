@@ -15,12 +15,22 @@ import {
 } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React from 'react';
 
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
   
   const [selectedTimetableId, setSelectedTimetableId] = useState(timetables[0]?.id || '');
-  const [currentLecturerName, setCurrentLecturerName] = useState(LECTURERS[0].name);
+  const [currentLecturerName, setCurrentLecturerName] = useState(LECTURERS[0]?.name || '');
+
+  React.useEffect(() => {
+    if (timetables.length > 0 && !selectedTimetableId) {
+      setSelectedTimetableId(timetables[0].id);
+    }
+    if (LECTURERS.length > 0 && !currentLecturerName) {
+      setCurrentLecturerName(LECTURERS[0].name);
+    }
+  }, [timetables, selectedTimetableId, currentLecturerName]);
 
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
@@ -57,7 +67,7 @@ export default function LecturerDashboardPage() {
         </div>
       </div>
 
-      {activeTimetable ? (
+      {activeTimetable && currentLecturerName ? (
         <Tabs defaultValue="my-timetable">
             <TabsList className="mb-4">
                 <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>
@@ -99,10 +109,10 @@ export default function LecturerDashboardPage() {
         </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <p className="text-muted-foreground mb-4">No timetable selected.</p>
+            <p className="text-muted-foreground mb-4">No timetable or lecturer selected.</p>
+            <p className="text-muted-foreground">Admins can create timetables and register lecturers.</p>
         </div>
        )}
     </div>
   );
 }
-
