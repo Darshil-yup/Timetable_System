@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import type { ScheduleEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { User, Book, MapPin } from "lucide-react";
+import { User, Book, MapPin, Users, FlaskConical } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
@@ -41,6 +41,7 @@ export function Timetable({ entries, view }: TimetableProps) {
         {entries.map((entry) => {
           const dayIndex = DAYS.indexOf(entry.day);
           const timeIndex = TIME_SLOTS.indexOf(entry.time);
+          const duration = entry.duration || 1;
 
           if (dayIndex === -1 || timeIndex === -1) {
             return null;
@@ -53,26 +54,33 @@ export function Timetable({ entries, view }: TimetableProps) {
               style={{
                 gridColumnStart: dayIndex + 2,
                 gridRowStart: timeIndex + 2,
+                gridRowEnd: `span ${duration}`,
               }}
             >
-              <Card className="h-full w-full bg-primary/10 hover:shadow-lg transition-shadow duration-300 border-primary/40">
+              <Card className="h-full w-full bg-primary/10 hover:shadow-lg transition-shadow duration-300 border-primary/40 flex flex-col">
                 <CardHeader className="p-2">
                   <CardTitle className="text-sm font-bold text-primary flex items-center gap-2">
-                    <Book className="h-4 w-4 shrink-0" />
+                     {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
                     <span>{entry.subject}</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-2 text-xs text-foreground/80 space-y-1">
+                <CardContent className="p-2 text-xs text-foreground/80 space-y-1 flex-grow">
                   {view === 'admin' && (
-                    <div className="flex items-center gap-2">
-                      <User className="h-3 w-3 shrink-0 text-primary/80"/>
+                    <div className="flex items-start gap-2">
+                      <User className="h-3 w-3 shrink-0 text-primary/80 mt-0.5"/>
                       <span>{entry.lecturer}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3 w-3 shrink-0 text-primary/80"/>
+                  <div className="flex items-start gap-2">
+                    <MapPin className="h-3 w-3 shrink-0 text-primary/80 mt-0.5"/>
                     <span>Room: {entry.room}</span>
                   </div>
+                  {entry.batches && (
+                     <div className="flex items-start gap-2">
+                      <Users className="h-3 w-3 shrink-0 text-primary/80 mt-0.5"/>
+                      <span>Batches: {entry.batches.join(', ')}</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>

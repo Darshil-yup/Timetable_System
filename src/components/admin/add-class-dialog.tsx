@@ -16,6 +16,7 @@ import { PlusCircle } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { LECTURERS } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
@@ -76,9 +77,28 @@ export function AddClassDialog() {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="room" className="text-right">
-                Room
+                Room/Lab
               </Label>
-              <Input id="room" placeholder="e.g. Room 101" className="col-span-3" />
+              <Input id="room" placeholder="e.g. Room 101 or Lab A" className="col-span-3" />
+            </div>
+             <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Type</Label>
+              <RadioGroup defaultValue="lecture" className="col-span-3 flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="lecture" id="r1" />
+                  <Label htmlFor="r1">Lecture</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="practical" id="r2" />
+                  <Label htmlFor="r2">Practical</Label>
+                </div>
+              </RadioGroup>
+            </div>
+             <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="batches" className="text-right">
+                    Batches
+                </Label>
+                <Input id="batches" placeholder="e.g. A1, A2, A3 (comma-separated)" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="day" className="text-right">
