@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ScheduleEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock } from "lucide-react";
@@ -17,16 +18,15 @@ type TimetableProps = {
   highlightedLecturer?: string;
 };
 
-const ClassCard = ({ entry, isEditMode, onEdit, isHighlighted, view }: {
+const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   entry: ScheduleEntry;
   isEditMode?: boolean;
   onEdit?: (entry: ScheduleEntry) => void;
   isHighlighted?: boolean;
-  view: 'admin' | 'lecturer';
 }) => {
   const cardStyle = {
-    backgroundColor: entry.color ? `${entry.color}1A` : 'hsl(var(--primary-light))',
-    borderColor: entry.color || 'hsl(var(--primary))',
+    backgroundColor: entry.color ? `${entry.color}1A` : 'hsl(var(--card))',
+    borderColor: entry.color || 'hsl(var(--border))',
   };
 
   const titleStyle = {
@@ -34,7 +34,7 @@ const ClassCard = ({ entry, isEditMode, onEdit, isHighlighted, view }: {
   }
 
   const iconStyle = {
-    color: entry.color ? `${entry.color}CC` : 'hsl(var(--primary-light))',
+    color: entry.color ? `${entry.color}CC` : 'hsl(var(--muted-foreground))',
   }
 
   return (
@@ -80,10 +80,11 @@ const ClassCard = ({ entry, isEditMode, onEdit, isHighlighted, view }: {
       )}
     </Card>
   );
-};
+});
+ClassCard.displayName = 'ClassCard';
 
 
-const DesktopTimetable = ({ entries, view, isEditMode, onEdit, highlightedLecturer }: TimetableProps) => {
+const DesktopTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: TimetableProps) => {
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div
@@ -133,7 +134,7 @@ const DesktopTimetable = ({ entries, view, isEditMode, onEdit, highlightedLectur
             return null;
           }
 
-          const isHighlighted = view === 'lecturer' && highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
+          const isHighlighted = highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
 
           return (
             <div
@@ -145,7 +146,7 @@ const DesktopTimetable = ({ entries, view, isEditMode, onEdit, highlightedLectur
                 gridRowEnd: `span ${duration}`,
               }}
             >
-              <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} view={view} />
+              <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
             </div>
           );
         })}
@@ -154,7 +155,7 @@ const DesktopTimetable = ({ entries, view, isEditMode, onEdit, highlightedLectur
   )
 }
 
-const MobileTimetable = ({ entries, view, isEditMode, onEdit, highlightedLecturer }: TimetableProps) => {
+const MobileTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: TimetableProps) => {
   const groupedEntries = DAYS.reduce((acc, day) => {
       const dayEntries = entries
           .filter(entry => entry.day === day)
@@ -167,10 +168,10 @@ const MobileTimetable = ({ entries, view, isEditMode, onEdit, highlightedLecture
 
   const daysWithClasses = Object.keys(groupedEntries);
   
-  if (daysWithClasses.length === 0) {
+  if (entries.length === 0) {
     return (
        <div className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground">No classes scheduled.</p>
+          <p className="text-muted-foreground">No classes scheduled for this view.</p>
         </div>
     )
   }
@@ -183,8 +184,8 @@ const MobileTimetable = ({ entries, view, isEditMode, onEdit, highlightedLecture
                   <AccordionContent>
                       <div className="flex flex-col gap-4 p-4 pt-2">
                           {groupedEntries[day].map(entry => {
-                              const isHighlighted = view === 'lecturer' && highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
-                              return <ClassCard key={entry.id} entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} view={view} />
+                              const isHighlighted = highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
+                              return <ClassCard key={entry.id} entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
                           })}
                       </div>
                   </AccordionContent>

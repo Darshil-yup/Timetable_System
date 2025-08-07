@@ -1,10 +1,10 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
-import type { ScheduleEntry, TimetableData } from '@/lib/types';
+import type { ScheduleEntry } from '@/lib/types';
 import { useTimetables } from '@/context/TimetableContext';
 import {
   Select,
@@ -19,11 +19,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
   
-  const [selectedTimetableId, setSelectedTimetableId] = useState(timetables[0]?.id || '');
-  const [currentLecturerName, setCurrentLecturerName] = useState(LECTURERS[0]?.name || '');
+  const [selectedTimetableId, setSelectedTimetableId] = useState('');
+  const [currentLecturerName, setCurrentLecturerName] = useState('');
 
-  React.useEffect(() => {
-    if (timetables.length > 0 && !selectedTimetableId) {
+  useEffect(() => {
+    if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
       setSelectedTimetableId(timetables[0].id);
     }
     if (LECTURERS.length > 0 && !currentLecturerName) {
@@ -42,7 +42,7 @@ export default function LecturerDashboardPage() {
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Lecturer Dashboard</h1>
         <div className="flex items-center gap-2 flex-wrap">
-            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
+            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetables.length === 0}>
               <SelectTrigger className="w-auto md:w-[280px]">
                   <SelectValue placeholder="Select Department & Year" />
               </SelectTrigger>
@@ -53,7 +53,7 @@ export default function LecturerDashboardPage() {
               </SelectContent>
             </Select>
 
-            <Select value={currentLecturerName} onValueChange={setCurrentLecturerName}>
+            <Select value={currentLecturerName} onValueChange={setCurrentLecturerName} disabled={LECTURERS.length === 0}>
               <SelectTrigger className="w-auto md:w-[280px]">
                   <SelectValue placeholder="Select Lecturer" />
               </SelectTrigger>
