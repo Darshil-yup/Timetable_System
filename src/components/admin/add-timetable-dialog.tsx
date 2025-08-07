@@ -15,8 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -28,10 +26,23 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { PlusCircle } from "lucide-react";
 import React from "react";
 
+const DEPARTMENTS = [
+    "Computer Engineering", 
+    "Civil Engineering", 
+    "Electronics Engineering", 
+    "Electronics and Telecommunication Engineering", 
+    "Computer Science and Engineering", 
+    "Information Technology", 
+    "CSE (IoT)", 
+    "CSE (AIDS)", 
+    "Computer Technology", 
+    "Mechanical Engineering", 
+    "Electrical Engineering"
+];
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 const formSchema = z.object({
-  departmentName: z.string().min(3, "Department name is required"),
+  departmentName: z.string().min(1, "Department name is required"),
   year: z.string().min(1, "Year is required"),
 });
 
@@ -47,7 +58,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        departmentName: "",
+        departmentName: DEPARTMENTS[0],
         year: YEARS[0]
     }
   });
@@ -84,9 +95,20 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Department Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a department" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {DEPARTMENTS.map((dept) => (
+                          <SelectItem key={dept} value={dept}>
+                            {dept}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
