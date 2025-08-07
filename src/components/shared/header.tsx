@@ -1,11 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  BookCopy,
-  LogOut,
-  Users,
-} from 'lucide-react';
+import { LogOut, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,17 +14,27 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { LECTURERS } from '@/lib/mock-data';
+import Image from 'next/image';
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card">
       <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
-        <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-foreground mr-auto">
-          <BookCopy className="h-6 w-6 text-primary" />
-          <span className="hidden sm:inline-block">TimeTableSync</span>
+        <Link
+          href="/admin"
+          className="flex items-center gap-2 font-bold text-lg text-foreground mr-auto"
+        >
+          <Image
+            src="/ycce-logo.png"
+            alt="YCCE Logo"
+            width={40}
+            height={40}
+            className="h-10 w-10"
+          />
+          <span className="hidden sm:inline-block">YCCE Timetable</span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-           <DropdownMenu>
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
                 <Users className="mr-0 sm:mr-2 h-4 w-4" />
@@ -38,7 +44,7 @@ export default function Header() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel>Lecturers</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {LECTURERS.map(lecturer => (
+              {LECTURERS.map((lecturer) => (
                 <DropdownMenuItem key={lecturer.id}>
                   {lecturer.name}
                 </DropdownMenuItem>
@@ -47,9 +53,15 @@ export default function Header() {
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+              <Button
+                variant="ghost"
+                className="relative h-9 w-9 rounded-full"
+              >
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src="https://i.pravatar.cc/150" alt="User Avatar" />
+                  <AvatarImage
+                    src="https://i.pravatar.cc/150"
+                    alt="User Avatar"
+                  />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
               </Button>
