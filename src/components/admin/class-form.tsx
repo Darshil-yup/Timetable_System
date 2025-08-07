@@ -1,6 +1,6 @@
 "use client"
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { LECTURERS } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import type { ScheduleEntry } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -49,11 +48,17 @@ type ClassFormProps = {
 export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit", children }: ClassFormProps) {
   const formatedDefaultValues = defaultValues ? {
         ...defaultValues,
-        batches: defaultValues.batches?.join(", "),
+        batches: defaultValues.batches?.join(", ") || "",
   } : {
         type: 'Lecture',
         duration: 1,
         color: COLORS[0].value,
+        subject: '',
+        lecturer: '',
+        room: '',
+        day: '',
+        time: '',
+        batches: '',
   };
   
   const form = useForm<FormValues>({
@@ -64,7 +69,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   const handleSubmit = (values: FormValues) => {
     const dataToSend = {
       ...values,
-      batches: values.batches ? values.batches.split(',').map(b => b.trim()) : [],
+      batches: values.batches ? values.batches.split(',').map(b => b.trim()).filter(b => b) : [],
     };
     onSubmit(dataToSend);
   };
