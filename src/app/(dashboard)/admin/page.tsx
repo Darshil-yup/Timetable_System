@@ -1,11 +1,13 @@
 
 "use client"
 
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle } from 'lucide-react';
+import { Pencil, Trash2, XCircle, FileDown } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -70,6 +72,7 @@ export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { toast } = useToast();
+  const timetableRef = useRef<HTMLDivElement>(null);
 
   const activeTimetable = timetables.find(t => t.id === state.selectedTimetableId);
 
@@ -140,7 +143,6 @@ export default function AdminDashboardPage() {
 
     const remainingTimetables = timetables.filter(t => t.id !== activeTimetable.id);
     setTimetables(remainingTimetables);
-    // The useEffect hook will handle setting the next timetable ID
     
     toast({
       title: "Timetable Deleted",
@@ -148,6 +150,31 @@ export default function AdminDashboardPage() {
       variant: "destructive",
     })
   }
+
+  const handleExportPDF = () => {
+    if (!timetableRef.current || !activeTimetable) return;
+
+    html2canvas(timetableRef.current, {
+        scale: 2, // Higher scale for better resolution
+        useCORS: true,
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save(`${activeTimetable.name}-timetable.pdf`);
+    }).catch(err => {
+        console.error("Error generating PDF:", err);
+        toast({
+            title: "PDF Export Failed",
+            description: "Could not export the timetable. Please try again.",
+            variant: "destructive",
+        })
+    });
+  };
 
   return (
     <div className="container mx-auto">
@@ -200,6 +227,10 @@ export default function AdminDashboardPage() {
       {activeTimetable ? (
         <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
             <div className="p-6 flex items-center justify-end gap-2 flex-wrap">
+                <Button variant="outline" onClick={handleExportPDF}>
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Export as PDF
+                </Button>
                 <AddClassDialog onAddClass={handleAddClass} />
                 <Button variant="outline" onClick={() => dispatch({ type: 'TOGGLE_EDIT_MODE' })}>
                   {state.isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
@@ -212,6 +243,7 @@ export default function AdminDashboardPage() {
                     {state.isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
                 </p>
                 <Timetable 
+                    ref={timetableRef}
                     entries={activeTimetable.schedule} 
                     view="admin" 
                     isEditMode={state.isEditMode}

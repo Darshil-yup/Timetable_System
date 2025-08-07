@@ -1,11 +1,15 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import type { ScheduleEntry } from '@/lib/types';
 import { useTimetables } from '@/context/TimetableContext';
+import { Button } from '@/components/ui/button';
+import { FileDown } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -15,19 +19,23 @@ import {
 } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from '@/hooks/use-toast';
 
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
+  const { toast } = useToast();
   
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [currentLecturerName, setCurrentLecturerName] = useState('');
+  const [activeTab, setActiveTab] = useState('my-timetable');
+
+  const myTimetableRef = useRef<HTMLDivElement>(null);
+  const masterTimetableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
       setSelectedTimetableId(timetables[0].id);
     }
-    // In a real app, you'd get the logged in lecturer's name from auth.
-    // For now, we'll just default to the first one.
     if (LECTURERS.length > 0 && !currentLecturerName) {
       setCurrentLecturerName(LECTURERS[0].name);
     }
@@ -38,6 +46,34 @@ export default function LecturerDashboardPage() {
   const lecturerSchedule = activeTimetable 
     ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(currentLecturerName))
     : [];
+
+  const handleExportPDF = () => {
+    const timetableToExportRef = activeTab === 'my-timetable' ? myTimetableRef : masterTimetableRef;
+    const timetableName = activeTab === 'my-timetable' ? `${currentLecturerName}-Timetable` : `${activeTimetable?.name}-Master`;
+
+    if (!timetableToExportRef.current || !activeTimetable) return;
+
+    html2canvas(timetableToExportRef.current, {
+        scale: 2,
+        useCORS: true,
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'px',
+            format: [canvas.width, canvas.height]
+        });
+        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+        pdf.save(`${timetableName}.pdf`);
+    }).catch(err => {
+        console.error("Error generating PDF:", err);
+        toast({
+            title: "PDF Export Failed",
+            description: "Could not export the timetable. Please try again.",
+            variant: "destructive",
+        })
+    });
+  };
 
   return (
     <div className="container mx-auto">
@@ -54,11 +90,15 @@ export default function LecturerDashboardPage() {
                   ))}
               </SelectContent>
             </Select>
+             <Button variant="outline" onClick={handleExportPDF}>
+              <FileDown className="mr-2 h-4 w-4" />
+              Export as PDF
+            </Button>
         </div>
       </div>
 
       {activeTimetable && currentLecturerName ? (
-        <Tabs defaultValue="my-timetable" className="w-full">
+        <Tabs defaultValue="my-timetable" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-4 grid w-full grid-cols-2">
                 <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>
                 <TabsTrigger value="master-timetable">Master Timetable</TabsTrigger>
@@ -73,6 +113,7 @@ export default function LecturerDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
+                            ref={myTimetableRef}
                             entries={lecturerSchedule} 
                             view="lecturer"
                         />
@@ -89,6 +130,7 @@ export default function LecturerDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
+                            ref={masterTimetableRef}
                             entries={activeTimetable.schedule} 
                             view="lecturer"
                             highlightedLecturer={currentLecturerName}

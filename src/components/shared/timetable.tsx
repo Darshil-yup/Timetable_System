@@ -84,9 +84,9 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
 ClassCard.displayName = 'ClassCard';
 
 
-const DesktopTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: TimetableProps) => {
+const DesktopTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
+    <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div
         className="grid relative"
         style={{
@@ -153,9 +153,10 @@ const DesktopTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: 
       </div>
     </div>
   )
-}
+});
+DesktopTimetable.displayName = 'DesktopTimetable';
 
-const MobileTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: TimetableProps) => {
+const MobileTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
   const groupedEntries = DAYS.reduce((acc, day) => {
       const dayEntries = entries
           .filter(entry => entry.day === day)
@@ -170,14 +171,14 @@ const MobileTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: T
   
   if (entries.length === 0) {
     return (
-       <div className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
+       <div ref={ref} className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
           <p className="text-muted-foreground">No classes scheduled for this view.</p>
         </div>
     )
   }
 
   return (
-      <Accordion type="single" collapsible defaultValue={daysWithClasses[0]} className="w-full">
+      <Accordion ref={ref} type="single" collapsible defaultValue={daysWithClasses[0]} className="w-full">
           {daysWithClasses.map(day => (
               <AccordionItem value={day} key={day}>
                   <AccordionTrigger className="font-bold text-lg px-4">{day}</AccordionTrigger>
@@ -193,14 +194,16 @@ const MobileTimetable = ({ entries, isEditMode, onEdit, highlightedLecturer }: T
           ))}
       </Accordion>
   );
-};
+});
+MobileTimetable.displayName = 'MobileTimetable';
 
-export function Timetable(props: TimetableProps) {
+export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>((props, ref) => {
   const isMobile = useIsMobile();
   
   if(isMobile) {
-    return <MobileTimetable {...props} />
+    return <MobileTimetable {...props} ref={ref} />
   }
 
-  return <DesktopTimetable {...props} />
-}
+  return <DesktopTimetable {...props} ref={ref} />
+});
+Timetable.displayName = 'Timetable';
