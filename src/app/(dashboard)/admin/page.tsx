@@ -1,10 +1,11 @@
+
 "use client"
 
 import { useState } from 'react';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Eye, XCircle } from 'lucide-react';
+import { Pencil, Trash2, Eye, XCircle, PlusCircle } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,7 +15,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
   Select,
@@ -24,9 +24,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast';
-import type { ScheduleEntry } from '@/lib/types';
+import type { ScheduleEntry, TimetableData } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { useTimetables } from '@/context/TimetableContext';
+import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
@@ -97,6 +98,20 @@ export default function AdminDashboardPage() {
       variant: "destructive",
     })
   }
+
+  const handleCreateTimetable = (name: string, year: string) => {
+    const newTimetable: TimetableData = {
+        id: `tt${Date.now()}`,
+        name: `${name} (${year})`,
+        schedule: []
+    };
+    setTimetables([...timetables, newTimetable]);
+    setSelectedTimetableId(newTimetable.id);
+    toast({
+        title: "Timetable Created!",
+        description: `Timetable for "${newTimetable.name}" has been created.`
+    });
+  };
   
   return (
     <div className="container mx-auto">
@@ -105,7 +120,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-2 flex-wrap">
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
             <SelectTrigger className="w-auto md:w-[280px]">
-                <SelectValue placeholder="Select Department" />
+                <SelectValue placeholder="Select Department & Year" />
             </SelectTrigger>
             <SelectContent>
                 {timetables.map(timetable => (
@@ -113,16 +128,7 @@ export default function AdminDashboardPage() {
                 ))}
             </SelectContent>
             </Select>
-            <Select defaultValue={YEARS[0]}>
-            <SelectTrigger className="w-auto md:w-[180px]">
-                <SelectValue placeholder="Select Year" />
-            </SelectTrigger>
-            <SelectContent>
-                {YEARS.map(year => (
-                <SelectItem key={year} value={year}>{year}</SelectItem>
-                ))}
-            </SelectContent>
-            </Select>
+            <AddTimetableDialog onCreateTimetable={handleCreateTimetable} />
         </div>
       </div>
      
@@ -174,8 +180,14 @@ export default function AdminDashboardPage() {
             </div>
         </div>
       ) : (
-        <div className="flex items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground">Select a department to view the timetable.</p>
+        <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
+          <p className="text-muted-foreground mb-4">No timetable selected or created.</p>
+          <AddTimetableDialog onCreateTimetable={handleCreateTimetable}>
+             <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Create a New Timetable
+             </Button>
+          </AddTimetableDialog>
         </div>
       )}
       

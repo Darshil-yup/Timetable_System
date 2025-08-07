@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Timetable } from '@/components/shared/timetable';
@@ -13,8 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 export default function LecturerDashboardPage() {
   // In a real app, you'd get the logged-in user's ID. Here we mock it.
@@ -39,21 +38,11 @@ export default function LecturerDashboardPage() {
         <div className="flex items-center gap-2 flex-wrap">
             <Select defaultValue={departmentNames[0]}>
             <SelectTrigger className="w-auto md:w-[280px]">
-                <SelectValue placeholder="Select Department" />
+                <SelectValue placeholder="Select Department & Year" />
             </SelectTrigger>
             <SelectContent>
                 {departmentNames.map(name => (
                 <SelectItem key={name} value={name}>{name}</SelectItem>
-                ))}
-            </SelectContent>
-            </Select>
-            <Select defaultValue={YEARS[0]}>
-            <SelectTrigger className="w-auto md:w-[180px]">
-                <SelectValue placeholder="Select Year" />
-            </SelectTrigger>
-            <SelectContent>
-                {YEARS.map(year => (
-                <SelectItem key={year} value={year}>{year}</SelectItem>
                 ))}
             </SelectContent>
             </Select>

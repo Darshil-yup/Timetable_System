@@ -1,3 +1,4 @@
+
 import type { Lecturer, ScheduleEntry, TimetableData } from './types';
 
 export const LECTURERS: Lecturer[] = [
@@ -28,17 +29,17 @@ const initialSchedule: ScheduleEntry[] = [
 export const MASTER_SCHEDULE: TimetableData[] = [
     {
         id: 'tt1',
-        name: 'Computer Science Engineering (Internet of Things)',
+        name: 'Computer Science Engineering (Internet of Things) (1st Year)',
         schedule: initialSchedule,
     },
     {
         id: 'tt2',
-        name: 'Computer Technology',
+        name: 'Computer Technology (1st Year)',
         schedule: [],
     },
     {
         id: 'tt3',
-        name: 'CSE(AIDS)',
+        name: 'CSE(AIDS) (1st Year)',
         schedule: [],
     }
 ];
