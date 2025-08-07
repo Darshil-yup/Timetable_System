@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {
   BookCopy,
   LogOut,
-  User,
+  Users,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { LECTURERS } from '@/lib/mock-data';
 
 export default function Header() {
   return (
@@ -27,6 +28,23 @@ export default function Header() {
           <span>TimeTableSync</span>
         </Link>
         <div className="flex flex-1 items-center justify-end gap-4">
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Users className="mr-2 h-4 w-4" />
+                Members
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuLabel>Lecturers</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {LECTURERS.map(lecturer => (
+                <DropdownMenuItem key={lecturer.id}>
+                  {lecturer.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -39,9 +57,9 @@ export default function Header() {
             <DropdownMenuContent className="w-56" align="end" forceMount>
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">User</p>
+                  <p className="text-sm font-medium leading-none">Admin</p>
                   <p className="text-xs leading-none text-muted-foreground">
-                    user@example.com
+                    admin@example.com
                   </p>
                 </div>
               </DropdownMenuLabel>
