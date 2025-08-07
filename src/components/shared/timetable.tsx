@@ -1,0 +1,84 @@
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import type { ScheduleEntry } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { User, Book, MapPin } from "lucide-react";
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+
+type TimetableProps = {
+  entries: ScheduleEntry[];
+  view: 'admin' | 'lecturer';
+};
+
+export function Timetable({ entries, view }: TimetableProps) {
+  return (
+    <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden">
+      <div className="grid grid-cols-[80px_repeat(5,_minmax(0,_1fr))] grid-rows-[auto_repeat(9,_minmax(100px,_auto))]">
+        {/* Empty corner */}
+        <div className="p-2 border-r border-b font-semibold bg-muted/50"></div>
+
+        {/* Day Headers */}
+        {DAYS.map((day) => (
+          <div key={day} className="p-3 text-center border-b font-bold text-foreground bg-muted/50">
+            {day}
+          </div>
+        ))}
+
+        {/* Time Slots and Grid Cells */}
+        {TIME_SLOTS.map((time, timeIndex) => (
+          <>
+            <div key={time} className="p-2 text-center text-sm font-semibold text-muted-foreground border-r bg-muted/50 flex items-center justify-center">
+              {time}
+            </div>
+            {DAYS.map((_, dayIndex) => (
+              <div key={`${dayIndex}-${timeIndex}`} className={cn("border-l p-1", dayIndex === 0 && "border-l-0")}></div>
+            ))}
+          </>
+        ))}
+
+        {/* Schedule Entries */}
+        {entries.map((entry) => {
+          const dayIndex = DAYS.indexOf(entry.day);
+          const timeIndex = TIME_SLOTS.indexOf(entry.time);
+
+          if (dayIndex === -1 || timeIndex === -1) {
+            return null;
+          }
+
+          return (
+            <div
+              key={entry.id}
+              className="p-1"
+              style={{
+                gridColumnStart: dayIndex + 2,
+                gridRowStart: timeIndex + 2,
+              }}
+            >
+              <Card className="h-full w-full bg-primary/10 hover:shadow-lg transition-shadow duration-300 border-primary/40">
+                <CardHeader className="p-2">
+                  <CardTitle className="text-sm font-bold text-primary flex items-center gap-2">
+                    <Book className="h-4 w-4 shrink-0" />
+                    <span>{entry.subject}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-2 text-xs text-foreground/80 space-y-1">
+                  {view === 'admin' && (
+                    <div className="flex items-center gap-2">
+                      <User className="h-3 w-3 shrink-0 text-primary/80"/>
+                      <span>{entry.lecturer}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-3 w-3 shrink-0 text-primary/80"/>
+                    <span>Room: {entry.room}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
