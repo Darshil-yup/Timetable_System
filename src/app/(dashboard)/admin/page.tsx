@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Eye, XCircle, PlusCircle } from 'lucide-react';
+import { Pencil, Trash2, XCircle, PlusCircle } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,8 +29,6 @@ import type { ScheduleEntry, TimetableData } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { useTimetables } from '@/context/TimetableContext';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
-
-const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
@@ -92,10 +90,11 @@ export default function AdminDashboardPage() {
 
   const handleDeleteTimetable = () => {
     if (!activeTimetable) return;
-    updateActiveTimetableSchedule([]);
+    setTimetables(timetables.filter(t => t.id !== activeTimetable.id));
+    setSelectedTimetableId(timetables[0]?.id || '');
     toast({
-      title: "Timetable Cleared",
-      description: `The timetable for "${activeTimetable.name}" has been cleared.`,
+      title: "Timetable Deleted",
+      description: `The timetable for "${activeTimetable.name}" has been deleted.`,
       variant: "destructive",
     })
   }
@@ -162,10 +161,6 @@ export default function AdminDashboardPage() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
                 </AlertDialog>
-                <Button variant="secondary">
-                <Eye className="mr-2 h-4 w-4" />
-                View Schedule
-                </Button>
             </div>
             <div className="p-6 pt-0">
                 <p className="text-muted-foreground mb-6">
