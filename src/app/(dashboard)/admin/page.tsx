@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Timetable } from '@/components/shared/timetable';
-import { MASTER_SCHEDULE } from '@/lib/mock-data';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, Eye, XCircle } from 'lucide-react';
@@ -18,12 +17,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
-import type { ScheduleEntry, TimetableData } from '@/lib/types';
+import type { ScheduleEntry } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useTimetables } from '@/context/TimetableContext';
 
 export default function AdminDashboardPage() {
-  const [timetables, setTimetables] = useState<TimetableData[]>(MASTER_SCHEDULE);
+  const { timetables, setTimetables } = useTimetables();
   const [activeTab, setActiveTab] = useState(timetables[0]?.id || '');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
@@ -40,7 +40,7 @@ export default function AdminDashboardPage() {
   const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
     const newEntry: ScheduleEntry = {
       ...newClass,
-      id: `c${activeSchedule.length + 1}`, // simple id generation
+      id: `c${Date.now()}`, // Use timestamp for more unique ID
     };
     updateActiveTimetable([...activeSchedule, newEntry]);
     toast({
