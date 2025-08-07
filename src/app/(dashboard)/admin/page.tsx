@@ -90,8 +90,9 @@ export default function AdminDashboardPage() {
 
   const handleDeleteTimetable = () => {
     if (!activeTimetable) return;
-    setTimetables(timetables.filter(t => t.id !== activeTimetable.id));
-    setSelectedTimetableId(timetables[0]?.id || '');
+    const remainingTimetables = timetables.filter(t => t.id !== activeTimetable.id);
+    setTimetables(remainingTimetables);
+    setSelectedTimetableId(remainingTimetables.length > 0 ? remainingTimetables[0].id : '');
     toast({
       title: "Timetable Deleted",
       description: `The timetable for "${activeTimetable.name}" has been deleted.`,
@@ -118,9 +119,9 @@ export default function AdminDashboardPage() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Master Timetables</h1>
         <div className="flex items-center gap-2 flex-wrap">
-            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
+            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetables.length === 0}>
             <SelectTrigger className="w-auto md:w-[280px]">
-                <SelectValue placeholder="Select Department & Year" />
+                <SelectValue placeholder="Select a timetable" />
             </SelectTrigger>
             <SelectContent>
                 {timetables.map(timetable => (
@@ -129,17 +130,7 @@ export default function AdminDashboardPage() {
             </SelectContent>
             </Select>
             <AddTimetableDialog onCreateTimetable={handleCreateTimetable} />
-        </div>
-      </div>
-     
-      {activeTimetable ? (
-        <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
-            <div className="p-6 flex items-center justify-end gap-2 flex-wrap">
-                <AddClassDialog onAddClass={handleAddClass} />
-                <Button variant="outline" onClick={() => setIsEditMode(!isEditMode)}>
-                {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-                {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-                </Button>
+             {activeTimetable && (
                 <AlertDialog>
                 <AlertDialogTrigger asChild>
                     <Button variant="destructive">
@@ -161,6 +152,18 @@ export default function AdminDashboardPage() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
                 </AlertDialog>
+            )}
+        </div>
+      </div>
+     
+      {activeTimetable ? (
+        <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
+            <div className="p-6 flex items-center justify-end gap-2 flex-wrap">
+                <AddClassDialog onAddClass={handleAddClass} />
+                <Button variant="outline" onClick={() => setIsEditMode(!isEditMode)}>
+                {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+                {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+                </Button>
             </div>
             <div className="p-6 pt-0">
                 <p className="text-muted-foreground mb-6">
@@ -177,13 +180,8 @@ export default function AdminDashboardPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground mb-4">No timetable selected or created.</p>
-          <AddTimetableDialog onCreateTimetable={handleCreateTimetable}>
-             <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create a New Timetable
-             </Button>
-          </AddTimetableDialog>
+          <p className="text-muted-foreground mb-4">No timetables to display.</p>
+          <p className="text-muted-foreground mb-4">Please create a new timetable to get started.</p>
         </div>
       )}
       
@@ -199,3 +197,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
