@@ -13,6 +13,9 @@ export default function DashboardLayout({
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
           {children}
         </main>
+        <footer className="py-4 text-center text-sm text-muted-foreground border-t">
+          @YCCE.CSE(IoT)
+        </footer>
       </div>
     </TimetableProvider>
   );
