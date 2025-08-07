@@ -46,7 +46,7 @@ export function Timetable({
           <React.Fragment key={time}>
             <div 
               className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center sticky left-0 bg-muted/50 z-10"
-              style={{ gridRow: timeIndex + 2, gridColumn: 1 }}
+              style={{ gridRow: timeIndex + 2 }}
             >
               {time}
             </div>

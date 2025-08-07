@@ -13,20 +13,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
   
-  // Default to the first timetable and first lecturer
   const [selectedTimetableId, setSelectedTimetableId] = useState(timetables[0]?.id || '');
   const [currentLecturerName, setCurrentLecturerName] = useState(LECTURERS[0].name);
 
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
+  const lecturerSchedule = activeTimetable 
+    ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(currentLecturerName))
+    : [];
+
   return (
     <div className="container mx-auto">
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">View Timetable</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">My Timetable</h1>
         <div className="flex items-center gap-2 flex-wrap">
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
               <SelectTrigger className="w-auto md:w-[280px]">
@@ -41,7 +45,7 @@ export default function LecturerDashboardPage() {
 
             <Select value={currentLecturerName} onValueChange={setCurrentLecturerName}>
               <SelectTrigger className="w-auto md:w-[280px]">
-                  <SelectValue placeholder="Select Lecturer to Highlight" />
+                  <SelectValue placeholder="Select Lecturer" />
               </SelectTrigger>
               <SelectContent>
                   {LECTURERS.map(lecturer => (
@@ -53,19 +57,20 @@ export default function LecturerDashboardPage() {
       </div>
 
       {activeTimetable ? (
-        <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
-            <div className="p-6 pt-0">
-            <p className="text-muted-foreground my-6">
-                Displaying the full timetable for <span className="font-semibold text-foreground">{activeTimetable.name}</span>. 
-                Classes for <span className="font-semibold text-primary">{currentLecturerName}</span> are highlighted.
-            </p>
-            <Timetable 
-                entries={activeTimetable.schedule} 
-                view="lecturer"
-                highlightedLecturer={currentLecturerName}
-            />
-            </div>
-        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Schedule for {currentLecturerName}</CardTitle>
+                <CardDescription>
+                    Displaying the personalized timetable for {currentLecturerName} from the {activeTimetable.name} schedule.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Timetable 
+                    entries={lecturerSchedule} 
+                    view="lecturer"
+                />
+            </CardContent>
+        </Card>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
             <p className="text-muted-foreground mb-4">No timetable selected.</p>
