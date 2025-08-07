@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Users } from 'lucide-react';
+import { LogOut, Users, BookCopy } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { LECTURERS } from '@/lib/mock-data';
-import Image from 'next/image';
 
 export default function Header() {
   return (
@@ -24,13 +23,7 @@ export default function Header() {
           href="/admin"
           className="flex items-center gap-2 font-bold text-lg text-foreground mr-auto"
         >
-          <Image
-            src="/ycce-logo.png"
-            alt="YCCE Logo"
-            width={40}
-            height={40}
-            className="h-10 w-10"
-          />
+          <BookCopy className="h-8 w-8 text-primary" />
           <span className="hidden sm:inline-block">YCCE Timetable</span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
