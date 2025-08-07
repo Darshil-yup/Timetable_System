@@ -24,34 +24,36 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast';
-import type { ScheduleEntry } from '@/lib/types';
+import type { ScheduleEntry, TimetableData } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTimetables } from '@/context/TimetableContext';
 
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
-  const [activeTab, setActiveTab] = useState(timetables[0]?.id || '');
+  const [selectedTimetableId, setSelectedTimetableId] = useState(timetables[0]?.id || '');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const activeTimetable = timetables.find(t => t.id === activeTab);
-  const activeSchedule = activeTimetable?.schedule || [];
-  
-  const updateActiveTimetable = (newSchedule: ScheduleEntry[]) => {
-    setTimetables(timetables.map(t => t.id === activeTab ? { ...t, schedule: newSchedule } : t));
-  }
+  const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
+  const updateActiveTimetableSchedule = (newSchedule: ScheduleEntry[]) => {
+    setTimetables(timetables.map(t => 
+        t.id === selectedTimetableId ? { ...t, schedule: newSchedule } : t
+    ));
+  }
+  
   const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
+    if (!activeTimetable) return;
+
     const newEntry: ScheduleEntry = {
       ...newClass,
-      id: `c${Date.now()}`, // Use timestamp for more unique ID
+      id: `c${Date.now()}`,
     };
-    updateActiveTimetable([...activeSchedule, newEntry]);
+    updateActiveTimetableSchedule([...activeTimetable.schedule, newEntry]);
     toast({
       title: "Class Added!",
       description: `"${newClass.subject}" has been added to the timetable.`,
@@ -64,7 +66,8 @@ export default function AdminDashboardPage() {
   };
 
   const handleUpdateClass = (updatedClass: ScheduleEntry) => {
-    updateActiveTimetable(activeSchedule.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
+    if (!activeTimetable) return;
+    updateActiveTimetableSchedule(activeTimetable.schedule.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
     toast({
         title: "Class Updated!",
         description: `"${updatedClass.subject}" has been successfully updated.`,
@@ -74,7 +77,8 @@ export default function AdminDashboardPage() {
   };
   
   const handleDeleteClass = (classId: string) => {
-     updateActiveTimetable(activeSchedule.filter(entry => entry.id !== classId));
+    if (!activeTimetable) return;
+     updateActiveTimetableSchedule(activeTimetable.schedule.filter(entry => entry.id !== classId));
      toast({
         title: "Class Deleted",
         description: "The class has been removed from the timetable.",
@@ -85,29 +89,28 @@ export default function AdminDashboardPage() {
   }
 
   const handleDeleteTimetable = () => {
-    updateActiveTimetable([]);
+    if (!activeTimetable) return;
+    updateActiveTimetableSchedule([]);
     toast({
       title: "Timetable Cleared",
-      description: `The timetable for "${activeTimetable?.name}" has been cleared.`,
+      description: `The timetable for "${activeTimetable.name}" has been cleared.`,
       variant: "destructive",
     })
   }
-
-  const departmentNames = timetables.map(t => t.name);
-
+  
   return (
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-4 flex-wrap">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Master Timetables</h1>
           <div className="flex items-center gap-2">
-             <Select defaultValue={departmentNames[0]}>
+             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId}>
               <SelectTrigger className="w-[280px]">
                 <SelectValue placeholder="Select Department" />
               </SelectTrigger>
               <SelectContent>
-                {departmentNames.map(name => (
-                  <SelectItem key={name} value={name}>{name}</SelectItem>
+                {timetables.map(timetable => (
+                  <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -124,63 +127,59 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList>
-            {timetables.map(timetable => (
-                <TabsTrigger key={timetable.id} value={timetable.id}>{timetable.name}</TabsTrigger>
-            ))}
-        </TabsList>
-        {timetables.map(timetable => (
-            <TabsContent key={timetable.id} value={timetable.id}>
-                <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
-                    <div className="p-6 flex items-center justify-end gap-2 flex-wrap">
-                        <AddClassDialog onAddClass={handleAddClass} />
-                        <Button variant="outline" onClick={() => setIsEditMode(!isEditMode)}>
-                        {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-                        {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-                        </Button>
-                        <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete Timetable
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the
-                                entire timetable for {timetable.name}.
-                            </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDeleteTimetable}>Continue</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                        </AlertDialog>
-                        <Button variant="secondary">
-                        <Eye className="mr-2 h-4 w-4" />
-                        View Schedule
-                        </Button>
-                    </div>
-                    <div className="p-6 pt-0">
-                        <p className="text-muted-foreground mb-6">
-                            This is the central schedule for {timetable.name}. Changes made here will automatically update individual lecturer timetables.
-                            {isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
-                        </p>
-                        <Timetable 
-                            entries={timetable.schedule} 
-                            view="admin" 
-                            isEditMode={isEditMode}
-                            onEdit={handleEditClass}
-                        />
-                    </div>
-                </div>
-            </TabsContent>
-        ))}
-      </Tabs>
+     
+      {activeTimetable ? (
+        <div className="border rounded-lg bg-card text-card-foreground shadow-sm">
+            <div className="p-6 flex items-center justify-end gap-2 flex-wrap">
+                <AddClassDialog onAddClass={handleAddClass} />
+                <Button variant="outline" onClick={() => setIsEditMode(!isEditMode)}>
+                {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+                {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+                </Button>
+                <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="destructive">
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Timetable
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the
+                        entire timetable for {activeTimetable.name}.
+                    </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteTimetable}>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+                </AlertDialog>
+                <Button variant="secondary">
+                <Eye className="mr-2 h-4 w-4" />
+                View Schedule
+                </Button>
+            </div>
+            <div className="p-6 pt-0">
+                <p className="text-muted-foreground mb-6">
+                    This is the central schedule for {activeTimetable.name}. Changes made here will automatically update individual lecturer timetables.
+                    {isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
+                </p>
+                <Timetable 
+                    entries={activeTimetable.schedule} 
+                    view="admin" 
+                    isEditMode={isEditMode}
+                    onEdit={handleEditClass}
+                />
+            </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
+          <p className="text-muted-foreground">Select a department to view the timetable.</p>
+        </div>
+      )}
       
       {selectedClass && (
         <EditClassDialog
