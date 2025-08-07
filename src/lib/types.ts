@@ -15,3 +15,9 @@ export type Lecturer = {
   id: string;
   name: string;
 };
+
+export type TimetableData = {
+  id: string;
+  name: string;
+  schedule: ScheduleEntry[];
+};

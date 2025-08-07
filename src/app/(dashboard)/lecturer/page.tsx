@@ -2,7 +2,7 @@
 
 import { Timetable } from '@/components/shared/timetable';
 import { MASTER_SCHEDULE, LECTURERS } from '@/lib/mock-data';
-import type { ScheduleEntry } from '@/lib/types';
+import type { ScheduleEntry, TimetableData } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 import { useState } from 'react';
@@ -13,9 +13,12 @@ export default function LecturerDashboardPage() {
 
   // In a real app, this would likely be fetched or managed globally.
   // For now, we use a local state initialized with mock data.
-  const [schedule] = useState<ScheduleEntry[]>(MASTER_SCHEDULE);
+  const [timetables] = useState<TimetableData[]>(MASTER_SCHEDULE);
 
-  const lecturerSchedule = schedule.filter(
+  // Flatten all schedules from all timetables and then filter by lecturer
+  const allScheduleEntries = timetables.flatMap(timetable => timetable.schedule);
+  
+  const lecturerSchedule = allScheduleEntries.filter(
     (entry: ScheduleEntry) => entry.lecturer.includes(currentLecturerName)
   );
 

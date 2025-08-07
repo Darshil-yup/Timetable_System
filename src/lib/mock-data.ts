@@ -1,4 +1,4 @@
-import type { Lecturer, ScheduleEntry } from './types';
+import type { Lecturer, ScheduleEntry, TimetableData } from './types';
 
 export const LECTURERS: Lecturer[] = [
   { id: '1', name: 'Dr. Evelyn Reed' },
@@ -9,7 +9,7 @@ export const LECTURERS: Lecturer[] = [
   { id: '6', name: 'Radhika G' },
 ];
 
-export const MASTER_SCHEDULE: ScheduleEntry[] = [
+const initialSchedule: ScheduleEntry[] = [
   { id: 'c1', subject: 'Quantum Physics', lecturer: 'Dr. Evelyn Reed', room: '101', day: 'Monday', time: '9:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
   { id: 'c2', subject: 'DBMS/OS Lab', lecturer: 'Hrushikesh P, Radhika G', room: 'IOT Lab 1/2', day: 'Monday', time: '10:00 AM', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-2))' },
   { id: 'c3', subject: 'Data Structures', lecturer: 'Prof. Samuel Cruz', room: '305-A', day: 'Monday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
@@ -23,4 +23,22 @@ export const MASTER_SCHEDULE: ScheduleEntry[] = [
   { id: 'c11', subject: 'Creative Writing', lecturer: 'Mr. Benjamin Carter', room: '401', day: 'Friday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 'c12', subject: 'Physical Chemistry', lecturer: 'Dr. Alisha Khan', room: '203', day: 'Friday', time: '3:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 'c13', subject: 'Astrophysics', lecturer: 'Dr. Evelyn Reed', room: '101', day: 'Saturday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+];
+
+export const MASTER_SCHEDULE: TimetableData[] = [
+    {
+        id: 'tt1',
+        name: 'Computer Science Engineering (Internet of Things)',
+        schedule: initialSchedule,
+    },
+    {
+        id: 'tt2',
+        name: 'Computer Technology',
+        schedule: [],
+    },
+    {
+        id: 'tt3',
+        name: 'CSE(AIDS)',
+        schedule: [],
+    }
 ];
