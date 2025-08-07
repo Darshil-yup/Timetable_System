@@ -17,9 +17,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LECTURERS } from "@/lib/mock-data"
 import { useToast } from "@/hooks/use-toast"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { cn } from "@/lib/utils"
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+const COLORS = [
+    { value: 'hsl(var(--chart-1))', label: 'Tomato' },
+    { value: 'hsl(var(--chart-2))', label: 'Teal' },
+    { value: 'hsl(var(--chart-3))', label: 'Navy' },
+    { value: 'hsl(var(--chart-4))', label: 'Gold' },
+    { value: 'hsl(var(--chart-5))', label: 'Orange' },
+];
 
 export function AddClassDialog() {
   const { toast } = useToast();
@@ -129,6 +137,26 @@ export function AddClassDialog() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Color</Label>
+                <RadioGroup defaultValue={COLORS[0].value} className="col-span-3 flex gap-2">
+                    {COLORS.map(color => (
+                        <RadioGroupItem key={color.value} value={color.value} id={`c-${color.label}`} className="sr-only" />
+                    ))}
+                    {COLORS.map(color => (
+                         <Label key={`l-${color.label}`} htmlFor={`c-${color.label}`}
+                           className={cn(
+                                "w-6 h-6 rounded-full border-2 border-transparent cursor-pointer",
+                                "ring-offset-background [&:has(+[data-state=checked])]:ring-2 [&:has(+[data-state=checked])]:ring-ring"
+                           )}
+                           style={{ backgroundColor: color.value }}
+                           title={color.label}
+                         >
+                            <span className="sr-only">{color.label}</span>
+                         </Label>
+                    ))}
+                </RadioGroup>
             </div>
           </div>
           <DialogFooter>

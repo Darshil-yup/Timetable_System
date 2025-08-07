@@ -8,6 +8,7 @@ export type ScheduleEntry = {
   type?: 'Lecture' | 'Practical';
   duration?: number; // Duration in hours
   batches?: string[];
+  color?: string; // Hex color code
 };
 
 export type Lecturer = {
