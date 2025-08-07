@@ -26,6 +26,8 @@ export default function LecturerDashboardPage() {
     if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
       setSelectedTimetableId(timetables[0].id);
     }
+    // In a real app, you'd get the logged in lecturer's name from auth.
+    // For now, we'll just default to the first one.
     if (LECTURERS.length > 0 && !currentLecturerName) {
       setCurrentLecturerName(LECTURERS[0].name);
     }
@@ -49,17 +51,6 @@ export default function LecturerDashboardPage() {
               <SelectContent>
                   {timetables.map(timetable => (
                   <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={currentLecturerName} onValueChange={setCurrentLecturerName} disabled={LECTURERS.length === 0}>
-              <SelectTrigger className="w-auto md:w-[280px]">
-                  <SelectValue placeholder="Select Lecturer" />
-              </SelectTrigger>
-              <SelectContent>
-                  {LECTURERS.map(lecturer => (
-                  <SelectItem key={lecturer.id} value={lecturer.name}>{lecturer.name}</SelectItem>
                   ))}
               </SelectContent>
             </Select>
