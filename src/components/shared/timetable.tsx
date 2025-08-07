@@ -134,7 +134,7 @@ const DesktopTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
             return null;
           }
 
-          const isHighlighted = highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
+          const isHighlighted = highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false;
 
           return (
             <div
@@ -185,7 +185,7 @@ const MobileTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entr
                   <AccordionContent>
                       <div className="flex flex-col gap-4 p-4 pt-2">
                           {groupedEntries[day].map(entry => {
-                              const isHighlighted = highlightedLecturer && entry.lecturer.includes(highlightedLecturer);
+                              const isHighlighted = highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false;
                               return <ClassCard key={entry.id} entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
                           })}
                       </div>

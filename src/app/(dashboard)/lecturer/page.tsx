@@ -26,8 +26,10 @@ export default function LecturerDashboardPage() {
   const { toast } = useToast();
   
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
-  const [currentLecturerName, setCurrentLecturerName] = useState('');
   const [activeTab, setActiveTab] = useState('my-timetable');
+
+  // Simulate a logged-in user. In a real app, this would come from an auth context.
+  const currentLecturerName = LECTURERS[1].name;
 
   const myTimetableRef = useRef<HTMLDivElement>(null);
   const masterTimetableRef = useRef<HTMLDivElement>(null);
@@ -36,10 +38,7 @@ export default function LecturerDashboardPage() {
     if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
       setSelectedTimetableId(timetables[0].id);
     }
-    if (LECTURERS.length > 0 && !currentLecturerName) {
-      setCurrentLecturerName(LECTURERS[0].name);
-    }
-  }, [timetables, selectedTimetableId, currentLecturerName]);
+  }, [timetables, selectedTimetableId]);
 
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
@@ -141,8 +140,8 @@ export default function LecturerDashboardPage() {
         </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <p className="text-muted-foreground mb-4">No timetable or lecturer selected.</p>
-            <p className="text-muted-foreground">Admins can create timetables and register lecturers.</p>
+            <p className="text-muted-foreground mb-4">No timetable selected.</p>
+            <p className="text-muted-foreground">Select a timetable from the dropdown to view schedules.</p>
         </div>
        )}
     </div>
