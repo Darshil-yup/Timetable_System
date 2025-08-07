@@ -23,16 +23,16 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card">
       <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
-        <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-foreground">
+        <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-foreground mr-auto">
           <BookCopy className="h-6 w-6 text-primary" />
-          <span>TimeTableSync</span>
+          <span className="hidden sm:inline-block">TimeTableSync</span>
         </Link>
-        <div className="flex flex-1 items-center justify-end gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                <Users className="mr-2 h-4 w-4" />
-                Members
+                <Users className="mr-0 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline-block">Members</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>

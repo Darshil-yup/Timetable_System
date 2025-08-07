@@ -67,8 +67,8 @@ export default function LecturerDashboardPage() {
       </div>
 
       {activeTimetable && currentLecturerName ? (
-        <Tabs defaultValue="my-timetable">
-            <TabsList className="mb-4">
+        <Tabs defaultValue="my-timetable" className="w-full">
+            <TabsList className="mb-4 grid w-full grid-cols-2">
                 <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>
                 <TabsTrigger value="master-timetable">Master Timetable</TabsTrigger>
             </TabsList>

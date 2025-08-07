@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
@@ -114,7 +114,7 @@ export default function AdminDashboardPage() {
     });
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!selectedTimetableId && timetables.length > 0) {
       setSelectedTimetableId(timetables[0].id);
     } else if (timetables.length === 0) {
