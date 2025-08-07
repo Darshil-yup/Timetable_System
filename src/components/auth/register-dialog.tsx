@@ -46,13 +46,13 @@ export function RegisterDialog() {
               <Label htmlFor="name" className="text-right">
                 Full Name
               </Label>
-              <Input id="name" placeholder="e.g. Jane Doe" className="col-span-3" />
+              <Input id="name" className="col-span-3" />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="email" className="text-right">
                 Email
               </Label>
-              <Input id="email" type="email" placeholder="jane.doe@example.com" className="col-span-3" />
+              <Input id="email" type="email" className="col-span-3" />
             </div>
              <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="password" className="text-right">

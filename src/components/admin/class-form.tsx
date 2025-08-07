@@ -96,7 +96,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Subject</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g. Advanced Physics" className="col-span-3" {...field} />
+                        <Input className="col-span-3" {...field} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -109,7 +109,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Lecturer(s)</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g. Dr. Reed, Prof. Cruz" className="col-span-3" {...field} />
+                        <Input className="col-span-3" {...field} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -122,7 +122,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Room/Lab</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g. Room 101" className="col-span-3" {...field} />
+                        <Input className="col-span-3" {...field} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -165,7 +165,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Batches</FormLabel>
                     <FormControl>
-                        <Input placeholder="e.g. A1, A2, A3" className="col-span-3" {...field} />
+                        <Input className="col-span-3" {...field} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>

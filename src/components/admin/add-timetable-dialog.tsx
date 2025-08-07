@@ -85,7 +85,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                   <FormItem>
                     <FormLabel>Department Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g. Mechanical Engineering" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
