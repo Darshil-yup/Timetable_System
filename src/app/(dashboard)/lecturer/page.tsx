@@ -6,7 +6,6 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
-import type { ScheduleEntry } from '@/lib/types';
 import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
 import { FileDown } from 'lucide-react';
@@ -96,7 +95,7 @@ export default function LecturerDashboardPage() {
         </div>
       </div>
 
-      {activeTimetable && currentLecturerName ? (
+      {activeTimetable ? (
         <Tabs defaultValue="my-timetable" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-4 grid w-full grid-cols-2">
                 <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>

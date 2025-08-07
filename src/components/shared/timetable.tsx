@@ -4,8 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ScheduleEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock } from "lucide-react";
-import { useIsMobile } from '@/hooks/use-is-mobile';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
@@ -84,7 +82,15 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
 ClassCard.displayName = 'ClassCard';
 
 
-const DesktopTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
+export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
+   if (entries.length === 0) {
+    return (
+       <div ref={ref} className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
+          <p className="text-muted-foreground">No classes scheduled for this view.</p>
+        </div>
+    )
+  }
+
   return (
     <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div
@@ -153,57 +159,5 @@ const DesktopTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
       </div>
     </div>
   )
-});
-DesktopTimetable.displayName = 'DesktopTimetable';
-
-const MobileTimetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
-  const groupedEntries = DAYS.reduce((acc, day) => {
-      const dayEntries = entries
-          .filter(entry => entry.day === day)
-          .sort((a, b) => TIME_SLOTS.indexOf(a.time) - TIME_SLOTS.indexOf(b.time));
-      if (dayEntries.length > 0) {
-          acc[day] = dayEntries;
-      }
-      return acc;
-  }, {} as Record<string, ScheduleEntry[]>);
-
-  const daysWithClasses = Object.keys(groupedEntries);
-  
-  if (entries.length === 0) {
-    return (
-       <div ref={ref} className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground">No classes scheduled for this view.</p>
-        </div>
-    )
-  }
-
-  return (
-      <Accordion ref={ref} type="single" collapsible defaultValue={daysWithClasses[0]} className="w-full">
-          {daysWithClasses.map(day => (
-              <AccordionItem value={day} key={day}>
-                  <AccordionTrigger className="font-bold text-lg px-4">{day}</AccordionTrigger>
-                  <AccordionContent>
-                      <div className="flex flex-col gap-4 p-4 pt-2">
-                          {groupedEntries[day].map(entry => {
-                              const isHighlighted = highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false;
-                              return <ClassCard key={entry.id} entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
-                          })}
-                      </div>
-                  </AccordionContent>
-              </AccordionItem>
-          ))}
-      </Accordion>
-  );
-});
-MobileTimetable.displayName = 'MobileTimetable';
-
-export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>((props, ref) => {
-  const isMobile = useIsMobile();
-  
-  if(isMobile) {
-    return <MobileTimetable {...props} ref={ref} />
-  }
-
-  return <DesktopTimetable {...props} ref={ref} />
 });
 Timetable.displayName = 'Timetable';
