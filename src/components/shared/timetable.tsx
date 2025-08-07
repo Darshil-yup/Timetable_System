@@ -27,14 +27,14 @@ export function Timetable({ entries, view }: TimetableProps) {
 
         {/* Time Slots and Grid Cells */}
         {TIME_SLOTS.map((time, timeIndex) => (
-          <>
-            <div key={time} className="p-2 text-center text-sm font-semibold text-muted-foreground border-r bg-muted/50 flex items-center justify-center">
+          <React.Fragment key={time}>
+            <div className="p-2 text-center text-sm font-semibold text-muted-foreground border-r bg-muted/50 flex items-center justify-center">
               {time}
             </div>
             {DAYS.map((_, dayIndex) => (
               <div key={`${dayIndex}-${timeIndex}`} className={cn("border-l p-1", dayIndex === 0 && "border-l-0")}></div>
             ))}
-          </>
+          </React.Fragment>
         ))}
 
         {/* Schedule Entries */}
