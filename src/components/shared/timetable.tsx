@@ -6,7 +6,6 @@ import { User, Book, MapPin, Users, FlaskConical, Pencil } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
-const TIME_SLOT_COUNT = TIME_SLOTS.length + 1;
 
 type TimetableProps = {
   entries: ScheduleEntry[];
@@ -35,16 +34,23 @@ export function Timetable({ entries, view, isEditMode = false, onEdit = () => {}
           </div>
         ))}
 
-        {/* Time Slots */}
-        {TIME_SLOTS.map((time) => (
-            <div key={time} className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center sticky left-0 bg-muted/50 z-10">
+        {/* Time Slots and Grid Background */}
+        {TIME_SLOTS.map((time, timeIndex) => (
+          <React.Fragment key={time}>
+            <div 
+              className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center sticky left-0 bg-muted/50 z-10"
+              style={{ gridRow: timeIndex + 2, gridColumn: 1 }}
+            >
               {time}
             </div>
-        ))}
-        
-        {/* Grid Background Cells */}
-        {Array.from({ length: DAYS.length * TIME_SLOTS.length }).map((_, index) => (
-          <div key={index} className="border-r border-b"></div>
+            {DAYS.map((day, dayIndex) => (
+              <div 
+                key={`${day}-${time}`} 
+                className="border-r border-b"
+                style={{ gridRow: timeIndex + 2, gridColumn: dayIndex + 2 }}
+              ></div>
+            ))}
+          </React.Fragment>
         ))}
 
 
