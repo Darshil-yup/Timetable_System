@@ -1,11 +1,12 @@
 
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle, PlusCircle } from 'lucide-react';
+import { Pencil, Trash2, XCircle, PlusCircle, Upload } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,11 +33,12 @@ import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
-  const [selectedTimetableId, setSelectedTimetableId] = useState(timetables[0]?.id || '');
+  const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
@@ -114,6 +116,70 @@ export default function AdminDashboardPage() {
     });
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = new Uint8Array(e.target?.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json: any[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        
+        // Assuming header is row 1
+        const header = json[0];
+        const scheduleData = json.slice(1).map((row: any[], index: number) => {
+            const entry: Partial<ScheduleEntry> = {
+              id: `c${Date.now()}-${index}`
+            };
+            header.forEach((col: string, i: number) => {
+              const key = col.toLowerCase() as keyof ScheduleEntry;
+              if (key === 'batches') {
+                entry[key] = row[i] ? String(row[i]).split(',').map(b => b.trim()) : [];
+              } else if(key === 'duration') {
+                entry[key] = Number(row[i]) || 1;
+              }
+              else {
+                (entry as any)[key] = row[i];
+              }
+            });
+            return entry as ScheduleEntry;
+        }).filter(entry => entry.subject && entry.day && entry.time); // Basic validation
+
+        const timetableName = file.name.replace(/\.(xlsx|xls|csv)$/, '');
+        const newTimetable: TimetableData = {
+          id: `tt${Date.now()}`,
+          name: timetableName,
+          schedule: scheduleData
+        };
+
+        setTimetables(prev => [...prev, newTimetable]);
+        setSelectedTimetableId(newTimetable.id);
+        toast({
+          title: "Upload Successful!",
+          description: `Timetable "${timetableName}" has been created from the file.`
+        });
+
+      } catch (error) {
+        console.error("Error parsing Excel file:", error);
+        toast({
+          title: "Upload Failed",
+          description: "There was an error parsing the file. Please check the file format and try again.",
+          variant: "destructive",
+        })
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    // Reset file input
+    if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+    }
+  };
+
+
   useEffect(() => {
     if (!selectedTimetableId && timetables.length > 0) {
       setSelectedTimetableId(timetables[0].id);
@@ -138,6 +204,12 @@ export default function AdminDashboardPage() {
             </SelectContent>
             </Select>
             <AddTimetableDialog onCreateTimetable={handleCreateTimetable} />
+             <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".xlsx, .xls, .csv" className="hidden" />
+             <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="mr-2 h-4 w-4" />
+                Upload Timetable
+             </Button>
+
              {activeTimetable && (
                 <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -189,7 +261,7 @@ export default function AdminDashboardPage() {
       ) : (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
           <p className="text-muted-foreground mb-4">No timetables to display.</p>
-          <p className="text-muted-foreground mb-4">Please create a new timetable to get started.</p>
+          <p className="text-muted-foreground mb-4">Please create a new timetable or upload one to get started.</p>
         </div>
       )}
       
@@ -205,3 +277,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
