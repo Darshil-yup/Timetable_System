@@ -1,3 +1,4 @@
+
 "use client"
 
 // Inspired by react-hot-toast library
@@ -16,6 +17,7 @@ type ToasterToast = ToastProps & {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: ToastActionElement
+  duration?: number;
 }
 
 const actionTypes = {
@@ -184,6 +186,17 @@ function useToast() {
     }
   }, [state])
 
+  React.useEffect(() => {
+    if (state.toasts.length > 0) {
+      const lastToast = state.toasts[0];
+      const duration = lastToast.duration || 3000;
+      const timer = setTimeout(() => {
+        dispatch({ type: "DISMISS_TOAST", toastId: lastToast.id });
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [state.toasts]);
+
   return {
     ...state,
     toast,
@@ -192,3 +205,5 @@ function useToast() {
 }
 
 export { useToast, toast }
+
+    

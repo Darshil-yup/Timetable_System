@@ -106,60 +106,69 @@ export default function AdminDashboardPage() {
     const newClassStartTime = parseInt(newClass.time.split(':')[0], 10);
     const newClassEndTime = newClassStartTime + (newClass.duration || 1);
 
-    for (const entry of activeTimetable.schedule) {
-        if (entry.day === newClass.day) {
-            const entryStartTime = parseInt(entry.time.split(':')[0], 10);
-            const entryEndTime = entryStartTime + (entry.duration || 1);
+    for (const existingEntry of activeTimetable.schedule) {
+      if (existingEntry.day !== newClass.day) {
+        continue;
+      }
+      
+      const existingStartTime = parseInt(existingEntry.time.split(':')[0], 10);
+      const existingEndTime = existingStartTime + (existingEntry.duration || 1);
 
-            // Check for time overlap
-            if (newClassStartTime < entryEndTime && newClassEndTime > entryStartTime) {
-                // Check for lecturer conflict
-                if (newClass.lecturer && entry.lecturer) {
-                    const newLecturers = newClass.lecturer.split(',').map(l => l.trim());
-                    const entryLecturers = entry.lecturer.split(',').map(l => l.trim());
-                    if (newLecturers.some(l => entryLecturers.includes(l))) {
-                        toast({
-                            variant: "destructive",
-                            title: "Scheduling Conflict",
-                            description: `Lecturer ${newLecturers.find(l => entryLecturers.includes(l))} is already scheduled at this time.`,
-                        });
-                        return;
-                    }
-                }
-                
-                // Check for room conflict
-                if (newClass.room && entry.room === newClass.room) {
-                    toast({
-                        variant: "destructive",
-                        title: "Scheduling Conflict",
-                        description: `Room ${newClass.room} is already booked at this time.`,
-                    });
-                    return;
-                }
+      // Check for time overlap
+      const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
-                // Check for batch conflict (for practicals)
-                if (newClass.type === 'Practical' && entry.type === 'Practical' && newClass.batches && entry.batches) {
-                   const newBatches = newClass.batches;
-                   const entryBatches = entry.batches;
-                   if (newBatches.some(b => entryBatches.includes(b))) {
-                       toast({
-                           variant: "destructive",
-                           title: "Scheduling Conflict",
-                           description: `Batch ${newBatches.find(b => entryBatches.includes(b))} is already scheduled for a practical at this time.`,
-                       });
-                       return;
-                   }
-                }
-            }
+      if (isOverlapping) {
+        // Check for lecturer conflict
+        if (newClass.lecturer && existingEntry.lecturer) {
+          const newLecturers = newClass.lecturer.split(',').map(l => l.trim()).filter(Boolean);
+          const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim()).filter(Boolean);
+          const conflictingLecturer = newLecturers.find(l => existingLecturers.includes(l));
+          if (conflictingLecturer) {
+            toast({
+              variant: "destructive",
+              title: "Lecturer Conflict",
+              description: `${conflictingLecturer} is already scheduled for "${existingEntry.subject}" at this time.`,
+              duration: 5000,
+            });
+            return;
+          }
         }
-    }
+        
+        // Check for room/lab conflict
+        if (newClass.room && newClass.room === existingEntry.room) {
+          toast({
+            variant: "destructive",
+            title: "Room/Lab Conflict",
+            description: `Room ${newClass.room} is already booked for "${existingEntry.subject}" at this time.`,
+            duration: 5000,
+          });
+          return;
+        }
 
+        // Check for batch conflict (for practicals)
+        if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
+           const newBatches = newClass.batches;
+           const existingBatches = existingEntry.batches;
+           const conflictingBatch = newBatches.find(b => existingBatches.includes(b));
+           if (conflictingBatch) {
+             toast({
+               variant: "destructive",
+               title: "Batch Conflict",
+               description: `Batch ${conflictingBatch} is already scheduled for a practical ("${existingEntry.subject}") at this time.`,
+               duration: 5000,
+             });
+             return;
+           }
+        }
+      }
+    }
 
     const newEntry: ScheduleEntry = { ...newClass, id: `c${Date.now()}` };
     updateActiveTimetableSchedule([...activeTimetable.schedule, newEntry]);
     toast({
       title: "Class Added!",
       description: `"${newClass.subject}" has been added to the timetable.`,
+      duration: 5000,
     });
   };
   
@@ -170,6 +179,7 @@ export default function AdminDashboardPage() {
     toast({
         title: "Class Updated!",
         description: `"${updatedClass.subject}" has been successfully updated.`,
+        duration: 5000,
     });
   };
   
@@ -181,6 +191,7 @@ export default function AdminDashboardPage() {
        title: "Class Deleted",
        description: "The class has been removed from the timetable.",
        variant: "destructive",
+       duration: 5000,
     });
   }
 
@@ -194,7 +205,8 @@ export default function AdminDashboardPage() {
     setSelectedTimetableId(newTimetable.id);
     toast({
         title: "Timetable Created!",
-        description: `Timetable for "${newTimetable.name}" has been created.`
+        description: `Timetable for "${newTimetable.name}" has been created.`,
+        duration: 5000,
     });
   };
 
@@ -208,6 +220,7 @@ export default function AdminDashboardPage() {
       title: "Timetable Deleted",
       description: `The timetable for "${activeTimetable.name}" has been deleted.`,
       variant: "destructive",
+      duration: 5000,
     })
   }
 
@@ -217,6 +230,7 @@ export default function AdminDashboardPage() {
           title: "Export Failed",
           description: "No active timetable to export.",
           variant: "destructive",
+          duration: 5000,
       });
       return;
     }
@@ -261,6 +275,7 @@ export default function AdminDashboardPage() {
     toast({
       title: "Export Successful",
       description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
+      duration: 5000,
     });
   };
 
@@ -433,5 +448,7 @@ export default function AdminDashboardPage() {
 }
 
 
+
+    
 
     
