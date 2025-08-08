@@ -27,9 +27,9 @@ const COLORS = [
 
 const formSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
-  lecturer: z.string().min(1, "Lecturer is required"),
-  room: z.string().min(1, "Room/Lab is required"),
-  type: z.enum(["Lecture", "Practical"]),
+  lecturer: z.string().optional(),
+  room: z.string().optional(),
+  type: z.enum(["Lecture", "Practical", "Recess"]),
   batches: z.string().optional(),
   day: z.string().min(1, "Day is required"),
   time: z.string().min(1, "Time is required"),
@@ -153,6 +153,12 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                                 </FormControl>
                                 <Label htmlFor="r2">Practical</Label>
                             </FormItem>
+                             <FormItem className="flex items-center space-x-2">
+                                <FormControl>
+                                    <RadioGroupItem value="Recess" id="r3" />
+                                </FormControl>
+                                <Label htmlFor="r3">Recess</Label>
+                            </FormItem>
                         </RadioGroup>
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
@@ -234,7 +240,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                                         <RadioGroupItem value={color.value} id={`c-${color.label}`} className="sr-only" />
                                         <Label htmlFor={`c-${color.label}`}
                                             className={cn(
-                                                "w-6 h-6 rounded-full border-2 border-transparent cursor-pointer",
+                                                "w-8 h-8 rounded-full border-2 border-transparent cursor-pointer",
                                                 "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring"
                                             )}
                                             style={{ backgroundColor: color.value }}
