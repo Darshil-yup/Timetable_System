@@ -16,9 +16,17 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec12', name: 'RinaP' },
     { id: 'lec13', name: 'Nirmik' },
     { id: 'lec14', name: 'Radhika Tekade' },
+    { id: 'lec15', name: 'LRT' },
+    { id: 'lec16', name: 'Harsha' },
+    { id: 'lec17', name: 'Priya Kotewar' },
+    { id: 'lec18', name: 'Sadaf' },
+    { id: 'lec19', name: 'Rath.' },
+    { id: 'lec20', name: 'SN' },
+    { id: 'lec21', name: 'Kirti S.' },
+    { id: 'lec22', name: 'ABT' },
 ];
 
-const cseIotSchedule: ScheduleEntry[] = [
+const cseIotSem5Schedule: ScheduleEntry[] = [
   // Monday
   {
     id: 'c1',
@@ -327,11 +335,54 @@ const cseIotSchedule: ScheduleEntry[] = [
   },
 ];
 
+const cseIotSem3Schedule: ScheduleEntry[] = [
+  // Monday
+  { id: 's3c1', subject: 'OE:1', lecturer: '', room: 'ET-308', day: 'Monday', time: '10:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's3c2', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Monday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c3', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Monday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c4', subject: 'LIBRARY', lecturer: 'LRT', room: '', day: 'Monday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c5', subject: 'LAB: DS/ CWS', lecturer: 'LRT, RinaP/Harsha, Sharayu S', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Monday', time: '3:00 PM', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+  
+  // Tuesday
+  { id: 's3c6', subject: 'OE:1', lecturer: '', room: 'ET-308', day: 'Tuesday', time: '10:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's3c7', subject: 'BPP', lecturer: 'RinaP', room: 'ET-308', day: 'Tuesday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+  { id: 's3c8', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Tuesday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c9', subject: 'MI', lecturer: 'MI', room: 'ET-308', day: 'Tuesday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c10', subject: 'SPORTS', lecturer: '', room: '', day: 'Tuesday', time: '3:00 PM', type: 'Lecture', duration: 2, color: 'hsl(var(--chart-1))' },
+
+  // Wednesday
+  { id: 's3c11', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Wednesday', time: '10:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c12', subject: 'MI', lecturer: 'MI', room: 'ET-308', day: 'Wednesday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c13', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Wednesday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c14', subject: 'BPP', lecturer: 'RinaP', room: 'ET-308', day: 'Wednesday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+  { id: 's3c15', subject: 'FOME', lecturer: 'FOME', room: 'ET-308', day: 'Wednesday', time: '3:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's3c16', subject: 'HELP DESK', lecturer: '', room: '', day: 'Wednesday', time: '4:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--card))' },
+
+  // Thursday
+  { id: 's3c17', subject: 'BPP', lecturer: 'RinaP', room: 'ET-308', day: 'Thursday', time: '10:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+  { id: 's3c18', subject: 'FOME', lecturer: 'FOME', room: 'ET-308', day: 'Thursday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's3c19', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Thursday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c20', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c21', subject: 'LAB: DS/ CWS', lecturer: 'LRT, CSS/Harsha, Sadaf', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Thursday', time: '3:00 PM', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-1))' },
+  
+  // Friday
+  { id: 's3c22', subject: 'MI', lecturer: 'MI', room: 'ET-308', day: 'Friday', time: '10:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c23', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Friday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c24', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Friday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c25', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Friday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c26', subject: 'LAB: MI', lecturer: 'Rath., SN, , Kirti S., ABT', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '3:00 PM', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
+];
+
 
 export const MASTER_SCHEDULE: TimetableData[] = [
     {
         id: 'tt1',
         name: 'CSE(IOT) - Semester 5',
-        schedule: cseIotSchedule
+        schedule: cseIotSem5Schedule
+    },
+    {
+        id: 'tt2',
+        name: 'CSE(IOT) - Semester 3',
+        schedule: cseIotSem3Schedule
     }
 ];
