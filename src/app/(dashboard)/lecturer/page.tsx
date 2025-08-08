@@ -8,7 +8,7 @@ import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
-import { FileDown } from 'lucide-react';
+import { FileDown, User } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -26,28 +26,29 @@ export default function LecturerDashboardPage() {
   
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [activeTab, setActiveTab] = useState('my-timetable');
-
-  // Simulate a logged-in user. In a real app, this would come from an auth context.
-  const currentLecturerName = LECTURERS[1].name;
+  const [selectedLecturer, setSelectedLecturer] = useState<string>('');
 
   const myTimetableRef = useRef<HTMLDivElement>(null);
   const masterTimetableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
-      setSelectedTimetableId(timetables[0].id);
+      setSelectedTimetableId(timetables[0]?.id || '');
     }
-  }, [timetables, selectedTimetableId]);
+    if (LECTURERS.length > 0 && !selectedLecturer) {
+        setSelectedLecturer(LECTURERS[0]?.name || '');
+    }
+  }, [timetables, selectedTimetableId, selectedLecturer]);
 
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
-  const lecturerSchedule = activeTimetable 
-    ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(currentLecturerName))
+  const lecturerSchedule = activeTimetable && selectedLecturer 
+    ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(selectedLecturer))
     : [];
 
   const handleExportPDF = () => {
     const timetableToExportRef = activeTab === 'my-timetable' ? myTimetableRef : masterTimetableRef;
-    const timetableName = activeTab === 'my-timetable' ? `${currentLecturerName}-Timetable` : `${activeTimetable?.name}-Master`;
+    const timetableName = activeTab === 'my-timetable' ? `${selectedLecturer}-Timetable` : `${activeTimetable?.name}-Master`;
 
     if (!timetableToExportRef.current || !activeTimetable) return;
 
@@ -78,6 +79,16 @@ export default function LecturerDashboardPage() {
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Lecturer Dashboard</h1>
         <div className="flex items-center gap-2 flex-wrap">
+            <Select value={selectedLecturer} onValueChange={setSelectedLecturer} disabled={LECTURERS.length === 0}>
+                <SelectTrigger className="w-auto md:w-[200px]">
+                    <SelectValue placeholder="Select Lecturer" />
+                </SelectTrigger>
+                <SelectContent>
+                    {LECTURERS.map(lecturer => (
+                        <SelectItem key={lecturer.id} value={lecturer.name}>{lecturer.name}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetables.length === 0}>
               <SelectTrigger className="w-auto md:w-[280px]">
                   <SelectValue placeholder="Select Department & Year" />
@@ -88,14 +99,14 @@ export default function LecturerDashboardPage() {
                   ))}
               </SelectContent>
             </Select>
-             <Button variant="outline" onClick={handleExportPDF}>
+             <Button variant="outline" onClick={handleExportPDF} disabled={!activeTimetable || !selectedLecturer}>
               <FileDown className="mr-2 h-4 w-4" />
               Export as PDF
             </Button>
         </div>
       </div>
 
-      {activeTimetable ? (
+      {activeTimetable && selectedLecturer ? (
         <Tabs defaultValue="my-timetable" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="mb-4 grid w-full grid-cols-2">
                 <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>
@@ -104,9 +115,9 @@ export default function LecturerDashboardPage() {
             <TabsContent value="my-timetable">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Schedule for {currentLecturerName}</CardTitle>
+                        <CardTitle>Schedule for {selectedLecturer}</CardTitle>
                         <CardDescription>
-                            Displaying the personalized timetable for {currentLecturerName} from the {activeTimetable.name} schedule.
+                            Displaying the personalized timetable for {selectedLecturer} from the {activeTimetable.name} schedule.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -131,7 +142,7 @@ export default function LecturerDashboardPage() {
                             ref={masterTimetableRef}
                             entries={activeTimetable.schedule} 
                             view="lecturer"
-                            highlightedLecturer={currentLecturerName}
+                            highlightedLecturer={selectedLecturer}
                         />
                     </CardContent>
                 </Card>
@@ -139,8 +150,9 @@ export default function LecturerDashboardPage() {
         </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <p className="text-muted-foreground mb-4">No timetable selected.</p>
-            <p className="text-muted-foreground">Select a timetable from the dropdown to view schedules.</p>
+            <User className="w-12 h-12 mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground mb-2">No lecturer or timetable selected.</p>
+            <p className="text-muted-foreground text-center">Please select a lecturer and a timetable from the dropdowns above to view schedules.</p>
         </div>
        )}
     </div>

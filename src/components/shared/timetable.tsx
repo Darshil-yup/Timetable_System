@@ -83,7 +83,7 @@ ClassCard.displayName = 'ClassCard';
 
 
 export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
-   if (entries.length === 0) {
+   if (!entries || entries.length === 0) {
     return (
        <div ref={ref} className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
           <p className="text-muted-foreground">No classes scheduled for this view.</p>
