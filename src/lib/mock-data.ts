@@ -2,16 +2,16 @@
 import type { Lecturer, ScheduleEntry, TimetableData } from './types';
 
 export const LECTURERS: Lecturer[] = [
-    { id: 'lec1', name: 'RSB' },
+    { id: 'lec1', name: 'Roshan S. Bhanuse' },
     { id: 'lec2', name: 'Hrushikesh P' },
-    { id: 'lec3', name: 'GMD' },
+    { id: 'lec3', name: 'Dr. Gauri M. Dhopavkar' },
     { id: 'lec4', name: 'Radhika' },
-    { id: 'lec5', name: 'CSS' },
-    { id: 'lec6', name: 'Sharayu S' },
+    { id: 'lec5', name: 'Charvi S. Suri' },
+    { id: 'lec6', name: 'Sharayu Sangekar' },
     { id: 'lec7', name: 'Prachi Gawande' },
     { id: 'lec8', name: 'SSS' },
     { id: 'lec9', name: 'AG' },
-    { id: 'lec10', name: 'PVB' },
+    { id: 'lec10', name: 'P.V.Barekar' },
     { id: 'lec11', name: 'SAS' },
     { id: 'lec12', name: 'RinaP' },
     { id: 'lec13', name: 'Nirmik' },
@@ -44,7 +44,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c1',
     subject: 'LAB: DBMS / OS',
-    lecturer: 'RSB, Hrushikesh P, GMD, Radhika',
+    lecturer: 'Roshan S. Bhanuse, Hrushikesh P, Dr. Gauri M. Dhopavkar, Radhika',
     room: 'IOT Lab 1,2 / IOT Lab 3,4',
     day: 'Monday',
     time: '10:00-11:00',
@@ -56,7 +56,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c2',
     subject: 'PE-I:GIS / MFDA',
-    lecturer: 'CSS / Sharayu S',
+    lecturer: 'Charvi S. Suri / Sharayu Sangekar',
     room: 'ET-316 / ET-308',
     day: 'Monday',
     time: '12:00-1:00',
@@ -90,7 +90,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c5',
     subject: 'DBMS',
-    lecturer: 'RSB',
+    lecturer: 'Roshan S. Bhanuse',
     room: 'ET-316',
     day: 'Tuesday',
     time: '10:00-11:00',
@@ -101,7 +101,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c6',
     subject: 'OS',
-    lecturer: 'GMD',
+    lecturer: 'Dr. Gauri M. Dhopavkar',
     room: 'ET-316',
     day: 'Tuesday',
     time: '11:00-12:00',
@@ -112,7 +112,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c7',
     subject: 'PE-I:GIS / MFDA',
-    lecturer: 'CSS / Sharayu S',
+    lecturer: 'Charvi S. Suri / Sharayu Sangekar',
     room: 'ET-316 / ET-308',
     day: 'Tuesday',
     time: '12:00-1:00',
@@ -134,7 +134,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c9',
     subject: 'PE I: LAB: GIS/MFDA',
-    lecturer: 'CSS, Radhika / Sharayu S, AG',
+    lecturer: 'Charvi S. Suri, Radhika / Sharayu Sangekar, AG',
     room: 'IOT Lab 3,4 / IOT Lab 1,2',
     day: 'Tuesday',
     time: '3:00-4:00',
@@ -147,7 +147,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c10',
     subject: 'OE:3 Arthashashtra',
-    lecturer: 'PVB',
+    lecturer: 'P.V.Barekar',
     room: 'ET-316',
     day: 'Wednesday',
     time: '10:00-11:00',
@@ -191,7 +191,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c14',
     subject: 'LAB: OS/DAA',
-    lecturer: 'GMD, Hrushikesh P, SAS, RinaP',
+    lecturer: 'Dr. Gauri M. Dhopavkar, Hrushikesh P, SAS, RinaP',
     room: 'IOT Lab 3,4 / IOT Lab 1,2',
     day: 'Wednesday',
     time: '3:00-4:00',
@@ -204,7 +204,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c15',
     subject: 'OE:3 Arthashashtra',
-    lecturer: 'PVB',
+    lecturer: 'P.V.Barekar',
     room: 'ET-316',
     day: 'Thursday',
     time: '09:00-10:00',
@@ -215,7 +215,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c16',
     subject: 'DBMS',
-    lecturer: 'RSB',
+    lecturer: 'Roshan S. Bhanuse',
     room: 'ET-316',
     day: 'Thursday',
     time: '10:00-11:00',
@@ -226,7 +226,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c17',
     subject: 'LAB: DBMS/DAA',
-    lecturer: 'RSB, RinaP / SAS, Nirmik',
+    lecturer: 'Roshan S. Bhanuse, RinaP / SAS, Nirmik',
     room: 'IOT Lab 1,2 / IOT Lab 3,4',
     day: 'Thursday',
     time: '11:00-12:00',
@@ -238,7 +238,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c18',
     subject: 'OS',
-    lecturer: 'GMD',
+    lecturer: 'Dr. Gauri M. Dhopavkar',
     room: 'ET-316',
     day: 'Thursday',
     time: '2:00-3:00',
@@ -272,7 +272,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c21',
     subject: 'OE:3 Arthashashtra',
-    lecturer: 'PVB',
+    lecturer: 'P.V.Barekar',
     room: 'ET-316',
     day: 'Friday',
     time: '09:00-10:00',
@@ -283,7 +283,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c22',
     subject: 'OS',
-    lecturer: 'GMD',
+    lecturer: 'Dr. Gauri M. Dhopavkar',
     room: 'ET-316',
     day: 'Friday',
     time: '10:00-11:00',
@@ -305,7 +305,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c24',
     subject: 'DBMS',
-    lecturer: 'RSB',
+    lecturer: 'Roshan S. Bhanuse',
     room: 'ET-316',
     day: 'Friday',
     time: '2:00-3:00',
@@ -327,7 +327,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   {
     id: 'c26',
     subject: 'LIBRARY',
-    lecturer: 'RADHIKA Tekade',
+    lecturer: 'Radhika Tekade',
     room: '',
     day: 'Friday',
     time: '4:00-5:00',
@@ -354,7 +354,7 @@ const cseIotSem3Schedule: ScheduleEntry[] = [
   { id: 's3c2', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c3', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Monday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 's3c4', subject: 'LIBRARY', lecturer: 'LRT', room: '', day: 'Monday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-  { id: 's3c5', subject: 'LAB: DS/ CWS', lecturer: 'LRT, RinaP/Harsha, Sharayu S', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Monday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+  { id: 's3c5', subject: 'LAB: DS/ CWS', lecturer: 'LRT, RinaP/Harsha, Sharayu Sangekar', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Monday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
   
   // Tuesday
   { id: 's3c6', subject: 'OE:1', lecturer: '', room: 'ET-308', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -376,7 +376,7 @@ const cseIotSem3Schedule: ScheduleEntry[] = [
   { id: 's3c18', subject: 'FOME', lecturer: 'FOME', room: 'ET-308', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's3c19', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Thursday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c20', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-  { id: 's3c21', subject: 'LAB: DS/ CWS', lecturer: 'LRT, CSS/Harsha, Sadaf', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Thursday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-1))' },
+  { id: 's3c21', subject: 'LAB: DS/ CWS', lecturer: 'LRT, Charvi S. Suri/Harsha, Sadaf', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Thursday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-1))' },
   
   // Friday
   { id: 's3c22', subject: 'MI', lecturer: 'MI', room: 'ET-308', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
