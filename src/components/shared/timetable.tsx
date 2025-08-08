@@ -97,7 +97,7 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
         className="grid relative"
         style={{
           gridTemplateColumns: 'minmax(80px, auto) repeat(6, minmax(140px, 1fr))',
-          gridTemplateRows: `auto repeat(${TIME_SLOTS.length}, minmax(100px, auto))`
+          gridTemplateRows: `auto repeat(${TIME_SLOTS.length}, minmax(120px, auto))`
         }}
       >
         {/* Empty corner */}
