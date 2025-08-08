@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 
 type TimetableProps = {
   entries: ScheduleEntry[];
@@ -15,6 +15,12 @@ type TimetableProps = {
   onEdit?: (entry: ScheduleEntry) => void;
   highlightedLecturer?: string;
 };
+
+const RecessCard = ({ entry }: { entry: ScheduleEntry }) => (
+  <div className="h-full w-full rounded-lg bg-muted/80 flex items-center justify-center p-2">
+    <span className="font-semibold text-lg text-muted-foreground tracking-wider -rotate-15 transform">RECESS</span>
+  </div>
+);
 
 const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   entry: ScheduleEntry;
@@ -154,7 +160,10 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
                 gridColumnEnd: `span ${duration}`,
               }}
             >
-              <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
+              {entry.type === 'Recess' ? 
+                <RecessCard entry={entry} /> :
+                <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
+              }
             </div>
           );
         })}

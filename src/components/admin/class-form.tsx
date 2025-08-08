@@ -76,12 +76,23 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   };
   
   const classType = form.watch("type");
+  const isRecess = classType === 'Recess';
 
   React.useEffect(() => {
     if (classType === 'Practical') {
         form.setValue('duration', 2);
-    } else {
+    } else if (classType === 'Recess') {
         form.setValue('duration', 1);
+        form.setValue('subject', 'Recess');
+        form.setValue('color', 'hsl(var(--muted))');
+        form.setValue('lecturer', '');
+        form.setValue('room', '');
+        form.setValue('batches', '');
+    } else { // Lecture
+        form.setValue('duration', 1);
+        if (form.getValues('subject') === 'Recess') {
+            form.setValue('subject', '');
+        }
     }
   }, [classType, form]);
 
@@ -91,45 +102,6 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="grid gap-4 py-4">
             <FormField
-                control={form.control}
-                name="subject"
-                render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Subject</FormLabel>
-                    <FormControl>
-                        <Input className="col-span-3" {...field} />
-                    </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
-                </FormItem>
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="lecturer"
-                render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Lecturer(s)</FormLabel>
-                    <FormControl>
-                        <Input className="col-span-3" {...field} />
-                    </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
-                </FormItem>
-                )}
-            />
-             <FormField
-                control={form.control}
-                name="room"
-                render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Room/Lab</FormLabel>
-                    <FormControl>
-                        <Input className="col-span-3" {...field} />
-                    </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
-                </FormItem>
-                )}
-            />
-             <FormField
                 control={form.control}
                 name="type"
                 render={({ field }) => (
@@ -167,12 +139,51 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
             />
             <FormField
                 control={form.control}
+                name="subject"
+                render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <FormLabel className="text-right">Subject</FormLabel>
+                    <FormControl>
+                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                    </FormControl>
+                    <FormMessage className="col-span-4 text-right" />
+                </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="lecturer"
+                render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <FormLabel className="text-right">Lecturer(s)</FormLabel>
+                    <FormControl>
+                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                    </FormControl>
+                    <FormMessage className="col-span-4 text-right" />
+                </FormItem>
+                )}
+            />
+             <FormField
+                control={form.control}
+                name="room"
+                render={({ field }) => (
+                <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <FormLabel className="text-right">Room/Lab</FormLabel>
+                    <FormControl>
+                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                    </FormControl>
+                    <FormMessage className="col-span-4 text-right" />
+                </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
                 name="batches"
                 render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Batches</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} />
+                        <Input className="col-span-3" {...field} disabled={isRecess} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -233,17 +244,23 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                             className="col-span-3 flex gap-2"
+                            aria-disabled={isRecess}
+                            onClick={(e) => {
+                                if (isRecess) e.preventDefault();
+                            }}
                         >
                             {COLORS.map(color => (
                                 <FormControl key={color.value}>
                                     <FormItem>
-                                        <RadioGroupItem value={color.value} id={`c-${color.label}`} className="sr-only" />
+                                        <RadioGroupItem value={color.value} id={`c-${color.label}`} className="sr-only" disabled={isRecess} />
                                         <Label htmlFor={`c-${color.label}`}
                                             className={cn(
-                                                "w-8 h-8 rounded-full border-2 border-transparent cursor-pointer",
-                                                "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring"
+                                                "w-8 h-8 rounded-full border-2 border-transparent",
+                                                !isRecess && "cursor-pointer",
+                                                "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
+                                                isRecess && "opacity-50 cursor-not-allowed"
                                             )}
-                                            style={{ backgroundColor: color.value }}
+                                            style={{ backgroundColor: isRecess ? 'hsl(var(--muted))' : color.value }}
                                             title={color.label}
                                         >
                                             <span className="sr-only">{color.label}</span>
