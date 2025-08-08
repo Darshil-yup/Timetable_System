@@ -98,45 +98,45 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
       <div
         className="grid relative"
         style={{
-          gridTemplateColumns: 'minmax(100px, auto) repeat(6, minmax(140px, 1fr))',
-          gridTemplateRows: `auto repeat(${TIME_SLOTS.length}, minmax(120px, auto))`
+          gridTemplateColumns: `minmax(100px, auto) repeat(${TIME_SLOTS.length}, minmax(140px, 1fr))`,
+          gridTemplateRows: `auto repeat(${DAYS.length}, minmax(120px, auto))`
         }}
       >
         {/* Empty corner */}
         <div className="p-2 border-r border-b font-semibold bg-muted/50 sticky top-0 left-0 z-20"></div>
 
-        {/* Day Headers */}
-        {DAYS.map((day) => (
-          <div key={day} className="p-3 text-center border-r border-b font-bold text-foreground bg-muted/50 sticky top-0 z-10">
-            {day}
-          </div>
-        ))}
-
-        {/* Time Slots and Grid Background */}
+        {/* Time Headers */}
         {TIME_SLOTS.map((time, timeIndex) => (
-          <React.Fragment key={time}>
-            <div
-              className="p-2 text-center text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center sticky left-0 bg-muted/50 z-10"
-              style={{ gridRow: timeIndex + 2, gridColumn: 1 }}
-            >
-              {time}
-            </div>
-             {timeIndex === recessIndex ? (
+            timeIndex === recessIndex ? (
               <div
-                  className="col-span-6 flex items-center justify-center bg-muted/50 border-b font-semibold text-muted-foreground tracking-widest"
-                  style={{ gridRow: timeIndex + 2, gridColumnStart: 2, gridColumnEnd: 8 }}
+                  key="recess-header"
+                  className="flex items-center justify-center bg-muted/50 border-b border-r font-semibold text-muted-foreground tracking-widest sticky top-0 z-10"
               >
                   R E C E S S
               </div>
             ) : (
-               DAYS.map((day, dayIndex) => (
+             <div key={time} className="p-3 text-center border-r border-b font-bold text-foreground bg-muted/50 sticky top-0 z-10">
+                {time}
+            </div>
+            )
+        ))}
+
+        {/* Day Headers and Grid Background */}
+        {DAYS.map((day, dayIndex) => (
+          <React.Fragment key={day}>
+            <div
+              className="p-2 text-sm font-semibold text-muted-foreground border-r border-b flex items-center justify-center sticky left-0 bg-muted/50 z-10"
+              style={{ gridRow: dayIndex + 2, gridColumn: 1 }}
+            >
+              {day}
+            </div>
+             {TIME_SLOTS.map((time, timeIndex) => (
                 <div
                   key={`${day}-${time}`}
                   className="border-r border-b"
-                  style={{ gridRow: timeIndex + 2, gridColumn: dayIndex + 2 }}
+                  style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + 2 }}
                 ></div>
-              ))
-            )}
+              ))}
           </React.Fragment>
         ))}
 
@@ -158,9 +158,9 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
               key={entry.id}
               className="p-1"
               style={{
-                gridColumnStart: dayIndex + 2,
-                gridRowStart: timeIndex + 2,
-                gridRowEnd: `span ${duration}`,
+                gridRowStart: dayIndex + 2,
+                gridColumnStart: timeIndex + 2,
+                gridColumnEnd: `span ${duration}`,
               }}
             >
               <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
