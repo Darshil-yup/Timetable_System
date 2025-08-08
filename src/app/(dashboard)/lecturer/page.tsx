@@ -28,9 +28,6 @@ export default function LecturerDashboardPage() {
   const [activeTab, setActiveTab] = useState('my-timetable');
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
 
-  const myTimetableRef = useRef<HTMLDivElement>(null);
-  const masterTimetableRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
       setSelectedTimetableId(timetables[0]?.id || '');
@@ -123,7 +120,7 @@ export default function LecturerDashboardPage() {
 
       {activeTimetable && selectedLecturer ? (
         <Tabs defaultValue="my-timetable" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-2">
+            <TabsList className="mb-4 grid w-full grid-cols-2 max-w-md">
                 <TabsTrigger value="my-timetable">My Timetable</TabsTrigger>
                 <TabsTrigger value="master-timetable">Master Timetable</TabsTrigger>
             </TabsList>
@@ -137,7 +134,6 @@ export default function LecturerDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            ref={myTimetableRef}
                             entries={lecturerSchedule} 
                             view="lecturer"
                         />
@@ -154,7 +150,6 @@ export default function LecturerDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            ref={masterTimetableRef}
                             entries={activeTimetable.schedule} 
                             view="lecturer"
                             highlightedLecturer={selectedLecturer}

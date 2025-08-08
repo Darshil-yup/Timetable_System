@@ -51,7 +51,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
         ...defaultValues,
         batches: defaultValues.batches?.join(", ") || "",
   } : {
-        type: 'Lecture',
+        type: 'Lecture' as const,
         duration: 1,
         color: COLORS[0].value,
         subject: '',
@@ -283,5 +283,3 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
     </Form>
   )
 }
-
-    

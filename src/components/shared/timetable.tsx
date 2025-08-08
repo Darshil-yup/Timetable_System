@@ -140,14 +140,13 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
         {entries.map((entry) => {
           const dayIndex = DAYS.indexOf(entry.day);
           const timeIndex = TIME_SLOTS.indexOf(entry.time);
-          const duration = entry.duration || 1;
-
+          
           if (dayIndex === -1 || timeIndex === -1) {
             return null;
           }
 
+          const duration = entry.duration || 1;
           const isHighlighted = highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false;
-          
           let columnStart = timeIndex + 2;
 
           return (
@@ -172,5 +171,3 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
   )
 });
 Timetable.displayName = 'Timetable';
-
-    

@@ -42,12 +42,6 @@ export default function AdminDashboardPage() {
   const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('master');
-  
-  const timetableRefs = {
-    master: useRef<HTMLDivElement>(null),
-    classroom: useRef<HTMLDivElement>(null),
-    lab: useRef<HTMLDivElement>(null),
-  };
 
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
@@ -155,6 +149,9 @@ export default function AdminDashboardPage() {
 
     let scheduleToExport: ScheduleEntry[];
     let sheetName: string;
+    
+    const lectureSchedule = activeTimetable.schedule.filter(e => e.type === 'Lecture');
+    const practicalSchedule = activeTimetable.schedule.filter(e => e.type === 'Practical');
 
     switch (activeTab) {
         case 'classroom':
@@ -282,7 +279,6 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            ref={timetableRefs.master}
                             entries={activeTimetable.schedule} 
                             view="admin" 
                             isEditMode={isEditMode}
@@ -302,7 +298,6 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                        <Timetable 
-                            ref={timetableRefs.classroom}
                             entries={lectureSchedule} 
                             view="admin" 
                             isEditMode={isEditMode}
@@ -322,7 +317,6 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            ref={timetableRefs.lab}
                             entries={practicalSchedule} 
                             view="admin" 
                             isEditMode={isEditMode}
