@@ -1,6 +1,7 @@
 
 "use client"
 
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,11 +13,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { cn } from "@/lib/utils"
 import type { ScheduleEntry } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import React from "react";
 import { DialogFooter } from "@/components/ui/dialog";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 const COLORS = [
     { value: 'hsl(var(--chart-1))', label: 'Tomato' },
     { value: 'hsl(var(--chart-2))', label: 'Teal' },
@@ -283,3 +283,5 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
     </Form>
   )
 }
+
+    

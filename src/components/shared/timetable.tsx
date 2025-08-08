@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 
 type TimetableProps = {
   entries: ScheduleEntry[];
@@ -172,3 +172,5 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
   )
 });
 Timetable.displayName = 'Timetable';
+
+    
