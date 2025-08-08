@@ -24,6 +24,19 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec20', name: 'SN' },
     { id: 'lec21', name: 'Kirti S.' },
     { id: 'lec22', name: 'ABT' },
+    { id: 'lec23', name: 'PAB' },
+    { id: 'lec24', name: 'GA' },
+    { id: 'lec25', name: 'NUS' },
+    { id: 'lec26', name: 'PD' },
+    { id: 'lec27', name: 'GKY' },
+    { id: 'lec28', name: 'SPP' },
+    { id: 'lec29', name: 'PI' },
+    { id: 'lec30', name: 'S. Saba' },
+    { id: 'lec31', name: 'PG' },
+    { id: 'lec32', name: 'SJK' },
+    { id: 'lec33', name: 'GMV' },
+    { id: 'lec34', name: 'SSB' },
+    { id: 'lec35', name: 'G. AHMED' },
 ];
 
 const cseIotSem5Schedule: ScheduleEntry[] = [
@@ -373,6 +386,43 @@ const cseIotSem3Schedule: ScheduleEntry[] = [
   { id: 's3c26', subject: 'LAB: MI', lecturer: 'Rath., SN, , Kirti S., ABT', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '3:00 PM', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
 ];
 
+const cseIotSem7Schedule: ScheduleEntry[] = [
+  // Monday
+  { id: 's7c1', subject: 'PE-V: Blockchain/OSC', lecturer: 'PAB/GA', room: 'EL-204/EL 203', day: 'Monday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+  { id: 's7c2', subject: 'SE', lecturer: 'NUS', room: 'EL 302', day: 'Monday', time: '12:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's7c3', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha/PD', room: 'EL 302/EL 102', day: 'Monday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's7c4', subject: 'CC', lecturer: 'GKY', room: 'ET 308', day: 'Monday', time: '3:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's7c5', subject: 'IOT DP', lecturer: 'SPP', room: 'ET 308', day: 'Monday', time: '4:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+
+  // Tuesday
+  { id: 's7c6', subject: 'LAB: SE/CC', lecturer: 'NUS, PI/GKY, GA', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Tuesday', time: '10:00 AM', type: 'Practical', duration: 2, batches: ['A1,A2', 'A3,A4'], color: 'hsl(var(--chart-2))' },
+  { id: 's7c7', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha/PD', room: 'EL 302/EL 102', day: 'Tuesday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's7c8', subject: 'LIBRARY', lecturer: 'G. AHMED', room: '', day: 'Tuesday', time: '2:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--card))' },
+  { id: 's7c9', subject: 'CC', lecturer: 'GKY', room: 'EL 103', day: 'Tuesday', time: '3:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's7c10', subject: 'IOT DP', lecturer: 'SPP', room: 'EL 103', day: 'Tuesday', time: '4:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+  
+  // Wednesday
+  { id: 's7c11', subject: 'PE III: LAB: IOT/FEC', lecturer: 'Nirmik/PG, SJK', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Wednesday', time: '10:00 AM', type: 'Practical', duration: 2, batches: ['A1,A2'], color: 'hsl(var(--chart-1))' },
+  { id: 's7c12', subject: 'S. Saha', lecturer: 'S. Saba', room: '', day: 'Wednesday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's7c13', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba/PG', room: 'EL-204/EL102', day: 'Wednesday', time: '1:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+  { id: 's7c14', subject: 'Project', lecturer: '', room: '', day: 'Wednesday', time: '2:00 PM', type: 'Lecture', duration: 3, color: 'hsl(var(--muted))' },
+
+  // Thursday
+  { id: 's7c15', subject: 'SE', lecturer: 'NUS', room: 'EL 211', day: 'Thursday', time: '10:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's7c16', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha/PD', room: 'ET316/EL 211', day: 'Thursday', time: '11:00 AM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's7c17', subject: 'PE-V: Blockchain/OSC', lecturer: 'PAB/GA', room: 'AIDS Lab 2/AIDS Lab 1', day: 'Thursday', time: '2:00 PM', type: 'Practical', duration: 2, color: 'hsl(var(--chart-1))' },
+  { id: 's7c18', subject: 'IOT DP', lecturer: 'SPP', room: 'EL 211', day: 'Thursday', time: '4:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+  { id: 's7c19', subject: 'HELP DESK', lecturer: '', room: '', day: 'Thursday', time: '5:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--card))' },
+
+  // Friday
+  { id: 's7c20', subject: 'LAB: SE/CC', lecturer: 'NUS, GMV/GKY, SSB', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '10:00 AM', type: 'Practical', duration: 2, batches: ['A3,A4', 'A1,A2'], color: 'hsl(var(--chart-2))' },
+  { id: 's7c21', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba/PG', room: 'ET 308/ET 316', day: 'Friday', time: '12:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+  { id: 's7c22', subject: 'PE-V: Blockchain/OSC', lecturer: 'PAB/GA', room: 'AIDS Lab 2/EL-204', day: 'Friday', time: '2:00 PM', type: 'Practical', duration: 2, color: 'hsl(var(--chart-1))' },
+  { id: 's7c23', subject: 'SE', lecturer: 'NUS', room: 'EL 211', day: 'Friday', time: '4:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's7c24', subject: 'CC', lecturer: 'GKY', room: 'EL 102', day: 'Friday', time: '5:00 PM', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+
+];
+
 
 export const MASTER_SCHEDULE: TimetableData[] = [
     {
@@ -384,5 +434,10 @@ export const MASTER_SCHEDULE: TimetableData[] = [
         id: 'tt2',
         name: 'CSE(IOT) - Semester 3',
         schedule: cseIotSem3Schedule
+    },
+    {
+        id: 'tt3',
+        name: 'CSE(IOT) - Semester 7',
+        schedule: cseIotSem7Schedule
     }
 ];
