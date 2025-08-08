@@ -21,6 +21,7 @@ const RecessCard = ({ entry }: { entry: ScheduleEntry }) => (
     <span className="font-semibold text-lg text-muted-foreground tracking-wider -rotate-15 transform">RECESS</span>
   </div>
 );
+RecessCard.displayName = 'RecessCard';
 
 const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   entry: ScheduleEntry;

@@ -55,12 +55,10 @@ export function LoginForm() {
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
         <Button className="w-full" onClick={() => handleLogin('admin')} disabled={isFormDisabled}>
-          {isLoading === 'admin' && <Loader2 className="animate-spin" />}
-          {isLoading === 'admin' ? 'Logging in...' : 'Login as Admin'}
+          {isLoading === 'admin' ? <Loader2 className="animate-spin" /> : 'Login as Admin'}
         </Button>
         <Button variant="secondary" className="w-full" onClick={() => handleLogin('lecturer')} disabled={isFormDisabled}>
-          {isLoading === 'lecturer' && <Loader2 className="animate-spin" />}
-          {isLoading === 'lecturer' ? 'Logging in...' : 'Login as Lecturer'}
+          {isLoading === 'lecturer' ? <Loader2 className="animate-spin" /> : 'Login as Lecturer'}
         </Button>
         <RegisterDialog />
       </CardFooter>

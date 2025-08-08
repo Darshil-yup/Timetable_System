@@ -189,7 +189,7 @@ function useToast() {
   React.useEffect(() => {
     if (state.toasts.length > 0) {
       const lastToast = state.toasts[0];
-      const duration = lastToast.duration || 3000;
+      const duration = lastToast.duration || 5000; // Default to 5 seconds
       const timer = setTimeout(() => {
         dispatch({ type: "DISMISS_TOAST", toastId: lastToast.id });
       }, duration);
@@ -205,5 +205,3 @@ function useToast() {
 }
 
 export { useToast, toast }
-
-    
