@@ -2,12 +2,11 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle, FileDown } from 'lucide-react';
+import { Pencil, Trash2, XCircle, FileSpreadsheet } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -144,39 +143,53 @@ export default function AdminDashboardPage() {
     })
   }
 
-  const handleExportPDF = () => {
-    const timetableRef = timetableRefs[activeTab as keyof typeof timetableRefs];
-    const timetableName = `${activeTimetable?.name}-${activeTab}`;
-
-    if (!timetableRef?.current || !activeTimetable) {
-        toast({
-            title: "Export Failed",
-            description: "No active timetable to export.",
-            variant: "destructive",
-        });
-        return;
+  const handleExportSheet = () => {
+    if (!activeTimetable) {
+      toast({
+          title: "Export Failed",
+          description: "No active timetable to export.",
+          variant: "destructive",
+      });
+      return;
     }
 
-    html2canvas(timetableRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save(`${timetableName}-timetable.pdf`);
-    }).catch(err => {
-        console.error("Error generating PDF:", err);
-        toast({
-            title: "PDF Export Failed",
-            description: "Could not export the timetable. Please try again.",
-            variant: "destructive",
-        })
+    let scheduleToExport: ScheduleEntry[];
+    let sheetName: string;
+
+    switch (activeTab) {
+        case 'classroom':
+            scheduleToExport = lectureSchedule;
+            sheetName = 'Classroom Schedule';
+            break;
+        case 'lab':
+            scheduleToExport = practicalSchedule;
+            sheetName = 'Lab Schedule';
+            break;
+        default:
+            scheduleToExport = activeTimetable.schedule;
+            sheetName = 'Master Schedule';
+            break;
+    }
+    
+    const data = scheduleToExport.map(entry => ({
+      Day: entry.day,
+      Time: entry.time,
+      Subject: entry.subject,
+      Type: entry.type,
+      Lecturer: entry.lecturer,
+      'Room/Lab': entry.room,
+      Batches: entry.batches?.join(', ') || 'N/A',
+      Duration: entry.duration
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    XLSX.writeFile(workbook, `${activeTimetable.name}-${sheetName}.xlsx`);
+
+    toast({
+      title: "Export Successful",
+      description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
     });
   };
 
@@ -185,9 +198,9 @@ export default function AdminDashboardPage() {
 
   const TimetableActions = () => (
     <div className="flex items-center justify-end gap-2 flex-wrap">
-      <Button variant="outline" onClick={handleExportPDF}>
-        <FileDown className="mr-2 h-4 w-4" />
-        Export as PDF
+      <Button variant="outline" onClick={handleExportSheet}>
+        <FileSpreadsheet className="mr-2 h-4 w-4" />
+        Export as Sheet
       </Button>
       <AddClassDialog onAddClass={handleAddClass} />
       <Button variant="outline" onClick={() => setIsEditMode(prev => !prev)}>

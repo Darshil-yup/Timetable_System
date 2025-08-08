@@ -2,13 +2,12 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
-import { FileDown, User } from 'lucide-react';
+import { FileSpreadsheet, User } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -19,6 +18,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
+import { ScheduleEntry } from '@/lib/types';
 
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
@@ -46,39 +46,46 @@ export default function LecturerDashboardPage() {
     ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(selectedLecturer))
     : [];
 
-  const handleExportPDF = () => {
-    const timetableToExportRef = activeTab === 'my-timetable' ? myTimetableRef : masterTimetableRef;
-    const timetableName = activeTab === 'my-timetable' ? `${selectedLecturer}-Timetable` : `${activeTimetable?.name}-Master`;
-
-    if (!timetableToExportRef.current) {
-        toast({
-            title: "Export Failed",
-            description: "Could not find the timetable element to export.",
-            variant: "destructive",
-        });
-        return;
+  const handleExportSheet = () => {
+    if (!activeTimetable || !selectedLecturer) {
+      toast({
+          title: "Export Failed",
+          description: "No active timetable or lecturer selected to export.",
+          variant: "destructive",
+      });
+      return;
     }
 
-    html2canvas(timetableToExportRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-    }).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'landscape',
-            unit: 'px',
-            format: [canvas.width, canvas.height]
-        });
-        pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-        pdf.save(`${timetableName}.pdf`);
-    }).catch(err => {
-        console.error("Error generating PDF:", err);
-        toast({
-            title: "PDF Export Failed",
-            description: "Could not export the timetable. Please try again.",
-            variant: "destructive",
-        })
+    let scheduleToExport: ScheduleEntry[];
+    let sheetName: string;
+
+    if (activeTab === 'my-timetable') {
+        scheduleToExport = lecturerSchedule;
+        sheetName = `${selectedLecturer}-Schedule`;
+    } else {
+        scheduleToExport = activeTimetable.schedule;
+        sheetName = `${activeTimetable.name}-Master`;
+    }
+    
+    const data = scheduleToExport.map(entry => ({
+      Day: entry.day,
+      Time: entry.time,
+      Subject: entry.subject,
+      Type: entry.type,
+      Lecturer: entry.lecturer,
+      'Room/Lab': entry.room,
+      Batches: entry.batches?.join(', ') || 'N/A',
+      Duration: entry.duration
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    XLSX.writeFile(workbook, `${sheetName}.xlsx`);
+
+    toast({
+      title: "Export Successful",
+      description: `The schedule has been exported to an Excel file.`,
     });
   };
 
@@ -107,9 +114,9 @@ export default function LecturerDashboardPage() {
                   ))}
               </SelectContent>
             </Select>
-             <Button variant="outline" onClick={handleExportPDF} disabled={!activeTimetable || !selectedLecturer}>
-              <FileDown className="mr-2 h-4 w-4" />
-              Export as PDF
+             <Button variant="outline" onClick={handleExportSheet} disabled={!activeTimetable || !selectedLecturer}>
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Export as Sheet
             </Button>
         </div>
       </div>
@@ -166,5 +173,3 @@ export default function LecturerDashboardPage() {
     </div>
   );
 }
-
-    
