@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useForm } from "react-hook-form";
@@ -15,7 +16,7 @@ import React from "react";
 import { DialogFooter } from "@/components/ui/dialog";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 const COLORS = [
     { value: 'hsl(var(--chart-1))', label: 'Tomato' },
     { value: 'hsl(var(--chart-2))', label: 'Teal' },

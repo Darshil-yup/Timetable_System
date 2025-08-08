@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 
 type TimetableProps = {
   entries: ScheduleEntry[];
@@ -91,12 +91,14 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
     )
   }
 
+  const recessIndex = TIME_SLOTS.indexOf("12:00-1:00");
+
   return (
     <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div
         className="grid relative"
         style={{
-          gridTemplateColumns: 'minmax(80px, auto) repeat(6, minmax(140px, 1fr))',
+          gridTemplateColumns: 'minmax(100px, auto) repeat(6, minmax(140px, 1fr))',
           gridTemplateRows: `auto repeat(${TIME_SLOTS.length}, minmax(120px, auto))`
         }}
       >
@@ -119,13 +121,22 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
             >
               {time}
             </div>
-            {DAYS.map((day, dayIndex) => (
+             {timeIndex === recessIndex ? (
               <div
-                key={`${day}-${time}`}
-                className="border-r border-b"
-                style={{ gridRow: timeIndex + 2, gridColumn: dayIndex + 2 }}
-              ></div>
-            ))}
+                  className="col-span-6 flex items-center justify-center bg-muted/50 border-b font-semibold text-muted-foreground tracking-widest"
+                  style={{ gridRow: timeIndex + 2, gridColumnStart: 2, gridColumnEnd: 8 }}
+              >
+                  R E C E S S
+              </div>
+            ) : (
+               DAYS.map((day, dayIndex) => (
+                <div
+                  key={`${day}-${time}`}
+                  className="border-r border-b"
+                  style={{ gridRow: timeIndex + 2, gridColumn: dayIndex + 2 }}
+                ></div>
+              ))
+            )}
           </React.Fragment>
         ))}
 
