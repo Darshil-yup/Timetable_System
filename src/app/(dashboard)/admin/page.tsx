@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
@@ -33,6 +33,28 @@ import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+type TimetableActionsProps = {
+    handleExportSheet: () => void;
+    onAddClass: (newClass: Omit<ScheduleEntry, 'id'>) => void;
+    isEditMode: boolean;
+    onToggleEditMode: () => void;
+}
+
+const TimetableActions = ({ handleExportSheet, onAddClass, isEditMode, onToggleEditMode }: TimetableActionsProps) => (
+    <div className="flex items-center justify-end gap-2 flex-wrap">
+        <Button variant="outline" onClick={handleExportSheet}>
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            Export as Sheet
+        </Button>
+        <AddClassDialog onAddClass={onAddClass} />
+        <Button variant="outline" onClick={onToggleEditMode}>
+            {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+            {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+        </Button>
+    </div>
+);
+
+
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
   const { toast } = useToast();
@@ -43,7 +65,7 @@ export default function AdminDashboardPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('master');
 
-  const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
+  const activeTimetable = useMemo(() => timetables.find(t => t.id === selectedTimetableId), [timetables, selectedTimetableId]);
 
   useEffect(() => {
     if (!selectedTimetableId && timetables.length > 0) {
@@ -190,23 +212,16 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const lectureSchedule = activeTimetable?.schedule.filter(e => e.type === 'Lecture') || [];
-  const practicalSchedule = activeTimetable?.schedule.filter(e => e.type === 'Practical') || [];
-
-  const TimetableActions = () => (
-    <div className="flex items-center justify-end gap-2 flex-wrap">
-      <Button variant="outline" onClick={handleExportSheet}>
-        <FileSpreadsheet className="mr-2 h-4 w-4" />
-        Export as Sheet
-      </Button>
-      <AddClassDialog onAddClass={handleAddClass} />
-      <Button variant="outline" onClick={() => setIsEditMode(prev => !prev)}>
-        {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-        {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-      </Button>
-    </div>
+  const lectureSchedule = useMemo(() => 
+    activeTimetable?.schedule.filter(e => e.type === 'Lecture') || [], 
+    [activeTimetable]
   );
-
+  
+  const practicalSchedule = useMemo(() => 
+    activeTimetable?.schedule.filter(e => e.type === 'Practical') || [], 
+    [activeTimetable]
+  );
+  
   return (
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
@@ -275,7 +290,12 @@ export default function AdminDashboardPage() {
                             <CardTitle>Master Schedule</CardTitle>
                             <CardDescription>Combined view of all lectures and practicals.</CardDescription>
                         </div>
-                        <TimetableActions />
+                        <TimetableActions 
+                            handleExportSheet={handleExportSheet}
+                            onAddClass={handleAddClass}
+                            isEditMode={isEditMode}
+                            onToggleEditMode={() => setIsEditMode(prev => !prev)}
+                        />
                     </CardHeader>
                     <CardContent>
                         <Timetable 
@@ -294,7 +314,12 @@ export default function AdminDashboardPage() {
                             <CardTitle>Classroom Schedule (Lectures)</CardTitle>
                             <CardDescription>Filtered view showing only 1-hour lecture slots.</CardDescription>
                         </div>
-                        <TimetableActions />
+                        <TimetableActions 
+                             handleExportSheet={handleExportSheet}
+                             onAddClass={handleAddClass}
+                             isEditMode={isEditMode}
+                             onToggleEditMode={() => setIsEditMode(prev => !prev)}
+                        />
                     </CardHeader>
                     <CardContent>
                        <Timetable 
@@ -313,7 +338,12 @@ export default function AdminDashboardPage() {
                             <CardTitle>Lab Schedule (Practicals)</CardTitle>
                             <CardDescription>Filtered view showing only 2-hour lab/practical slots.</CardDescription>
                         </div>
-                        <TimetableActions />
+                        <TimetableActions 
+                            handleExportSheet={handleExportSheet}
+                            onAddClass={handleAddClass}
+                            isEditMode={isEditMode}
+                            onToggleEditMode={() => setIsEditMode(prev => !prev)}
+                        />
                     </CardHeader>
                     <CardContent>
                         <Timetable 
@@ -349,3 +379,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+

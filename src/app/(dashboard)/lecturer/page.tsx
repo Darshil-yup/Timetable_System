@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
@@ -37,11 +37,17 @@ export default function LecturerDashboardPage() {
     }
   }, [timetables, selectedTimetableId, selectedLecturer]);
 
-  const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
+  const activeTimetable = useMemo(() => 
+    timetables.find(t => t.id === selectedTimetableId), 
+    [timetables, selectedTimetableId]
+  );
 
-  const lecturerSchedule = activeTimetable && selectedLecturer 
-    ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(selectedLecturer))
-    : [];
+  const lecturerSchedule = useMemo(() => 
+    activeTimetable && selectedLecturer 
+      ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(selectedLecturer))
+      : [],
+    [activeTimetable, selectedLecturer]
+  );
 
   const handleExportSheet = () => {
     if (!activeTimetable || !selectedLecturer) {
