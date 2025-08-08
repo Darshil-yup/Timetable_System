@@ -103,6 +103,58 @@ export default function AdminDashboardPage() {
   const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
     if (!activeTimetable) return;
 
+    const newClassStartTime = parseInt(newClass.time.split(':')[0], 10);
+    const newClassEndTime = newClassStartTime + (newClass.duration || 1);
+
+    for (const entry of activeTimetable.schedule) {
+        if (entry.day === newClass.day) {
+            const entryStartTime = parseInt(entry.time.split(':')[0], 10);
+            const entryEndTime = entryStartTime + (entry.duration || 1);
+
+            // Check for time overlap
+            if (newClassStartTime < entryEndTime && newClassEndTime > entryStartTime) {
+                // Check for lecturer conflict
+                if (newClass.lecturer && entry.lecturer) {
+                    const newLecturers = newClass.lecturer.split(',').map(l => l.trim());
+                    const entryLecturers = entry.lecturer.split(',').map(l => l.trim());
+                    if (newLecturers.some(l => entryLecturers.includes(l))) {
+                        toast({
+                            variant: "destructive",
+                            title: "Scheduling Conflict",
+                            description: `Lecturer ${newLecturers.find(l => entryLecturers.includes(l))} is already scheduled at this time.`,
+                        });
+                        return;
+                    }
+                }
+                
+                // Check for room conflict
+                if (newClass.room && entry.room === newClass.room) {
+                    toast({
+                        variant: "destructive",
+                        title: "Scheduling Conflict",
+                        description: `Room ${newClass.room} is already booked at this time.`,
+                    });
+                    return;
+                }
+
+                // Check for batch conflict (for practicals)
+                if (newClass.type === 'Practical' && entry.type === 'Practical' && newClass.batches && entry.batches) {
+                   const newBatches = newClass.batches;
+                   const entryBatches = entry.batches;
+                   if (newBatches.some(b => entryBatches.includes(b))) {
+                       toast({
+                           variant: "destructive",
+                           title: "Scheduling Conflict",
+                           description: `Batch ${newBatches.find(b => entryBatches.includes(b))} is already scheduled for a practical at this time.`,
+                       });
+                       return;
+                   }
+                }
+            }
+        }
+    }
+
+
     const newEntry: ScheduleEntry = { ...newClass, id: `c${Date.now()}` };
     updateActiveTimetableSchedule([...activeTimetable.schedule, newEntry]);
     toast({
@@ -380,3 +432,6 @@ export default function AdminDashboardPage() {
   );
 }
 
+
+
+    
