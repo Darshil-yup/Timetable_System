@@ -183,6 +183,20 @@ export default function AdminDashboardPage() {
   const lectureSchedule = activeTimetable?.schedule.filter(e => e.type === 'Lecture') || [];
   const practicalSchedule = activeTimetable?.schedule.filter(e => e.type === 'Practical') || [];
 
+  const TimetableActions = () => (
+    <div className="flex items-center justify-end gap-2 flex-wrap">
+      <Button variant="outline" onClick={handleExportPDF}>
+        <FileDown className="mr-2 h-4 w-4" />
+        Export as PDF
+      </Button>
+      <AddClassDialog onAddClass={handleAddClass} />
+      <Button variant="outline" onClick={() => setIsEditMode(prev => !prev)}>
+        {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+        {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+      </Button>
+    </div>
+  );
+
   return (
     <div className="container mx-auto">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
@@ -233,25 +247,12 @@ export default function AdminDashboardPage() {
      
       {activeTimetable ? (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="flex items-center justify-between gap-2 flex-wrap mb-4">
-                <TabsList className="grid w-full grid-cols-3 max-w-md">
-                    <TabsTrigger value="master">Master Timetable</TabsTrigger>
-                    <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
-                    <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
-                </TabsList>
-                <div className="flex items-center justify-end gap-2 flex-wrap ml-auto">
-                    <Button variant="outline" onClick={handleExportPDF}>
-                      <FileDown className="mr-2 h-4 w-4" />
-                      Export as PDF
-                    </Button>
-                    <AddClassDialog onAddClass={handleAddClass} />
-                    <Button variant="outline" onClick={() => setIsEditMode(prev => !prev)}>
-                      {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-                      {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-                    </Button>
-                </div>
-            </div>
-
+            <TabsList className="mb-4 grid w-full grid-cols-3 max-w-md">
+                <TabsTrigger value="master">Master Timetable</TabsTrigger>
+                <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
+                <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
+            </TabsList>
+            
             <p className="text-muted-foreground mb-6">
                 This is the central schedule for {activeTimetable.name}. Changes made here will automatically update individual lecturer timetables.
                 {isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
@@ -259,9 +260,12 @@ export default function AdminDashboardPage() {
 
             <TabsContent value="master">
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Master Schedule</CardTitle>
-                        <CardDescription>Combined view of all lectures and practicals.</CardDescription>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Master Schedule</CardTitle>
+                            <CardDescription>Combined view of all lectures and practicals.</CardDescription>
+                        </div>
+                        <TimetableActions />
                     </CardHeader>
                     <CardContent>
                         <Timetable 
@@ -276,9 +280,12 @@ export default function AdminDashboardPage() {
             </TabsContent>
             <TabsContent value="classroom">
                  <Card>
-                    <CardHeader>
-                        <CardTitle>Classroom Schedule (Lectures)</CardTitle>
-                        <CardDescription>Filtered view showing only 1-hour lecture slots.</CardDescription>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Classroom Schedule (Lectures)</CardTitle>
+                            <CardDescription>Filtered view showing only 1-hour lecture slots.</CardDescription>
+                        </div>
+                        <TimetableActions />
                     </CardHeader>
                     <CardContent>
                        <Timetable 
@@ -293,9 +300,12 @@ export default function AdminDashboardPage() {
             </TabsContent>
             <TabsContent value="lab">
                  <Card>
-                    <CardHeader>
-                        <CardTitle>Lab Schedule (Practicals)</CardTitle>
-                        <CardDescription>Filtered view showing only 2-hour lab/practical slots.</CardDescription>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle>Lab Schedule (Practicals)</CardTitle>
+                            <CardDescription>Filtered view showing only 2-hour lab/practical slots.</CardDescription>
+                        </div>
+                        <TimetableActions />
                     </CardHeader>
                     <CardContent>
                         <Timetable 
