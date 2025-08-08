@@ -98,7 +98,7 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
       <div
         className="grid relative"
         style={{
-          gridTemplateColumns: `minmax(100px, auto) repeat(${TIME_SLOTS.length}, minmax(140px, 1fr))`,
+          gridTemplateColumns: `minmax(100px, auto) repeat(${TIME_SLOTS.length + (recessIndex !== -1 ? 1 : 0)}, minmax(140px, 1fr))`,
           gridTemplateRows: `auto repeat(${DAYS.length}, minmax(120px, auto))`
         }}
       >
@@ -106,20 +106,23 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
         <div className="p-2 border-r border-b font-semibold bg-muted/50 sticky top-0 left-0 z-20"></div>
 
         {/* Time Headers */}
-        {TIME_SLOTS.map((time, timeIndex) => (
-            timeIndex === recessIndex ? (
+        {TIME_SLOTS.map((time, timeIndex) => {
+          if (timeIndex === recessIndex) {
+            return (
               <div
                   key="recess-header"
                   className="flex items-center justify-center bg-muted/50 border-b border-r font-semibold text-muted-foreground tracking-widest sticky top-0 z-10"
               >
                   R E C E S S
               </div>
-            ) : (
+            )
+          }
+           return (
              <div key={time} className="p-3 text-center border-r border-b font-bold text-foreground bg-muted/50 sticky top-0 z-10">
                 {time}
             </div>
-            )
-        ))}
+           )
+        })}
 
         {/* Day Headers and Grid Background */}
         {DAYS.map((day, dayIndex) => (
@@ -134,7 +137,7 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
                 <div
                   key={`${day}-${time}`}
                   className="border-r border-b"
-                  style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + 2 }}
+                  style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + (recessIndex !== -1 && timeIndex >= recessIndex ? 3 : 2) }}
                 ></div>
               ))}
           </React.Fragment>
@@ -152,14 +155,19 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
           }
 
           const isHighlighted = highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false;
+          
+          let columnStart = timeIndex + 2;
+          if (recessIndex !== -1 && timeIndex > recessIndex) {
+              columnStart++;
+          }
 
           return (
             <div
               key={entry.id}
               className="p-1"
               style={{
-                gridRowStart: dayIndex + 2,
-                gridColumnStart: timeIndex + 2,
+                gridRow: dayIndex + 2,
+                gridColumnStart: columnStart,
                 gridColumnEnd: `span ${duration}`,
               }}
             >
@@ -172,3 +180,5 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
   )
 });
 Timetable.displayName = 'Timetable';
+
+    

@@ -87,3 +87,5 @@ export function EditClassDialog({
     </Dialog>
   );
 }
+
+    

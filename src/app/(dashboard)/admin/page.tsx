@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useReducer, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Timetable } from '@/components/shared/timetable';
@@ -34,51 +34,15 @@ import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-type State = {
-  selectedTimetableId: string;
-  isEditMode: boolean;
-  selectedClass: ScheduleEntry | null;
-  isEditDialogOpen: boolean;
-  activeTab: string;
-};
-
-type Action =
-  | { type: 'SET_SELECTED_TIMETABLE'; payload: string }
-  | { type: 'TOGGLE_EDIT_MODE' }
-  | { type: 'OPEN_EDIT_DIALOG'; payload: ScheduleEntry }
-  | { type: 'CLOSE_EDIT_DIALOG' }
-  | { type: 'SET_ACTIVE_TAB', payload: string };
-
-const initialState: State = {
-  selectedTimetableId: '',
-  isEditMode: false,
-  selectedClass: null,
-  isEditDialogOpen: false,
-  activeTab: 'master',
-};
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'SET_SELECTED_TIMETABLE':
-      return { ...state, selectedTimetableId: action.payload, isEditMode: false, selectedClass: null, isEditDialogOpen: false };
-    case 'TOGGLE_EDIT_MODE':
-      return { ...state, isEditMode: !state.isEditMode };
-    case 'OPEN_EDIT_DIALOG':
-      return { ...state, isEditDialogOpen: true, selectedClass: action.payload };
-    case 'CLOSE_EDIT_DIALOG':
-      return { ...state, isEditDialogOpen: false, selectedClass: null };
-    case 'SET_ACTIVE_TAB':
-        return { ...state, activeTab: action.payload };
-    default:
-      return state;
-  }
-}
-
-
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
-  const [state, dispatch] = useReducer(reducer, initialState);
   const { toast } = useToast();
+
+  const [selectedTimetableId, setSelectedTimetableId] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('master');
   
   const timetableRefs = {
     master: useRef<HTMLDivElement>(null),
@@ -86,20 +50,37 @@ export default function AdminDashboardPage() {
     lab: useRef<HTMLDivElement>(null),
   };
 
-  const activeTimetable = timetables.find(t => t.id === state.selectedTimetableId);
+  const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
   useEffect(() => {
-    if (!state.selectedTimetableId && timetables.length > 0) {
-      dispatch({ type: 'SET_SELECTED_TIMETABLE', payload: timetables[0].id });
-    } else if (timetables.length === 0 && state.selectedTimetableId) {
-      dispatch({ type: 'SET_SELECTED_TIMETABLE', payload: '' });
+    if (!selectedTimetableId && timetables.length > 0) {
+      setSelectedTimetableId(timetables[0].id);
+    } else if (timetables.length === 0 && selectedTimetableId) {
+      setSelectedTimetableId('');
     }
-  }, [timetables, state.selectedTimetableId]);
+  }, [timetables, selectedTimetableId]);
+
+  const handleSelectTimetable = (id: string) => {
+    setSelectedTimetableId(id);
+    setIsEditMode(false);
+    setSelectedClass(null);
+    setIsEditDialogOpen(false);
+  };
+  
+  const openEditDialog = (entry: ScheduleEntry) => {
+    setSelectedClass(entry);
+    setIsEditDialogOpen(true);
+  }
+
+  const closeEditDialog = () => {
+    setSelectedClass(null);
+    setIsEditDialogOpen(false);
+  }
 
   const updateActiveTimetableSchedule = (newSchedule: ScheduleEntry[]) => {
     setTimetables(currentTimetables => 
         currentTimetables.map(t => 
-            t.id === state.selectedTimetableId ? { ...t, schedule: newSchedule } : t
+            t.id === selectedTimetableId ? { ...t, schedule: newSchedule } : t
         )
     );
   }
@@ -118,7 +99,7 @@ export default function AdminDashboardPage() {
   const handleUpdateClass = (updatedClass: ScheduleEntry) => {
     if (!activeTimetable) return;
     updateActiveTimetableSchedule(activeTimetable.schedule.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
-    dispatch({ type: 'CLOSE_EDIT_DIALOG' });
+    closeEditDialog();
     toast({
         title: "Class Updated!",
         description: `"${updatedClass.subject}" has been successfully updated.`,
@@ -128,7 +109,7 @@ export default function AdminDashboardPage() {
   const handleDeleteClass = (classId: string) => {
     if (!activeTimetable) return;
     updateActiveTimetableSchedule(activeTimetable.schedule.filter(entry => entry.id !== classId));
-    dispatch({ type: 'CLOSE_EDIT_DIALOG' });
+    closeEditDialog();
     toast({
        title: "Class Deleted",
        description: "The class has been removed from the timetable.",
@@ -143,7 +124,7 @@ export default function AdminDashboardPage() {
         schedule: []
     };
     setTimetables(currentTimetables => [...currentTimetables, newTimetable]);
-    dispatch({ type: 'SET_SELECTED_TIMETABLE', payload: newTimetable.id });
+    setSelectedTimetableId(newTimetable.id);
     toast({
         title: "Timetable Created!",
         description: `Timetable for "${newTimetable.name}" has been created.`
@@ -164,14 +145,22 @@ export default function AdminDashboardPage() {
   }
 
   const handleExportPDF = () => {
-    const timetableRef = timetableRefs[state.activeTab as keyof typeof timetableRefs];
-    const timetableName = `${activeTimetable?.name}-${state.activeTab}`;
+    const timetableRef = timetableRefs[activeTab as keyof typeof timetableRefs];
+    const timetableName = `${activeTimetable?.name}-${activeTab}`;
 
-    if (!timetableRef?.current || !activeTimetable) return;
+    if (!timetableRef?.current || !activeTimetable) {
+        toast({
+            title: "Export Failed",
+            description: "No active timetable to export.",
+            variant: "destructive",
+        });
+        return;
+    }
 
     html2canvas(timetableRef.current, {
         scale: 2,
         useCORS: true,
+        logging: false,
     }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF({
@@ -200,8 +189,8 @@ export default function AdminDashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Master Timetables</h1>
         <div className="flex items-center gap-2 flex-wrap">
             <Select 
-              value={state.selectedTimetableId} 
-              onValueChange={(id) => dispatch({ type: 'SET_SELECTED_TIMETABLE', payload: id })} 
+              value={selectedTimetableId} 
+              onValueChange={handleSelectTimetable} 
               disabled={timetables.length === 0}
             >
               <SelectTrigger className="w-auto md:w-[280px]">
@@ -243,7 +232,7 @@ export default function AdminDashboardPage() {
       </div>
      
       {activeTimetable ? (
-        <Tabs value={state.activeTab} onValueChange={(tab) => dispatch({type: 'SET_ACTIVE_TAB', payload: tab})} className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="flex items-center justify-between gap-2 flex-wrap mb-4">
                 <TabsList className="grid w-full grid-cols-3 max-w-md">
                     <TabsTrigger value="master">Master Timetable</TabsTrigger>
@@ -257,16 +246,16 @@ export default function AdminDashboardPage() {
                       Export as PDF
                     </Button>
                     <AddClassDialog onAddClass={handleAddClass} />
-                    <Button variant="outline" onClick={() => dispatch({ type: 'TOGGLE_EDIT_MODE' })}>
-                      {state.isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-                      {state.isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+                    <Button variant="outline" onClick={() => setIsEditMode(prev => !prev)}>
+                      {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+                      {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
                     </Button>
                 </div>
             </div>
 
             <p className="text-muted-foreground mb-6">
                 This is the central schedule for {activeTimetable.name}. Changes made here will automatically update individual lecturer timetables.
-                {state.isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
+                {isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
             </p>
 
             <TabsContent value="master">
@@ -280,8 +269,8 @@ export default function AdminDashboardPage() {
                             ref={timetableRefs.master}
                             entries={activeTimetable.schedule} 
                             view="admin" 
-                            isEditMode={state.isEditMode}
-                            onEdit={(entry) => dispatch({ type: 'OPEN_EDIT_DIALOG', payload: entry })}
+                            isEditMode={isEditMode}
+                            onEdit={openEditDialog}
                         />
                     </CardContent>
                 </Card>
@@ -297,8 +286,8 @@ export default function AdminDashboardPage() {
                             ref={timetableRefs.classroom}
                             entries={lectureSchedule} 
                             view="admin" 
-                            isEditMode={state.isEditMode}
-                            onEdit={(entry) => dispatch({ type: 'OPEN_EDIT_DIALOG', payload: entry })}
+                            isEditMode={isEditMode}
+                            onEdit={openEditDialog}
                         />
                     </CardContent>
                 </Card>
@@ -314,8 +303,8 @@ export default function AdminDashboardPage() {
                             ref={timetableRefs.lab}
                             entries={practicalSchedule} 
                             view="admin" 
-                            isEditMode={state.isEditMode}
-                            onEdit={(entry) => dispatch({ type: 'OPEN_EDIT_DIALOG', payload: entry })}
+                            isEditMode={isEditMode}
+                            onEdit={openEditDialog}
                         />
                     </CardContent>
                 </Card>
@@ -332,11 +321,11 @@ export default function AdminDashboardPage() {
         </div>
       )}
       
-      {state.selectedClass && (
+      {selectedClass && (
         <EditClassDialog
-            isOpen={state.isEditDialogOpen}
-            onOpenChange={() => dispatch({ type: 'CLOSE_EDIT_DIALOG' })}
-            classEntry={state.selectedClass}
+            isOpen={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            classEntry={selectedClass}
             onUpdateClass={handleUpdateClass}
             onDeleteClass={handleDeleteClass}
         />
@@ -344,3 +333,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    

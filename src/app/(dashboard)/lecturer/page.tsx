@@ -50,11 +50,19 @@ export default function LecturerDashboardPage() {
     const timetableToExportRef = activeTab === 'my-timetable' ? myTimetableRef : masterTimetableRef;
     const timetableName = activeTab === 'my-timetable' ? `${selectedLecturer}-Timetable` : `${activeTimetable?.name}-Master`;
 
-    if (!timetableToExportRef.current || !activeTimetable) return;
+    if (!timetableToExportRef.current) {
+        toast({
+            title: "Export Failed",
+            description: "Could not find the timetable element to export.",
+            variant: "destructive",
+        });
+        return;
+    }
 
     html2canvas(timetableToExportRef.current, {
         scale: 2,
         useCORS: true,
+        logging: false,
     }).then(canvas => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF({
@@ -158,3 +166,5 @@ export default function LecturerDashboardPage() {
     </div>
   );
 }
+
+    
