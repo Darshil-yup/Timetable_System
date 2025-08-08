@@ -239,8 +239,7 @@ export default function AdminDashboardPage() {
                     <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
                     <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
                 </TabsList>
-
-                <div className="flex items-center justify-end gap-2 flex-wrap">
+                <div className="flex items-center justify-end gap-2 flex-wrap ml-auto">
                     <Button variant="outline" onClick={handleExportPDF}>
                       <FileDown className="mr-2 h-4 w-4" />
                       Export as PDF
@@ -333,5 +332,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    
