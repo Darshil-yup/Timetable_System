@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from "react";
@@ -11,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { cn } from "@/lib/utils"
-import type { ScheduleEntry } from "@/lib/types";
+import type { ScheduleEntry, SpecialClassType } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DialogFooter } from "@/components/ui/dialog";
 
@@ -24,13 +23,13 @@ const COLORS = [
     { value: 'hsl(var(--chart-4))', label: 'Gold' },
     { value: 'hsl(var(--chart-5))', label: 'Orange' },
 ];
-const SPECIAL_TYPES = ['Recess', 'Library', 'Help Desk', 'Sports'];
+const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
 const formSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   lecturer: z.string().optional(),
   room: z.string().optional(),
-  type: z.enum(["Lecture", "Practical", "Recess", "Library", "Help Desk", "Sports"]),
+  type: z.enum(["Lecture", "Practical", ...SPECIAL_TYPES]),
   batches: z.string().optional(),
   day: z.string().min(1, "Day is required"),
   time: z.string().min(1, "Time is required"),
@@ -77,25 +76,26 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   };
   
   const classType = form.watch("type");
-  const isSpecialType = SPECIAL_TYPES.includes(classType || '');
+  const isSpecialType = SPECIAL_TYPES.includes(classType as SpecialClassType);
 
   React.useEffect(() => {
+    const { getValues, setValue } = form;
     if (classType === 'Practical') {
-        form.setValue('duration', 2);
-    } else if (SPECIAL_TYPES.includes(classType!)) {
-        form.setValue('duration', 1);
-        form.setValue('subject', classType!);
-        form.setValue('color', 'hsl(var(--muted))');
-        form.setValue('lecturer', '');
-        form.setValue('room', '');
-        form.setValue('batches', '');
+        setValue('duration', 2);
+    } else if (isSpecialType) {
+        setValue('duration', 1);
+        setValue('subject', classType);
+        setValue('color', 'hsl(var(--muted))');
+        setValue('lecturer', '');
+        setValue('room', '');
+        setValue('batches', '');
     } else { // Lecture
-        form.setValue('duration', 1);
-        if (SPECIAL_TYPES.includes(form.getValues('subject'))) {
-            form.setValue('subject', '');
+        setValue('duration', 1);
+        if (SPECIAL_TYPES.includes(getValues('subject') as SpecialClassType)) {
+            setValue('subject', '');
         }
     }
-  }, [classType, form]);
+  }, [classType, form, isSpecialType]);
 
 
   return (
@@ -122,22 +122,12 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                                 <FormControl><RadioGroupItem value="Practical" id="r2" /></FormControl>
                                 <Label htmlFor="r2">Practical</Label>
                             </FormItem>
-                            <FormItem className="flex items-center space-x-2">
-                                <FormControl><RadioGroupItem value="Recess" id="r3" /></FormControl>
-                                <Label htmlFor="r3">Recess</Label>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-2">
-                                <FormControl><RadioGroupItem value="Library" id="r4" /></FormControl>
-                                <Label htmlFor="r4">Library</Label>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-2">
-                                <FormControl><RadioGroupItem value="Help Desk" id="r5" /></FormControl>
-                                <Label htmlFor="r5">Help Desk</Label>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-2">
-                                <FormControl><RadioGroupItem value="Sports" id="r6" /></FormControl>
-                                <Label htmlFor="r6">Sports</Label>
-                            </FormItem>
+                             {SPECIAL_TYPES.map((type) => (
+                                <FormItem key={type} className="flex items-center space-x-2">
+                                    <FormControl><RadioGroupItem value={type} id={`r-${type}`} /></FormControl>
+                                    <Label htmlFor={`r-${type}`}>{type}</Label>
+                                </FormItem>
+                            ))}
                         </RadioGroup>
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
@@ -164,7 +154,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Lecturer(s)</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isSpecialType} />
+                        <Input className="col-span-3" {...field} disabled={isSpecialType} placeholder="e.g. John Doe, Jane Smith"/>
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>

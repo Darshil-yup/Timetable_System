@@ -1,3 +1,6 @@
+export type SpecialClassType = 'Recess' | 'Library' | 'Help Desk' | 'Sports';
+export type ClassType = 'Lecture' | 'Practical' | SpecialClassType;
+
 export type ScheduleEntry = {
   id: string;
   subject: string;
@@ -5,7 +8,7 @@ export type ScheduleEntry = {
   room: string;
   day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
   time: string;
-  type?: 'Lecture' | 'Practical' | 'Recess' | 'Library' | 'Help Desk' | 'Sports';
+  type: ClassType;
   duration?: number; // Duration in hours
   batches?: string[];
   color?: string; // Hex color code

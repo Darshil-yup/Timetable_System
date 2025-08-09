@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -73,25 +72,21 @@ export default function LecturerDashboardPage() {
         sheetName = `${activeTimetable.name}-Master`;
     }
 
-    // Create a grid for the timetable
     const grid: (string | null)[][] = Array(DAYS.length + 1).fill(null).map(() => Array(TIME_SLOTS.length + 1).fill(null));
     
-    // Add headers
     grid[0][0] = "Day/Time";
     TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
     DAYS.forEach((day, i) => grid[i + 1][0] = day);
 
-    // Populate grid
     scheduleToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day as string);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
              const cellContent = [
                 entry.subject,
-                `(${entry.type})`,
                 entry.lecturer,
                 entry.room,
-                entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
+                entry.batches && entry.batches.length > 0 ? `${entry.batches.join(', ')}` : null,
             ].filter(Boolean).join('\n');
             
             for (let i = 0; i < (entry.duration || 1); i++) {
@@ -104,7 +99,6 @@ export default function LecturerDashboardPage() {
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
 
-    // Add merges for multi-hour classes
     worksheet['!merges'] = [];
     scheduleToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day as string);
@@ -129,7 +123,7 @@ export default function LecturerDashboardPage() {
 
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Lecturer Dashboard</h1>
         <div className="flex items-center gap-2 flex-wrap">
@@ -210,6 +204,3 @@ export default function LecturerDashboardPage() {
     </div>
   );
 }
-    
-
-    

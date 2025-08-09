@@ -1,26 +1,21 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ScheduleEntry } from "@/lib/types";
+import type { ScheduleEntry, SpecialClassType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
-
-type TimetableProps = {
-  entries: ScheduleEntry[];
-  view: 'admin' | 'lecturer';
-  isEditMode?: boolean;
-  onEdit?: (entry: ScheduleEntry) => void;
-  highlightedLecturer?: string;
-};
+const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
 const SpecialCard = ({ entry }: { entry: ScheduleEntry }) => {
-    let icon = <Book className="h-8 w-8 text-muted-foreground" />;
-    if (entry.type === 'Recess') icon = <Coffee className="h-8 w-8 text-muted-foreground" />;
-    else if (entry.type === 'Library') icon = <Library className="h-8 w-8 text-muted-foreground" />;
-    else if (entry.type === 'Help Desk') icon = <HelpCircle className="h-8 w-8 text-muted-foreground" />;
-    else if (entry.type === 'Sports') icon = <Dumbbell className="h-8 w-8 text-muted-foreground" />;
+    const ICONS: Record<SpecialClassType, React.ReactNode> = {
+        'Recess': <Coffee className="h-8 w-8 text-muted-foreground" />,
+        'Library': <Library className="h-8 w-8 text-muted-foreground" />,
+        'Help Desk': <HelpCircle className="h-8 w-8 text-muted-foreground" />,
+        'Sports': <Dumbbell className="h-8 w-8 text-muted-foreground" />,
+    }
+    const icon = ICONS[entry.type as SpecialClassType] || <Book className="h-8 w-8 text-muted-foreground" />;
 
     return (
         <div className="h-full w-full rounded-lg bg-muted/80 flex flex-col items-center justify-center p-2 gap-2">
@@ -51,7 +46,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
     color: entry.color ? `${entry.color}CC` : 'hsl(var(--muted-foreground))',
   }
 
-  if (['Recess', 'Library', 'Help Desk', 'Sports'].includes(entry.type || '')) {
+  if (SPECIAL_TYPES.includes(entry.type as SpecialClassType)) {
       return <SpecialCard entry={entry} />;
   }
 

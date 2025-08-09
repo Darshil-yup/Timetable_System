@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -101,11 +100,9 @@ export default function AdminDashboardPage() {
       const existingStartTime = parseInt(existingEntry.time.split(':')[0], 10);
       const existingEndTime = existingStartTime + (existingEntry.duration || 1);
 
-      // Check for time overlap
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
       if (isOverlapping) {
-        // Check for lecturer conflict
         if (newClass.lecturer && existingEntry.lecturer) {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim()).filter(Boolean);
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim()).filter(Boolean);
@@ -115,24 +112,20 @@ export default function AdminDashboardPage() {
               variant: "destructive",
               title: "Lecturer Conflict",
               description: `${conflictingLecturer} is already scheduled for "${existingEntry.subject}" at this time.`,
-              duration: 5000,
             });
             return;
           }
         }
         
-        // Check for room/lab conflict
         if (newClass.room && newClass.room === existingEntry.room) {
           toast({
             variant: "destructive",
             title: "Room/Lab Conflict",
             description: `Room ${newClass.room} is already booked for "${existingEntry.subject}" at this time.`,
-            duration: 5000,
           });
           return;
         }
 
-        // Check for batch conflict (for practicals)
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const newBatches = newClass.batches;
            const existingBatches = existingEntry.batches;
@@ -142,7 +135,6 @@ export default function AdminDashboardPage() {
                variant: "destructive",
                title: "Batch Conflict",
                description: `Batch ${conflictingBatch} is already scheduled for a practical ("${existingEntry.subject}") at this time.`,
-               duration: 5000,
              });
              return;
            }
@@ -155,7 +147,6 @@ export default function AdminDashboardPage() {
     toast({
       title: "Class Added!",
       description: `"${newClass.subject}" has been added to the timetable.`,
-      duration: 5000,
     });
   };
   
@@ -166,7 +157,6 @@ export default function AdminDashboardPage() {
     toast({
         title: "Class Updated!",
         description: `"${updatedClass.subject}" has been successfully updated.`,
-        duration: 5000,
     });
   };
   
@@ -178,7 +168,6 @@ export default function AdminDashboardPage() {
        title: "Class Deleted",
        description: "The class has been removed from the timetable.",
        variant: "destructive",
-       duration: 5000,
     });
   }
 
@@ -193,7 +182,6 @@ export default function AdminDashboardPage() {
     toast({
         title: "Timetable Created!",
         description: `Timetable for "${newTimetable.name}" has been created.`,
-        duration: 5000,
     });
   };
 
@@ -207,7 +195,6 @@ export default function AdminDashboardPage() {
       title: "Timetable Deleted",
       description: `The timetable for "${activeTimetable.name}" has been deleted.`,
       variant: "destructive",
-      duration: 5000,
     })
   }
 
@@ -217,7 +204,6 @@ export default function AdminDashboardPage() {
             title: "Export Failed",
             description: "No active timetable to export.",
             variant: "destructive",
-            duration: 5000,
         });
         return;
     }
@@ -246,25 +232,21 @@ export default function AdminDashboardPage() {
             break;
     }
 
-    // Create a grid for the timetable
     const grid: (string | null)[][] = Array(DAYS.length + 1).fill(null).map(() => Array(TIME_SLOTS.length + 1).fill(null));
 
-    // Add headers
     grid[0][0] = "Day/Time";
     TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
     DAYS.forEach((day, i) => grid[i + 1][0] = day);
 
-    // Populate grid
     scheduleToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day as string);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
             const cellContent = [
                 entry.subject,
-                `(${entry.type})`,
                 entry.lecturer,
                 entry.room,
-                entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
+                entry.batches && entry.batches.length > 0 ? `${entry.batches.join(', ')}` : null,
             ].filter(Boolean).join('\n');
 
             for (let i = 0; i < (entry.duration || 1); i++) {
@@ -277,7 +259,6 @@ export default function AdminDashboardPage() {
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     
-    // Add merges for multi-hour classes
     worksheet['!merges'] = [];
     scheduleToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day as string);
@@ -297,7 +278,6 @@ export default function AdminDashboardPage() {
     toast({
         title: "Export Successful",
         description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
-        duration: 5000,
     });
   };
 
@@ -341,7 +321,7 @@ export default function AdminDashboardPage() {
   );
   
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Master Timetables</h1>
         <div className="flex items-center gap-2 flex-wrap">
@@ -430,7 +410,7 @@ export default function AdminDashboardPage() {
                     <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                             <CardTitle>Classroom Schedule (Lectures)</CardTitle>
-                            <CardDescription>Filtered view showing only 1-hour lecture slots.</CardDescription>
+                            <CardDescription>Filtered view showing only lecture slots.</CardDescription>
                         </div>
                         <div className="flex w-full sm:w-auto items-center gap-2">
                              <Select value={selectedRoom} onValueChange={setSelectedRoom}>
@@ -468,7 +448,7 @@ export default function AdminDashboardPage() {
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
                             <CardTitle>Lab Schedule (Practicals)</CardTitle>
-                            <CardDescription>Filtered view showing only 2-hour lab/practical slots.</CardDescription>
+                            <CardDescription>Filtered view showing only lab/practical slots.</CardDescription>
                         </div>
                         <TimetableActions 
                             handleExportSheet={handleExportSheet}
@@ -511,6 +491,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-    
-
-    
