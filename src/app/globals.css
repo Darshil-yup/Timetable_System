@@ -10,8 +10,8 @@
     --card-foreground: 215 28% 17%;
     --popover: 210 40% 100%;
     --popover-foreground: 215 28% 17%;
-    --primary: 217 91% 60%; /* Bright, saturated blue for primary actions */
-    --primary-foreground: 210 40% 98%;
+    --primary: 280 85% 60%;
+    --primary-foreground: 280 85% 98%;
     --secondary: 210 40% 96%; /* A lighter, muted blue for secondary elements */
     --secondary-foreground: 215 28% 27%;
     --muted: 210 40% 96%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 217 91% 60%;
+    --ring: 280 85% 60%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -37,19 +37,19 @@
     --card-foreground: 210 40% 98%;
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 59%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 280 85% 65%;
+    --primary-foreground: 280 85% 98%;
     --secondary: 222 47% 20%;
     --secondary-foreground: 210 40% 98%;
     --muted: 222 47% 20%;
     --muted-foreground: 210 40% 60%;
-    --accent: 217 91% 59%;
+    --accent: 280 85% 65%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 222 47% 25%;
     --input: 222 47% 25%;
-    --ring: 217 91% 59%;
+    --ring: 280 85% 65%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
