@@ -17,14 +17,13 @@ import { DialogFooter } from "@/components/ui/dialog";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
-const COLORS = [
-    { value: 'hsl(var(--chart-1))', label: 'Tomato' },
-    { value: 'hsl(var(--chart-2))', label: 'Teal' },
-    { value: 'hsl(var(--chart-3))', label: 'Navy' },
-    { value: 'hsl(var(--chart-4))', label: 'Gold' },
-    { value: 'hsl(var(--chart-5))', label: 'Orange' },
-];
 const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
+
+const PALETTE_COLORS = [
+    '#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3',
+    '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39',
+    '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E',
+];
 
 const formSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -36,7 +35,19 @@ const formSchema = z.object({
   time: z.string().min(1, "Time is required"),
   duration: z.number().min(1).max(3),
   color: z.string().min(1, "Color is required"),
+}).refine(data => {
+    if (data.type === 'Practical') {
+        return data.batches && data.batches.length > 0;
+    }
+    if (SPECIAL_TYPES.includes(data.type as SpecialClassType)) {
+        return true;
+    }
+    return data.lecturer && data.lecturer.length > 0 && data.room && data.room.length > 0;
+}, {
+    message: "Lecturer, Room/Lab, and Batches are required for this class type.",
+    path: ['lecturer'], // You can choose which field to attach the error to
 });
+
 
 type FormValues = Omit<ScheduleEntry, 'id' | 'batches'> & { batches?: string };
 
@@ -54,7 +65,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   } : {
         type: 'Lecture' as const,
         duration: 1,
-        color: COLORS[0].value,
+        color: PALETTE_COLORS[0],
         subject: '',
         lecturer: '',
         room: '',
@@ -86,14 +97,16 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
     } else if (isSpecialType) {
         setValue('duration', 1);
         setValue('subject', classType);
-        setValue('color', 'hsl(var(--muted))');
-        setValue('lecturer', '');
-        setValue('room', '');
+        setValue('color', '#E0E0E0'); // A neutral grey for special types
+        setValue('lecturer', 'N/A');
+        setValue('room', 'N/A');
         setValue('batches', '');
     } else { // Lecture
         setValue('duration', 1);
         if (SPECIAL_TYPES.includes(getValues('subject') as SpecialClassType)) {
             setValue('subject', '');
+            setValue('lecturer', '');
+            setValue('room', '');
         }
     }
   }, [classType, form, isSpecialType]);
@@ -115,20 +128,20 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             defaultValue={field.value}
                             className="col-span-3 grid grid-cols-2 gap-4"
                         >
-                            <FormItem className="flex items-center space-x-2">
-                                <FormControl><RadioGroupItem value="Lecture" id="r1" /></FormControl>
-                                <Label htmlFor="r1">Lecture</Label>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-2">
-                                <FormControl><RadioGroupItem value="Practical" id="r2" /></FormControl>
-                                <Label htmlFor="r2">Practical</Label>
-                            </FormItem>
-                             {SPECIAL_TYPES.map((type) => (
-                                <FormItem key={type} className="flex items-center space-x-2">
-                                    <FormControl><RadioGroupItem value={type} id={`r-${type}`} /></FormControl>
-                                    <Label htmlFor={`r-${type}`}>{type}</Label>
-                                </FormItem>
-                            ))}
+                           <FormItem className="flex items-center space-x-2">
+                               <FormControl><RadioGroupItem value="Lecture" id="r-Lecture" /></FormControl>
+                               <Label htmlFor="r-Lecture">Lecture</Label>
+                           </FormItem>
+                           <FormItem className="flex items-center space-x-2">
+                               <FormControl><RadioGroupItem value="Practical" id="r-Practical" /></FormControl>
+                               <Label htmlFor="r-Practical">Practical</Label>
+                           </FormItem>
+                            {SPECIAL_TYPES.map((type) => (
+                               <FormItem key={type} className="flex items-center space-x-2">
+                                   <FormControl><RadioGroupItem value={type} id={`r-${type}`} /></FormControl>
+                                   <Label htmlFor={`r-${type}`}>{type}</Label>
+                               </FormItem>
+                           ))}
                         </RadioGroup>
                     </FormControl>
                     <FormMessage className="col-start-2 col-span-3 text-right" />
@@ -231,40 +244,35 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 </FormItem>
                 )}
             />
-            <FormField
+             <FormField
                 control={form.control}
                 name="color"
                 render={({ field }) => (
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Color</FormLabel>
                     <FormControl>
-                        <RadioGroup
+                         <RadioGroup
+                            value={field.value}
                             onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="col-span-3 flex gap-2"
-                            aria-disabled={isSpecialType}
-                            onClick={(e) => {
-                                if (isSpecialType) e.preventDefault();
-                            }}
+                            className="col-span-3 flex flex-wrap gap-2"
                         >
-                            {COLORS.map(color => (
-                                <FormControl key={color.value}>
-                                    <FormItem>
-                                        <RadioGroupItem value={color.value} id={`c-${color.label}`} className="sr-only" disabled={isSpecialType} />
-                                        <Label htmlFor={`c-${color.label}`}
-                                            className={cn(
-                                                "w-8 h-8 rounded-full border-2 border-transparent",
-                                                !isSpecialType && "cursor-pointer",
-                                                "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
-                                                isSpecialType && "opacity-50 cursor-not-allowed"
-                                            )}
-                                            style={{ backgroundColor: isSpecialType ? 'hsl(var(--muted))' : color.value }}
-                                            title={color.label}
-                                        >
-                                            <span className="sr-only">{color.label}</span>
-                                        </Label>
-                                    </FormItem>
-                                </FormControl>
+                            {PALETTE_COLORS.map((color) => (
+                                <FormItem key={color} className="flex items-center space-x-2">
+                                     <FormControl>
+                                        <>
+                                            <RadioGroupItem value={color} id={color} className="sr-only" disabled={isSpecialType}/>
+                                            <Label 
+                                                htmlFor={color}
+                                                className={cn(
+                                                    "h-6 w-6 rounded-full border border-muted-foreground/50",
+                                                    !isSpecialType ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                                                    "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
+                                                )}
+                                                style={{ backgroundColor: color }}
+                                            />
+                                        </>
+                                    </FormControl>
+                                </FormItem>
                             ))}
                         </RadioGroup>
                     </FormControl>
