@@ -50,8 +50,8 @@ export function EditClassDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[480px] max-h-[90vh] flex flex-col">
+        <DialogHeader className="px-6 pt-6">
           <DialogTitle>Edit Class</DialogTitle>
           <DialogDescription>
             Modify the details for "{classEntry.subject}". Click save when you're done.

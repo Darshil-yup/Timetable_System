@@ -37,8 +37,8 @@ export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
           <span className="px-0.5">Add New Class</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
+      <DialogContent className="sm:max-w-[480px] max-h-[90vh] flex flex-col">
+          <DialogHeader className="px-6 pt-6">
             <DialogTitle>Add New Class</DialogTitle>
             <DialogDescription>
               Fill in the details for the new class. This will be added to the master schedule.

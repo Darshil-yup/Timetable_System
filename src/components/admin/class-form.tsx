@@ -116,8 +116,8 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="space-y-4 py-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col overflow-hidden h-full">
+        <div className="space-y-4 px-6 overflow-y-auto">
             <FormField
                 control={form.control}
                 name="type"
@@ -261,19 +261,17 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             {PALETTE_COLORS.map((color) => (
                                 <FormItem key={color} className="flex items-center space-x-2">
                                      <FormControl>
-                                        <>
-                                            <RadioGroupItem value={color} id={color} className="sr-only" disabled={isSpecialType}/>
-                                            <Label 
-                                                htmlFor={color}
-                                                className={cn(
-                                                    "h-6 w-6 rounded-full border border-muted-foreground/50",
-                                                    !isSpecialType ? "cursor-pointer" : "cursor-not-allowed opacity-50",
-                                                    "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
-                                                )}
-                                                style={{ backgroundColor: color }}
-                                            />
-                                        </>
-                                    </FormControl>
+                                        <RadioGroupItem value={color} id={color} className="sr-only" disabled={isSpecialType}/>
+                                     </FormControl>
+                                     <Label 
+                                        htmlFor={color}
+                                        className={cn(
+                                            "h-6 w-6 rounded-full border border-muted-foreground/50",
+                                            !isSpecialType ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                                            "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
+                                        )}
+                                        style={{ backgroundColor: color }}
+                                    />
                                 </FormItem>
                             ))}
                         </RadioGroup>
@@ -283,7 +281,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 )}
             />
         </div>
-        <DialogFooter>
+        <DialogFooter className="mt-auto px-6 py-4 bg-background">
           {children}
           <Button type="submit">{submitButtonText}</Button>
         </DialogFooter>
