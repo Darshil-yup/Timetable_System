@@ -77,13 +77,12 @@ export function RegisterDialog() {
         case 0:
         case 1:
         case 2:
-            return { value: score * 20, label: "Weak", color: "bg-destructive" };
+            return { value: (score / 5) * 100, label: "Weak", color: "bg-destructive" };
         case 3:
-            return { value: 60, label: "Medium", color: "bg-yellow-500" };
+            return { value: 65, label: "Medium", color: "bg-yellow-500" };
         case 4:
-            return { value: 80, label: "Strong", color: "bg-green-500" };
         case 5:
-            return { value: 100, label: "Very Strong", color: "bg-green-500" };
+            return { value: 100, label: "Strong", color: "bg-green-500" };
         default:
             return { value: 0, label: '', color: '' };
     }
