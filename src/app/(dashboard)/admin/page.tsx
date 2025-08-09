@@ -32,6 +32,10 @@ import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
+
+
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
   const { toast } = useToast();
@@ -208,18 +212,18 @@ export default function AdminDashboardPage() {
 
   const handleExportSheet = () => {
     if (!activeTimetable) {
-      toast({
-          title: "Export Failed",
-          description: "No active timetable to export.",
-          variant: "destructive",
-          duration: 5000,
-      });
-      return;
+        toast({
+            title: "Export Failed",
+            description: "No active timetable to export.",
+            variant: "destructive",
+            duration: 5000,
+        });
+        return;
     }
 
     let scheduleToExport: ScheduleEntry[];
     let sheetName: string;
-    
+
     const lectureSchedule = activeTimetable.schedule.filter(e => e.type === 'Lecture');
     const practicalSchedule = activeTimetable.schedule.filter(e => e.type === 'Practical');
 
@@ -227,7 +231,7 @@ export default function AdminDashboardPage() {
         case 'classroom':
             scheduleToExport = lectureSchedule;
             if (selectedRoom !== 'all') {
-              scheduleToExport = scheduleToExport.filter(e => e.room === selectedRoom);
+                scheduleToExport = scheduleToExport.filter(e => e.room === selectedRoom);
             }
             sheetName = 'Classroom Schedule';
             break;
@@ -240,27 +244,59 @@ export default function AdminDashboardPage() {
             sheetName = 'Master Schedule';
             break;
     }
-    
-    const data = scheduleToExport.map(entry => ({
-      Day: entry.day,
-      Time: entry.time,
-      Subject: entry.subject,
-      Type: entry.type,
-      Lecturer: entry.lecturer,
-      'Room/Lab': entry.room,
-      Batches: entry.batches?.join(', ') || 'N/A',
-      Duration: entry.duration
-    }));
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    // Create a grid for the timetable
+    const grid: (string | null)[][] = Array(DAYS.length + 1).fill(null).map(() => Array(TIME_SLOTS.length + 1).fill(null));
+
+    // Add headers
+    grid[0][0] = "Day/Time";
+    TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
+    DAYS.forEach((day, i) => grid[i + 1][0] = day);
+
+    // Populate grid
+    scheduleToExport.forEach(entry => {
+        const dayIndex = DAYS.indexOf(entry.day as string);
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+        if (dayIndex !== -1 && timeIndex !== -1) {
+            const cellContent = [
+                `Subject: ${entry.subject}`,
+                `Type: ${entry.type}`,
+                entry.lecturer ? `Lecturer: ${entry.lecturer}` : null,
+                entry.room ? `Room/Lab: ${entry.room}` : null,
+                entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
+            ].filter(Boolean).join('\n');
+
+            for (let i = 0; i < (entry.duration || 1); i++) {
+                if (timeIndex + i < TIME_SLOTS.length) {
+                    grid[dayIndex + 1][timeIndex + 1 + i] = cellContent;
+                }
+            }
+        }
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(grid);
+    
+    // Add merges for multi-hour classes
+    worksheet['!merges'] = [];
+    scheduleToExport.forEach(entry => {
+        const dayIndex = DAYS.indexOf(entry.day as string);
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+        if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
+            worksheet['!merges']?.push({
+                s: { r: dayIndex + 1, c: timeIndex + 1 },
+                e: { r: dayIndex + 1, c: timeIndex + entry.duration }
+            });
+        }
+    });
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     XLSX.writeFile(workbook, `${activeTimetable.name}-${sheetName}.xlsx`);
 
     toast({
-      title: "Export Successful",
-      description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
-      duration: 5000,
+        title: "Export Successful",
+        description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
+        duration: 5000,
     });
   };
 

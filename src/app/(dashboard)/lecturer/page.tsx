@@ -19,6 +19,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
 import { ScheduleEntry } from '@/lib/types';
 
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
+
 export default function LecturerDashboardPage() {
   const { timetables } = useTimetables();
   const { toast } = useToast();
@@ -50,12 +53,12 @@ export default function LecturerDashboardPage() {
 
   const handleExportSheet = () => {
     if (!activeTimetable || !selectedLecturer) {
-      toast({
-          title: "Export Failed",
-          description: "No active timetable or lecturer selected to export.",
-          variant: "destructive",
-      });
-      return;
+        toast({
+            title: "Export Failed",
+            description: "No active timetable or lecturer selected to export.",
+            variant: "destructive",
+        });
+        return;
     }
 
     let scheduleToExport: ScheduleEntry[];
@@ -68,28 +71,61 @@ export default function LecturerDashboardPage() {
         scheduleToExport = activeTimetable.schedule;
         sheetName = `${activeTimetable.name}-Master`;
     }
-    
-    const data = scheduleToExport.map(entry => ({
-      Day: entry.day,
-      Time: entry.time,
-      Subject: entry.subject,
-      Type: entry.type,
-      Lecturer: entry.lecturer,
-      'Room/Lab': entry.room,
-      Batches: entry.batches?.join(', ') || 'N/A',
-      Duration: entry.duration
-    }));
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    // Create a grid for the timetable
+    const grid: (string | null)[][] = Array(DAYS.length + 1).fill(null).map(() => Array(TIME_SLOTS.length + 1).fill(null));
+    
+    // Add headers
+    grid[0][0] = "Day/Time";
+    TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
+    DAYS.forEach((day, i) => grid[i + 1][0] = day);
+
+    // Populate grid
+    scheduleToExport.forEach(entry => {
+        const dayIndex = DAYS.indexOf(entry.day as string);
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+        if (dayIndex !== -1 && timeIndex !== -1) {
+             const cellContent = [
+                `Subject: ${entry.subject}`,
+                `Type: ${entry.type}`,
+                entry.lecturer ? `Lecturer: ${entry.lecturer}` : null,
+                entry.room ? `Room/Lab: ${entry.room}` : null,
+                entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
+            ].filter(Boolean).join('\n');
+            
+            for (let i = 0; i < (entry.duration || 1); i++) {
+                if (timeIndex + i < TIME_SLOTS.length) {
+                    grid[dayIndex + 1][timeIndex + 1 + i] = cellContent;
+                }
+            }
+        }
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(grid);
+
+    // Add merges for multi-hour classes
+    worksheet['!merges'] = [];
+    scheduleToExport.forEach(entry => {
+        const dayIndex = DAYS.indexOf(entry.day as string);
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+        if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
+            worksheet['!merges']?.push({
+                s: { r: dayIndex + 1, c: timeIndex + 1 },
+                e: { r: dayIndex + 1, c: timeIndex + entry.duration }
+            });
+        }
+    });
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     XLSX.writeFile(workbook, `${sheetName}.xlsx`);
 
     toast({
-      title: "Export Successful",
-      description: `The schedule has been exported to an Excel file.`,
+        title: "Export Successful",
+        description: `The schedule has been exported to an Excel file.`,
     });
-  };
+};
+
 
   return (
     <div className="container mx-auto">
