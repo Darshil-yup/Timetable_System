@@ -34,6 +34,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const PasswordStrengthIndicator = ({ strength }: { strength: { value: number; label: string; color: string } }) => {
+    if (!strength.label) return null;
+
     return (
         <div className="space-y-2">
             <Progress value={strength.value} className={cn("h-2", strength.color)} />
@@ -81,7 +83,7 @@ export function RegisterDialog() {
         case 4:
             return { value: 80, label: "Strong", color: "bg-green-500" };
         case 5:
-            return { value: 100, label: "Very Strong", color: "bg-green-700" };
+            return { value: 100, label: "Very Strong", color: "bg-green-500" };
         default:
             return { value: 0, label: '', color: '' };
     }
@@ -163,7 +165,7 @@ export function RegisterDialog() {
               )}
             />
 
-            {password && <PasswordStrengthIndicator strength={passwordStrength} />}
+            <PasswordStrengthIndicator strength={passwordStrength} />
 
             <DialogFooter className="pt-4">
               <Button type="submit" disabled={isLoading}>
