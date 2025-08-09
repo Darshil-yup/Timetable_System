@@ -86,10 +86,10 @@ export default function LecturerDashboardPage() {
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
              const cellContent = [
-                `Subject: ${entry.subject}`,
-                `Type: ${entry.type}`,
-                entry.lecturer ? `Lecturer: ${entry.lecturer}` : null,
-                entry.room ? `Room/Lab: ${entry.room}` : null,
+                entry.subject,
+                `(${entry.type})`,
+                entry.lecturer,
+                entry.room,
                 entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
             ].filter(Boolean).join('\n');
             
@@ -144,7 +144,7 @@ export default function LecturerDashboardPage() {
             </Select>
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetables.length === 0}>
               <SelectTrigger className="w-auto md:w-[280px]">
-                  <SelectValue placeholder="Select Department & Year" />
+                  <SelectValue placeholder="Select Department &amp; Year" />
               </SelectTrigger>
               <SelectContent>
                   {timetables.map(timetable => (
@@ -208,4 +208,3 @@ export default function LecturerDashboardPage() {
        )}
     </div>
   );
-}
