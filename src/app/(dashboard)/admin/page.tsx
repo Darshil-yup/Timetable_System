@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle, FileSpreadsheet } from 'lucide-react';
+import { Pencil, Trash2, XCircle, FileSpreadsheet, LineChart } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +32,9 @@ import { useTimetables } from '@/context/TimetableContext';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ClassUsageChart } from '@/components/admin/analytics/ClassUsageChart';
+import { LecturerWorkloadChart } from '@/components/admin/analytics/LecturerWorkloadChart';
+import { FreeRoomSlots } from '@/components/admin/analytics/FreeRoomSlots';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
@@ -87,11 +90,13 @@ export default function AdminDashboardPage() {
     );
   }
 
-  const checkForConflicts = (newClass: Omit<ScheduleEntry, 'id'>, existingSchedule: ScheduleEntry[]): boolean => {
+  const checkForConflicts = (newClass: Omit<ScheduleEntry, 'id'>, existingSchedule: ScheduleEntry[], updatingClassId?: string): boolean => {
     const newClassStartTime = parseInt(newClass.time.split(':')[0], 10);
     const newClassEndTime = newClassStartTime + (newClass.duration || 1);
+  
+    const scheduleToCheck = existingSchedule.filter(entry => entry.id !== updatingClassId);
 
-    for (const existingEntry of existingSchedule) {
+    for (const existingEntry of scheduleToCheck) {
       if (existingEntry.day !== newClass.day) {
         continue;
       }
@@ -164,8 +169,7 @@ export default function AdminDashboardPage() {
   const handleUpdateClass = (updatedClass: ScheduleEntry) => {
     if (!activeTimetable) return;
     
-    const scheduleWithoutOldEntry = activeTimetable.schedule.filter(entry => entry.id !== updatedClass.id);
-    if (checkForConflicts(updatedClass, scheduleWithoutOldEntry)) {
+    if (checkForConflicts(updatedClass, activeTimetable.schedule, updatedClass.id)) {
       return;
     }
 
@@ -262,7 +266,7 @@ export default function AdminDashboardPage() {
             const cellContent = [
                 entry.subject,
                 entry.lecturer,
-                entry.room ? `Room: ${entry.room}`: null,
+                entry.room,
                 entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
             ].filter(Boolean).join('\n');
 
@@ -387,10 +391,14 @@ export default function AdminDashboardPage() {
      
       {activeTimetable ? (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-3 max-w-md">
+            <TabsList className="mb-4 grid w-full grid-cols-4 max-w-xl">
                 <TabsTrigger value="master">Master Timetable</TabsTrigger>
                 <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
                 <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
+                <TabsTrigger value="analytics">
+                    <LineChart className="mr-2 h-4 w-4" />
+                    Analytics
+                </TabsTrigger>
             </TabsList>
             
             <p className="text-muted-foreground mb-6">
@@ -484,6 +492,13 @@ export default function AdminDashboardPage() {
                     </CardContent>
                 </Card>
             </TabsContent>
+            <TabsContent value="analytics">
+                <div className="grid gap-6">
+                    <LecturerWorkloadChart schedule={activeTimetable.schedule} />
+                    <ClassUsageChart schedule={activeTimetable.schedule} />
+                    <FreeRoomSlots schedule={activeTimetable.schedule} />
+                </div>
+            </TabsContent>
         </Tabs>
       ) : (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
@@ -508,5 +523,7 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
 
     
