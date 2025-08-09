@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Full name is required." }),
@@ -30,6 +32,17 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const PasswordStrengthIndicator = ({ strength }: { strength: { value: number; label: string; color: string } }) => {
+    return (
+        <div className="space-y-2">
+            <Progress value={strength.value} className={cn("h-2", strength.color)} />
+            <p className={cn("text-xs font-medium", strength.color.replace('bg-', 'text-'))}>
+                {strength.label}
+            </p>
+        </div>
+    )
+}
 
 export function RegisterDialog() {
   const { toast } = useToast();
@@ -43,7 +56,37 @@ export function RegisterDialog() {
       email: "",
       password: "",
     },
+    mode: "onChange"
   });
+  
+  const password = form.watch("password");
+
+  const passwordStrength = useMemo(() => {
+    let score = 0;
+    if (!password) return { value: 0, label: '', color: '' };
+
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+    switch (score) {
+        case 0:
+        case 1:
+        case 2:
+            return { value: score * 20, label: "Weak", color: "bg-destructive" };
+        case 3:
+            return { value: 60, label: "Medium", color: "bg-yellow-500" };
+        case 4:
+            return { value: 80, label: "Strong", color: "bg-green-500" };
+        case 5:
+            return { value: 100, label: "Very Strong", color: "bg-green-700" };
+        default:
+            return { value: 0, label: '', color: '' };
+    }
+  }, [password]);
+
 
   const handleSubmit = (values: FormValues) => {
     setIsLoading(true);
@@ -119,6 +162,9 @@ export function RegisterDialog() {
                 </FormItem>
               )}
             />
+
+            {password && <PasswordStrengthIndicator strength={passwordStrength} />}
+
             <DialogFooter className="pt-4">
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <Loader2 className="animate-spin" />}
