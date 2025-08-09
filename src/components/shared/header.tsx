@@ -11,6 +11,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { LECTURERS } from '@/lib/mock-data';
@@ -29,23 +33,6 @@ export default function Header() {
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <Users className="mr-0 sm:mr-2 h-4 w-4" />
-                <span className="hidden sm:inline-block">Members</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel>Lecturers</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {LECTURERS.map((lecturer) => (
-                <DropdownMenuItem key={lecturer.id}>
-                  {lecturer.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -70,6 +57,24 @@ export default function Header() {
                   </p>
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Users className="mr-2 h-4 w-4" />
+                  <span>Members</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuLabel>Lecturers</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {LECTURERS.map((lecturer) => (
+                      <DropdownMenuItem key={lecturer.id}>
+                        {lecturer.name}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
