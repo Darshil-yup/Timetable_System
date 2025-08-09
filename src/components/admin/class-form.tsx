@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from "react";
@@ -106,13 +107,13 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="type"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Type</FormLabel>
+                <FormItem className="grid grid-cols-4 items-start gap-4">
+                    <FormLabel className="text-right pt-2">Type</FormLabel>
                      <FormControl>
                         <RadioGroup 
                             onValueChange={field.onChange} 
                             defaultValue={field.value}
-                            className="col-span-3 flex gap-4 flex-wrap"
+                            className="col-span-3 grid grid-cols-2 gap-4"
                         >
                             <FormItem className="flex items-center space-x-2">
                                 <FormControl><RadioGroupItem value="Lecture" id="r1" /></FormControl>
@@ -130,7 +131,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             ))}
                         </RadioGroup>
                     </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage className="col-start-2 col-span-3 text-right" />
                 </FormItem>
                 )}
             />
