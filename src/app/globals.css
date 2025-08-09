@@ -10,8 +10,8 @@
     --card-foreground: 215 28% 17%;
     --popover: 210 40% 100%;
     --popover-foreground: 215 28% 17%;
-    --primary: 280 85% 60%;
-    --primary-foreground: 280 85% 98%;
+    --primary: 275 85% 65%;
+    --primary-foreground: 275 85% 98%;
     --secondary: 210 40% 96%; /* A lighter, muted blue for secondary elements */
     --secondary-foreground: 215 28% 27%;
     --muted: 210 40% 96%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 280 85% 60%;
+    --ring: 275 85% 65%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -31,25 +31,25 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 277 42% 11%;
+    --background: 275 14% 5%;
     --foreground: 210 40% 98%;
-    --card: 275 35% 15%;
+    --card: 274 23% 12%;
     --card-foreground: 210 40% 98%;
-    --popover: 275 35% 15%;
+    --popover: 274 23% 12%;
     --popover-foreground: 210 40% 98%;
-    --primary: 280 85% 65%;
-    --primary-foreground: 280 85% 98%;
-    --secondary: 275 35% 15%;
+    --primary: 275 85% 65%;
+    --primary-foreground: 275 85% 98%;
+    --secondary: 274 23% 12%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 275 35% 15%;
+    --muted: 274 23% 12%;
     --muted-foreground: 210 40% 60%;
-    --accent: 280 85% 65%;
+    --accent: 275 85% 65%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 275 35% 25%;
-    --input: 275 35% 25%;
-    --ring: 280 85% 65%;
+    --border: 274 23% 18%;
+    --input: 274 23% 18%;
+    --ring: 275 85% 65%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -69,6 +69,6 @@
 
 @layer components {
   .video-background {
-    @apply fixed top-0 left-0 w-full h-full object-cover -z-10;
+    @apply fixed top-0 left-0 w-full h-full object-cover -z-10 bg-black;
   }
 }
