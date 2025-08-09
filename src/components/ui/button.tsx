@@ -40,14 +40,27 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    // Check if children is a string to apply the padding, otherwise render as is.
+    const hasText = typeof children === 'string' && children.trim().length > 0;
+    const hasIcon = React.Children.toArray(children).some(child => React.isValidElement(child) && (child.type as any).displayName?.includes('Icon'));
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
-      />
+      >
+        {/* If there's an icon and text, wrap the text in a span with padding */}
+        {React.Children.map(children, child => {
+          if (typeof child === 'string') {
+            return <span className="px-0.5">{child}</span>;
+          }
+          return child;
+        })}
+      </Comp>
     )
   }
 )
