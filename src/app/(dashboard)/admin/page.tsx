@@ -116,16 +116,18 @@ export default function AdminDashboardPage() {
     const scheduleToCheck = existingSchedule.filter(entry => entry.id !== updatingClassId);
 
     for (const existingEntry of scheduleToCheck) {
-      if (existingEntry.day !== newClass.day) {
+      if (existingEntry.day !== newClass.day || existingEntry.type === 'Recess' || newClass.type === 'Recess') {
         continue;
       }
       
       const existingStartTime = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
       const existingEndTime = existingStartTime + (existingEntry.duration || 1);
 
+      // Check for any overlap in time
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
-      if (isOverlapping && newClass.type !== 'Recess' && existingEntry.type !== 'Recess') {
+      if (isOverlapping) {
+        // Lecturer conflict check
         if (newClass.lecturer && existingEntry.lecturer) {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim()).filter(Boolean);
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim()).filter(Boolean);
@@ -140,7 +142,8 @@ export default function AdminDashboardPage() {
           }
         }
         
-        if (newClass.room && newClass.room === existingEntry.room) {
+        // Room/Lab conflict check
+        if (newClass.room && existingEntry.room && newClass.room === existingEntry.room) {
           toast({
             variant: "destructive",
             title: "Room/Lab Conflict",
@@ -149,6 +152,7 @@ export default function AdminDashboardPage() {
           return true;
         }
 
+        // Batch conflict for practicals
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const newBatches = newClass.batches;
            const existingBatches = existingEntry.batches;
@@ -521,3 +525,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
