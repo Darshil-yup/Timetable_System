@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ScheduleEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock, Library, HelpCircle, Dumbbell } from "lucide-react";
+import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
@@ -17,7 +17,8 @@ type TimetableProps = {
 
 const SpecialCard = ({ entry }: { entry: ScheduleEntry }) => {
     let icon = <Book className="h-8 w-8 text-muted-foreground" />;
-    if (entry.type === 'Library') icon = <Library className="h-8 w-8 text-muted-foreground" />;
+    if (entry.type === 'Recess') icon = <Coffee className="h-8 w-8 text-muted-foreground" />;
+    else if (entry.type === 'Library') icon = <Library className="h-8 w-8 text-muted-foreground" />;
     else if (entry.type === 'Help Desk') icon = <HelpCircle className="h-8 w-8 text-muted-foreground" />;
     else if (entry.type === 'Sports') icon = <Dumbbell className="h-8 w-8 text-muted-foreground" />;
 
@@ -152,7 +153,7 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
         {/* Schedule Entries */}
         {entries.map((entry) => {
           const dayIndex = DAYS.indexOf(entry.day);
-          const timeIndex = TIME_SLOTS.indexOf(entry.time);
+          const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
           
           if (dayIndex === -1 || timeIndex === -1) {
             return null;
