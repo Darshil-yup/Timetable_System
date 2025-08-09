@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react";
@@ -33,7 +34,7 @@ export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
       <DialogTrigger asChild>
         <Button>
           <PlusCircle className="mr-2 h-4 w-4" />
-          Add New Class
+          <span className="px-0.5">Add New Class</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px]">

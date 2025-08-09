@@ -61,7 +61,7 @@ export default function Header() {
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <Users className="mr-2 h-4 w-4" />
-                  <span>Members</span>
+                  <span className="px-0.5">Members</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
@@ -79,7 +79,7 @@ export default function Header() {
               <DropdownMenuItem asChild>
                 <Link href="/">
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span className="px-0.5">Log out</span>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

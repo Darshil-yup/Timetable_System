@@ -75,7 +75,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
         {children ? children :
             <Button variant="outline">
                 <PlusCircle className="mr-2 h-4 w-4" />
-                New Timetable
+                <span className="px-0.5">New Timetable</span>
             </Button>
         }
       </DialogTrigger>
@@ -137,7 +137,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
               )}
             />
             <DialogFooter className="pt-4">
-              <Button type="submit">Create Timetable</Button>
+              <Button type="submit"><span className="px-0.5">Create Timetable</span></Button>
             </DialogFooter>
           </form>
         </Form>

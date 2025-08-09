@@ -48,12 +48,12 @@ const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode,
     <div className="flex items-center justify-end gap-2 flex-wrap">
         <Button variant="outline" onClick={handleExportSheet}>
             <FileSpreadsheet className="mr-2 h-4 w-4" />
-            Export as Sheet
+            <span className="px-0.5">Export as Sheet</span>
         </Button>
         <AddClassDialog onAddClass={onAddClass} />
         <Button variant="outline" onClick={onToggleEditMode}>
             {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-            {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+            <span className="px-0.5">{isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}</span>
         </Button>
     </div>
 ));
@@ -341,7 +341,19 @@ export default function AdminDashboardPage() {
       return lectureSchedule.filter(e => e.room === selectedRoom);
   }, [lectureSchedule, selectedRoom]);
 
-  const toggleEditMode = useCallback(() => setIsEditMode(prev => !prev), []);
+  const toggleEditMode = useCallback(() => {
+    setIsEditMode(prev => {
+        const newEditMode = !prev;
+        if (newEditMode) {
+            toast({
+                title: "Edit Mode Active",
+                description: "Click on any class in the timetable to modify it.",
+                duration: 5000,
+            });
+        }
+        return newEditMode;
+    });
+  }, [toast]);
   
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -370,7 +382,7 @@ export default function AdminDashboardPage() {
                   <AlertDialogTrigger asChild>
                       <Button variant="destructive">
                       <Trash2 className="mr-2 h-4 w-4" />
-                      Delete Timetable
+                      <span className="px-0.5">Delete Timetable</span>
                       </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -399,14 +411,9 @@ export default function AdminDashboardPage() {
                 <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
                 <TabsTrigger value="analytics">
                     <LineChart className="mr-2 h-4 w-4" />
-                    Analytics
+                    <span className="px-0.5">Analytics</span>
                 </TabsTrigger>
             </TabsList>
-            
-            <p className="text-muted-foreground mb-6">
-                This is the central schedule for {activeTimetable.name}. Changes made here will automatically update individual lecturer timetables.
-                {isEditMode && <span className="block font-semibold text-primary mt-2">Edit mode is active. Click on a class to modify it.</span>}
-            </p>
 
             <TabsContent value="master">
                 <Card>
@@ -507,7 +514,7 @@ export default function AdminDashboardPage() {
           <p className="text-muted-foreground mb-4">No timetables to display.</p>
           <AddTimetableDialog onCreateTimetable={handleCreateTimetable}>
             <Button>
-              Create New Timetable
+              <span className="px-0.5">Create New Timetable</span>
             </Button>
           </AddTimetableDialog>
         </div>

@@ -113,7 +113,7 @@ export function RegisterDialog() {
       }
     }}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full">Create Account</Button>
+        <Button variant="outline" className="w-full"><span className="px-0.5">Create Account</span></Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -169,7 +169,7 @@ export function RegisterDialog() {
             <DialogFooter className="pt-4">
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <Loader2 className="animate-spin" />}
-                {isLoading ? 'Creating Account...' : 'Create Account'}
+                <span className="px-0.5">{isLoading ? 'Creating Account...' : 'Create Account'}</span>
               </Button>
             </DialogFooter>
           </form>
