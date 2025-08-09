@@ -8,7 +8,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
-const SpecialCard = ({ entry }: { entry: ScheduleEntry }) => {
+const SpecialCard = React.memo(({ entry }: { entry: ScheduleEntry }) => {
     const ICONS: Record<SpecialClassType, React.ReactNode> = {
         'Recess': <Coffee className="h-8 w-8 text-muted-foreground" />,
         'Library': <Library className="h-8 w-8 text-muted-foreground" />,
@@ -23,7 +23,7 @@ const SpecialCard = ({ entry }: { entry: ScheduleEntry }) => {
             <span className="font-semibold text-sm text-muted-foreground tracking-wider">{entry.subject}</span>
         </div>
     );
-};
+});
 SpecialCard.displayName = 'SpecialCard';
 
 
@@ -96,6 +96,14 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
 });
 ClassCard.displayName = 'ClassCard';
 
+
+interface TimetableProps {
+    entries: ScheduleEntry[];
+    view: 'admin' | 'lecturer';
+    isEditMode?: boolean;
+    onEdit?: (entry: ScheduleEntry) => void;
+    highlightedLecturer?: string;
+}
 
 export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
    if (!entries || entries.length === 0) {

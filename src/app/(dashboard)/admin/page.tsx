@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
@@ -39,6 +39,25 @@ import { FreeRoomSlots } from '@/components/admin/analytics/FreeRoomSlots';
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 
+const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode, handleExportSheet }: {
+    onAddClass: (newClass: Omit<ScheduleEntry, 'id'>) => void;
+    isEditMode: boolean;
+    onToggleEditMode: () => void;
+    handleExportSheet: () => void;
+}) => (
+    <div className="flex items-center justify-end gap-2 flex-wrap">
+        <Button variant="outline" onClick={handleExportSheet}>
+            <FileSpreadsheet className="mr-2 h-4 w-4" />
+            Export as Sheet
+        </Button>
+        <AddClassDialog onAddClass={onAddClass} />
+        <Button variant="outline" onClick={onToggleEditMode}>
+            {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
+            {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+        </Button>
+    </div>
+));
+TimetableActions.displayName = 'TimetableActions';
 
 export default function AdminDashboardPage() {
   const { timetables, setTimetables } = useTimetables();
@@ -65,33 +84,33 @@ export default function AdminDashboardPage() {
     setSelectedRoom('all');
   }, [activeTab, selectedTimetableId]);
 
-  const handleSelectTimetable = (id: string) => {
+  const handleSelectTimetable = useCallback((id: string) => {
     setSelectedTimetableId(id);
     setIsEditMode(false);
     setSelectedClass(null);
     setIsEditDialogOpen(false);
-  };
+  }, []);
   
-  const openEditDialog = (entry: ScheduleEntry) => {
+  const openEditDialog = useCallback((entry: ScheduleEntry) => {
     setSelectedClass(entry);
     setIsEditDialogOpen(true);
-  }
+  }, []);
 
-  const closeEditDialog = () => {
+  const closeEditDialog = useCallback(() => {
     setSelectedClass(null);
     setIsEditDialogOpen(false);
-  }
+  }, []);
 
-  const updateActiveTimetableSchedule = (newSchedule: ScheduleEntry[]) => {
+  const updateActiveTimetableSchedule = useCallback((newSchedule: ScheduleEntry[]) => {
     setTimetables(currentTimetables => 
         currentTimetables.map(t => 
             t.id === selectedTimetableId ? { ...t, schedule: newSchedule } : t
         )
     );
-  }
+  }, [selectedTimetableId, setTimetables]);
 
-  const checkForConflicts = (newClass: Omit<ScheduleEntry, 'id'>, existingSchedule: ScheduleEntry[], updatingClassId?: string): boolean => {
-    const newClassStartTime = parseInt(newClass.time.split(':')[0], 10);
+  const checkForConflicts = useCallback((newClass: Omit<ScheduleEntry, 'id'>, existingSchedule: ScheduleEntry[], updatingClassId?: string): boolean => {
+    const newClassStartTime = parseInt(newClass.time.split('-')[0].split(':')[0]);
     const newClassEndTime = newClassStartTime + (newClass.duration || 1);
   
     const scheduleToCheck = existingSchedule.filter(entry => entry.id !== updatingClassId);
@@ -101,14 +120,13 @@ export default function AdminDashboardPage() {
         continue;
       }
       
-      const existingStartTime = parseInt(existingEntry.time.split(':')[0], 10);
+      const existingStartTime = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
       const existingEndTime = existingStartTime + (existingEntry.duration || 1);
 
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
-      if (isOverlapping) {
-        // Lecturer conflict
-        if (newClass.lecturer && existingEntry.lecturer && newClass.type !== 'Recess' && existingEntry.type !== 'Recess') {
+      if (isOverlapping && newClass.type !== 'Recess' && existingEntry.type !== 'Recess') {
+        if (newClass.lecturer && existingEntry.lecturer) {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim()).filter(Boolean);
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim()).filter(Boolean);
           const conflictingLecturer = newLecturers.find(l => existingLecturers.includes(l));
@@ -122,8 +140,7 @@ export default function AdminDashboardPage() {
           }
         }
         
-        // Room/Lab conflict
-        if (newClass.room && newClass.room === existingEntry.room && newClass.type !== 'Recess' && existingEntry.type !== 'Recess') {
+        if (newClass.room && newClass.room === existingEntry.room) {
           toast({
             variant: "destructive",
             title: "Room/Lab Conflict",
@@ -132,7 +149,6 @@ export default function AdminDashboardPage() {
           return true;
         }
 
-        // Batch conflict for practicals
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const newBatches = newClass.batches;
            const existingBatches = existingEntry.batches;
@@ -149,9 +165,9 @@ export default function AdminDashboardPage() {
       }
     }
     return false;
-  };
+  }, [toast]);
   
-  const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
+  const handleAddClass = useCallback((newClass: Omit<ScheduleEntry, 'id'>) => {
     if (!activeTimetable) return;
 
     if (checkForConflicts(newClass, activeTimetable.schedule)) {
@@ -164,9 +180,9 @@ export default function AdminDashboardPage() {
       title: "Class Added!",
       description: `"${newClass.subject}" has been added to the timetable.`,
     });
-  };
+  }, [activeTimetable, checkForConflicts, updateActiveTimetableSchedule, toast]);
   
-  const handleUpdateClass = (updatedClass: ScheduleEntry) => {
+  const handleUpdateClass = useCallback((updatedClass: ScheduleEntry) => {
     if (!activeTimetable) return;
     
     if (checkForConflicts(updatedClass, activeTimetable.schedule, updatedClass.id)) {
@@ -179,9 +195,9 @@ export default function AdminDashboardPage() {
         title: "Class Updated!",
         description: `"${updatedClass.subject}" has been successfully updated.`,
     });
-  };
+  }, [activeTimetable, checkForConflicts, updateActiveTimetableSchedule, closeEditDialog, toast]);
   
-  const handleDeleteClass = (classId: string) => {
+  const handleDeleteClass = useCallback((classId: string) => {
     if (!activeTimetable) return;
     updateActiveTimetableSchedule(activeTimetable.schedule.filter(entry => entry.id !== classId));
     closeEditDialog();
@@ -190,9 +206,9 @@ export default function AdminDashboardPage() {
        description: "The class has been removed from the timetable.",
        variant: "destructive",
     });
-  }
+  }, [activeTimetable, updateActiveTimetableSchedule, closeEditDialog, toast]);
 
-  const handleCreateTimetable = (name: string, year: string) => {
+  const handleCreateTimetable = useCallback((name: string, year: string) => {
     const newTimetable: TimetableData = {
         id: `tt${Date.now()}`,
         name: `${name} (${year})`,
@@ -204,22 +220,21 @@ export default function AdminDashboardPage() {
         title: "Timetable Created!",
         description: `Timetable for "${newTimetable.name}" has been created.`,
     });
-  };
+  }, [setTimetables, toast]);
 
-  const handleDeleteTimetable = () => {
+  const handleDeleteTimetable = useCallback(() => {
     if (!activeTimetable) return;
 
-    const remainingTimetables = timetables.filter(t => t.id !== activeTimetable.id);
-    setTimetables(remainingTimetables);
+    setTimetables(currentTimetables => currentTimetables.filter(t => t.id !== activeTimetable.id));
     
     toast({
       title: "Timetable Deleted",
       description: `The timetable for "${activeTimetable.name}" has been deleted.`,
       variant: "destructive",
     })
-  }
+  }, [activeTimetable, setTimetables, toast]);
 
-  const handleExportSheet = () => {
+  const handleExportSheet = useCallback(() => {
     if (!activeTimetable) {
         toast({
             title: "Export Failed",
@@ -260,7 +275,7 @@ export default function AdminDashboardPage() {
     DAYS.forEach((day, i) => grid[i + 1][0] = day);
 
     scheduleToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day as string);
+        const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
             const cellContent = [
@@ -282,7 +297,7 @@ export default function AdminDashboardPage() {
     
     worksheet['!merges'] = [];
     scheduleToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day as string);
+        const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
             worksheet['!merges']?.push({
@@ -300,7 +315,7 @@ export default function AdminDashboardPage() {
         title: "Export Successful",
         description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
     });
-  };
+  }, [activeTimetable, activeTab, selectedRoom, toast]);
 
   const lectureSchedule = useMemo(() => 
     activeTimetable?.schedule.filter(e => e.type === 'Lecture') || [], 
@@ -322,24 +337,7 @@ export default function AdminDashboardPage() {
       return lectureSchedule.filter(e => e.room === selectedRoom);
   }, [lectureSchedule, selectedRoom]);
 
-  const TimetableActions = ({ onAddClass, isEditMode, onToggleEditMode, handleExportSheet }: {
-      onAddClass: (newClass: Omit<ScheduleEntry, 'id'>) => void;
-      isEditMode: boolean;
-      onToggleEditMode: () => void;
-      handleExportSheet: () => void;
-  }) => (
-      <div className="flex items-center justify-end gap-2 flex-wrap">
-          <Button variant="outline" onClick={handleExportSheet}>
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Export as Sheet
-          </Button>
-          <AddClassDialog onAddClass={onAddClass} />
-          <Button variant="outline" onClick={onToggleEditMode}>
-              {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-              {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-          </Button>
-      </div>
-  );
+  const toggleEditMode = useCallback(() => setIsEditMode(prev => !prev), []);
   
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -417,7 +415,7 @@ export default function AdminDashboardPage() {
                             handleExportSheet={handleExportSheet}
                             onAddClass={handleAddClass}
                             isEditMode={isEditMode}
-                            onToggleEditMode={() => setIsEditMode(prev => !prev)}
+                            onToggleEditMode={toggleEditMode}
                         />
                     </CardHeader>
                     <CardContent>
@@ -454,7 +452,7 @@ export default function AdminDashboardPage() {
                                 handleExportSheet={handleExportSheet}
                                 onAddClass={handleAddClass}
                                 isEditMode={isEditMode}
-                                onToggleEditMode={() => setIsEditMode(prev => !prev)}
+                                onToggleEditMode={toggleEditMode}
                             />
                         </div>
                     </CardHeader>
@@ -479,7 +477,7 @@ export default function AdminDashboardPage() {
                             handleExportSheet={handleExportSheet}
                             onAddClass={handleAddClass}
                             isEditMode={isEditMode}
-                            onToggleEditMode={() => setIsEditMode(prev => !prev)}
+                            onToggleEditMode={toggleEditMode}
                         />
                     </CardHeader>
                     <CardContent>
@@ -523,7 +521,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    
-
-    

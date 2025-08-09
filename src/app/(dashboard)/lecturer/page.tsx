@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
@@ -51,7 +52,7 @@ export default function LecturerDashboardPage() {
     [activeTimetable, selectedLecturer]
   );
 
-  const handleExportSheet = () => {
+  const handleExportSheet = useCallback(() => {
     if (!activeTimetable || !selectedLecturer) {
         toast({
             title: "Export Failed",
@@ -79,7 +80,7 @@ export default function LecturerDashboardPage() {
     DAYS.forEach((day, i) => grid[i + 1][0] = day);
 
     scheduleToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day as string);
+        const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
              const cellContent = [
@@ -101,7 +102,7 @@ export default function LecturerDashboardPage() {
 
     worksheet['!merges'] = [];
     scheduleToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day as string);
+        const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
             worksheet['!merges']?.push({
@@ -119,7 +120,7 @@ export default function LecturerDashboardPage() {
         title: "Export Successful",
         description: `The schedule has been exported to an Excel file.`,
     });
-};
+}, [activeTimetable, selectedLecturer, activeTab, lecturerSchedule, toast]);
 
 
   return (
