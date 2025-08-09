@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ScheduleEntry } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock } from "lucide-react";
+import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock, Library, HelpCircle, Dumbbell } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
@@ -16,12 +15,21 @@ type TimetableProps = {
   highlightedLecturer?: string;
 };
 
-const RecessCard = ({ entry }: { entry: ScheduleEntry }) => (
-  <div className="h-full w-full rounded-lg bg-muted/80 flex items-center justify-center p-2">
-    <span className="font-semibold text-lg text-muted-foreground tracking-wider -rotate-15 transform">RECESS</span>
-  </div>
-);
-RecessCard.displayName = 'RecessCard';
+const SpecialCard = ({ entry }: { entry: ScheduleEntry }) => {
+    let icon = <Book className="h-8 w-8 text-muted-foreground" />;
+    if (entry.type === 'Library') icon = <Library className="h-8 w-8 text-muted-foreground" />;
+    else if (entry.type === 'Help Desk') icon = <HelpCircle className="h-8 w-8 text-muted-foreground" />;
+    else if (entry.type === 'Sports') icon = <Dumbbell className="h-8 w-8 text-muted-foreground" />;
+
+    return (
+        <div className="h-full w-full rounded-lg bg-muted/80 flex flex-col items-center justify-center p-2 gap-2">
+            {icon}
+            <span className="font-semibold text-sm text-muted-foreground tracking-wider">{entry.subject}</span>
+        </div>
+    );
+};
+SpecialCard.displayName = 'SpecialCard';
+
 
 const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   entry: ScheduleEntry;
@@ -40,6 +48,10 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
 
   const iconStyle = {
     color: entry.color ? `${entry.color}CC` : 'hsl(var(--muted-foreground))',
+  }
+
+  if (['Recess', 'Library', 'Help Desk', 'Sports'].includes(entry.type || '')) {
+      return <SpecialCard entry={entry} />;
   }
 
   return (
@@ -160,10 +172,7 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
                 gridColumnEnd: `span ${duration}`,
               }}
             >
-              {entry.type === 'Recess' ? 
-                <RecessCard entry={entry} /> :
-                <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
-              }
+               <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
             </div>
           );
         })}

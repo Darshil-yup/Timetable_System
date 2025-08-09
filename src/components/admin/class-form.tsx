@@ -24,12 +24,13 @@ const COLORS = [
     { value: 'hsl(var(--chart-4))', label: 'Gold' },
     { value: 'hsl(var(--chart-5))', label: 'Orange' },
 ];
+const SPECIAL_TYPES = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
 const formSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   lecturer: z.string().optional(),
   room: z.string().optional(),
-  type: z.enum(["Lecture", "Practical", "Recess"]),
+  type: z.enum(["Lecture", "Practical", "Recess", "Library", "Help Desk", "Sports"]),
   batches: z.string().optional(),
   day: z.string().min(1, "Day is required"),
   time: z.string().min(1, "Time is required"),
@@ -76,21 +77,21 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   };
   
   const classType = form.watch("type");
-  const isRecess = classType === 'Recess';
+  const isSpecialType = SPECIAL_TYPES.includes(classType || '');
 
   React.useEffect(() => {
     if (classType === 'Practical') {
         form.setValue('duration', 2);
-    } else if (classType === 'Recess') {
+    } else if (SPECIAL_TYPES.includes(classType!)) {
         form.setValue('duration', 1);
-        form.setValue('subject', 'Recess');
+        form.setValue('subject', classType!);
         form.setValue('color', 'hsl(var(--muted))');
         form.setValue('lecturer', '');
         form.setValue('room', '');
         form.setValue('batches', '');
     } else { // Lecture
         form.setValue('duration', 1);
-        if (form.getValues('subject') === 'Recess') {
+        if (SPECIAL_TYPES.includes(form.getValues('subject'))) {
             form.setValue('subject', '');
         }
     }
@@ -111,25 +112,31 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                         <RadioGroup 
                             onValueChange={field.onChange} 
                             defaultValue={field.value}
-                            className="col-span-3 flex gap-4"
+                            className="col-span-3 flex gap-4 flex-wrap"
                         >
                             <FormItem className="flex items-center space-x-2">
-                                <FormControl>
-                                    <RadioGroupItem value="Lecture" id="r1" />
-                                </FormControl>
+                                <FormControl><RadioGroupItem value="Lecture" id="r1" /></FormControl>
                                 <Label htmlFor="r1">Lecture</Label>
                             </FormItem>
                             <FormItem className="flex items-center space-x-2">
-                                <FormControl>
-                                    <RadioGroupItem value="Practical" id="r2" />
-                                </FormControl>
+                                <FormControl><RadioGroupItem value="Practical" id="r2" /></FormControl>
                                 <Label htmlFor="r2">Practical</Label>
                             </FormItem>
-                             <FormItem className="flex items-center space-x-2">
-                                <FormControl>
-                                    <RadioGroupItem value="Recess" id="r3" />
-                                </FormControl>
+                            <FormItem className="flex items-center space-x-2">
+                                <FormControl><RadioGroupItem value="Recess" id="r3" /></FormControl>
                                 <Label htmlFor="r3">Recess</Label>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-2">
+                                <FormControl><RadioGroupItem value="Library" id="r4" /></FormControl>
+                                <Label htmlFor="r4">Library</Label>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-2">
+                                <FormControl><RadioGroupItem value="Help Desk" id="r5" /></FormControl>
+                                <Label htmlFor="r5">Help Desk</Label>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-2">
+                                <FormControl><RadioGroupItem value="Sports" id="r6" /></FormControl>
+                                <Label htmlFor="r6">Sports</Label>
                             </FormItem>
                         </RadioGroup>
                     </FormControl>
@@ -144,7 +151,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Subject</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                        <Input className="col-span-3" {...field} disabled={isSpecialType} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -157,7 +164,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Lecturer(s)</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                        <Input className="col-span-3" {...field} disabled={isSpecialType} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -170,7 +177,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Room/Lab</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                        <Input className="col-span-3" {...field} disabled={isSpecialType} />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -183,7 +190,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 <FormItem className="grid grid-cols-4 items-center gap-4">
                     <FormLabel className="text-right">Batches</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isRecess} />
+                        <Input className="col-span-3" {...field} disabled={classType !== 'Practical'} placeholder="e.g. A1, A2" />
                     </FormControl>
                     <FormMessage className="col-span-4 text-right" />
                 </FormItem>
@@ -244,23 +251,23 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                             className="col-span-3 flex gap-2"
-                            aria-disabled={isRecess}
+                            aria-disabled={isSpecialType}
                             onClick={(e) => {
-                                if (isRecess) e.preventDefault();
+                                if (isSpecialType) e.preventDefault();
                             }}
                         >
                             {COLORS.map(color => (
                                 <FormControl key={color.value}>
                                     <FormItem>
-                                        <RadioGroupItem value={color.value} id={`c-${color.label}`} className="sr-only" disabled={isRecess} />
+                                        <RadioGroupItem value={color.value} id={`c-${color.label}`} className="sr-only" disabled={isSpecialType} />
                                         <Label htmlFor={`c-${color.label}`}
                                             className={cn(
                                                 "w-8 h-8 rounded-full border-2 border-transparent",
-                                                !isRecess && "cursor-pointer",
+                                                !isSpecialType && "cursor-pointer",
                                                 "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
-                                                isRecess && "opacity-50 cursor-not-allowed"
+                                                isSpecialType && "opacity-50 cursor-not-allowed"
                                             )}
-                                            style={{ backgroundColor: isRecess ? 'hsl(var(--muted))' : color.value }}
+                                            style={{ backgroundColor: isSpecialType ? 'hsl(var(--muted))' : color.value }}
                                             title={color.label}
                                         >
                                             <span className="sr-only">{color.label}</span>

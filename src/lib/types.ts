@@ -5,7 +5,7 @@ export type ScheduleEntry = {
   room: string;
   day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';
   time: string;
-  type?: 'Lecture' | 'Practical' | 'Recess';
+  type?: 'Lecture' | 'Practical' | 'Recess' | 'Library' | 'Help Desk' | 'Sports';
   duration?: number; // Duration in hours
   batches?: string[];
   color?: string; // Hex color code
