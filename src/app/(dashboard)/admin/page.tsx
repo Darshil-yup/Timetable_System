@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect, useMemo } from 'react';
@@ -85,14 +86,12 @@ export default function AdminDashboardPage() {
         )
     );
   }
-  
-  const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
-    if (!activeTimetable) return;
 
+  const checkForConflicts = (newClass: Omit<ScheduleEntry, 'id'>, existingSchedule: ScheduleEntry[]): boolean => {
     const newClassStartTime = parseInt(newClass.time.split(':')[0], 10);
     const newClassEndTime = newClassStartTime + (newClass.duration || 1);
 
-    for (const existingEntry of activeTimetable.schedule) {
+    for (const existingEntry of existingSchedule) {
       if (existingEntry.day !== newClass.day) {
         continue;
       }
@@ -103,7 +102,8 @@ export default function AdminDashboardPage() {
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
       if (isOverlapping) {
-        if (newClass.lecturer && existingEntry.lecturer) {
+        // Lecturer conflict
+        if (newClass.lecturer && existingEntry.lecturer && newClass.type !== 'Recess' && existingEntry.type !== 'Recess') {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim()).filter(Boolean);
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim()).filter(Boolean);
           const conflictingLecturer = newLecturers.find(l => existingLecturers.includes(l));
@@ -113,19 +113,21 @@ export default function AdminDashboardPage() {
               title: "Lecturer Conflict",
               description: `${conflictingLecturer} is already scheduled for "${existingEntry.subject}" at this time.`,
             });
-            return;
+            return true;
           }
         }
         
-        if (newClass.room && newClass.room === existingEntry.room) {
+        // Room/Lab conflict
+        if (newClass.room && newClass.room === existingEntry.room && newClass.type !== 'Recess' && existingEntry.type !== 'Recess') {
           toast({
             variant: "destructive",
             title: "Room/Lab Conflict",
             description: `Room ${newClass.room} is already booked for "${existingEntry.subject}" at this time.`,
           });
-          return;
+          return true;
         }
 
+        // Batch conflict for practicals
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const newBatches = newClass.batches;
            const existingBatches = existingEntry.batches;
@@ -136,10 +138,19 @@ export default function AdminDashboardPage() {
                title: "Batch Conflict",
                description: `Batch ${conflictingBatch} is already scheduled for a practical ("${existingEntry.subject}") at this time.`,
              });
-             return;
+             return true;
            }
         }
       }
+    }
+    return false;
+  };
+  
+  const handleAddClass = (newClass: Omit<ScheduleEntry, 'id'>) => {
+    if (!activeTimetable) return;
+
+    if (checkForConflicts(newClass, activeTimetable.schedule)) {
+      return;
     }
 
     const newEntry: ScheduleEntry = { ...newClass, id: `c${Date.now()}` };
@@ -152,6 +163,12 @@ export default function AdminDashboardPage() {
   
   const handleUpdateClass = (updatedClass: ScheduleEntry) => {
     if (!activeTimetable) return;
+    
+    const scheduleWithoutOldEntry = activeTimetable.schedule.filter(entry => entry.id !== updatedClass.id);
+    if (checkForConflicts(updatedClass, scheduleWithoutOldEntry)) {
+      return;
+    }
+
     updateActiveTimetableSchedule(activeTimetable.schedule.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
     closeEditDialog();
     toast({
@@ -245,8 +262,8 @@ export default function AdminDashboardPage() {
             const cellContent = [
                 entry.subject,
                 entry.lecturer,
-                entry.room,
-                entry.batches && entry.batches.length > 0 ? `${entry.batches.join(', ')}` : null,
+                entry.room ? `Room: ${entry.room}`: null,
+                entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
             ].filter(Boolean).join('\n');
 
             for (let i = 0; i < (entry.duration || 1); i++) {
@@ -491,3 +508,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
