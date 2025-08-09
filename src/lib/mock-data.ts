@@ -331,17 +331,6 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     duration: 1,
     color: 'hsl(var(--chart-2))',
   },
-  {
-    id: 'c27',
-    subject: 'SPORTS',
-    lecturer: '',
-    room: '',
-    day: 'Friday',
-    time: '4:00-5:00',
-    type: 'Lecture',
-    duration: 1,
-    color: 'hsl(var(--chart-2))',
-  },
 ];
 
 const cseIotSem3Schedule: ScheduleEntry[] = [
