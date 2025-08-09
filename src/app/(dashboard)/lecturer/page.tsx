@@ -125,8 +125,7 @@ export default function LecturerDashboardPage() {
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Lecturer Dashboard</h1>
+       <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2 flex-wrap">
             <Select value={selectedLecturer} onValueChange={setSelectedLecturer} disabled={LECTURERS.length === 0}>
                 <SelectTrigger className="w-auto md:w-[200px]">
