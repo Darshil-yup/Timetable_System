@@ -2,12 +2,27 @@
 "use client"
 
 import React, { useMemo } from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { ScheduleEntry } from '@/lib/types';
 
 interface ClassUsageChartProps {
     schedule: ScheduleEntry[];
+}
+
+const getPath = (x: number, y: number, width: number, height: number) => {
+  return `M${x},${y + height}C${x + width / 3},${y + height} ${x + width / 2},${y + height / 3} ${x + width / 2},${y} C${x + width / 2},${y + height / 3} ${x + 2 * width / 3},${y + height} ${x + width}, ${y + height}Z`;
+};
+
+const TriangleBar = (props: any) => {
+  const { fill, x, y, width, height } = props;
+  return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
+};
+
+const getColor = (hours: number) => {
+    if (hours > 8) return 'hsl(var(--destructive))'; // Red for high usage
+    if (hours > 5) return 'hsl(var(--chart-3))'; // Yellow for medium usage
+    return 'hsl(var(--chart-2))'; // Green for low usage
 }
 
 export function ClassUsageChart({ schedule }: ClassUsageChartProps) {
@@ -36,7 +51,7 @@ export function ClassUsageChart({ schedule }: ClassUsageChartProps) {
         <Card>
             <CardHeader>
                 <CardTitle>Class Usage Analytics</CardTitle>
-                <CardDescription>Weekly hours allocated per subject.</CardDescription>
+                <CardDescription>Weekly hours allocated per subject. Red indicates high usage, green indicates low usage.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
@@ -61,7 +76,11 @@ export function ClassUsageChart({ schedule }: ClassUsageChartProps) {
                             }}
                         />
                         <Legend />
-                        <Bar dataKey="hours" fill="hsl(var(--primary))" name="Hours per Week" />
+                        <Bar dataKey="hours" name="Hours per Week">
+                            {classUsageData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={getColor(entry.hours)} />
+                            ))}
+                        </Bar>
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>

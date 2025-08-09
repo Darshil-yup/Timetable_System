@@ -2,13 +2,19 @@
 "use client"
 
 import React, { useMemo } from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { ScheduleEntry } from '@/lib/types';
 
 interface LecturerWorkloadChartProps {
     schedule: ScheduleEntry[];
 }
+
+const getColor = (hours: number) => {
+    if (hours > 12) return 'hsl(var(--destructive))'; // Red for high workload
+    if (hours > 8) return 'hsl(var(--chart-3))'; // Yellow for medium workload
+    return 'hsl(var(--chart-2))'; // Green for low workload
+};
 
 export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) {
     const lecturerWorkloadData = useMemo(() => {
@@ -39,7 +45,7 @@ export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) 
         <Card>
             <CardHeader>
                 <CardTitle>Lecturer Workload</CardTitle>
-                <CardDescription>Total weekly teaching hours per lecturer.</CardDescription>
+                <CardDescription>Total weekly teaching hours per lecturer. Red indicates high workload, green indicates low workload.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
@@ -64,7 +70,11 @@ export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) 
                             }}
                         />
                         <Legend />
-                        <Bar dataKey="hours" fill="hsl(var(--chart-2))" name="Weekly Hours" />
+                        <Bar dataKey="hours" name="Weekly Hours">
+                            {lecturerWorkloadData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={getColor(entry.hours)} />
+                            ))}
+                        </Bar>
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>
