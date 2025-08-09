@@ -117,36 +117,36 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="grid gap-4 py-4">
+        <div className="space-y-4 py-4">
             <FormField
                 control={form.control}
                 name="type"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-start gap-4">
-                    <FormLabel className="text-right pt-2">Type</FormLabel>
+                <FormItem>
+                    <FormLabel>Type</FormLabel>
                      <FormControl>
                         <RadioGroup 
                             onValueChange={field.onChange} 
                             defaultValue={field.value}
-                            className="col-span-3 grid grid-cols-2 gap-4"
+                            className="grid grid-cols-2 gap-4 pt-2"
                         >
                            <FormItem className="flex items-center space-x-2">
                                <FormControl><RadioGroupItem value="Lecture" id="r-Lecture" /></FormControl>
-                               <Label htmlFor="r-Lecture">Lecture</Label>
+                               <Label htmlFor="r-Lecture" className="font-normal">Lecture</Label>
                            </FormItem>
                            <FormItem className="flex items-center space-x-2">
                                <FormControl><RadioGroupItem value="Practical" id="r-Practical" /></FormControl>
-                               <Label htmlFor="r-Practical">Practical</Label>
+                               <Label htmlFor="r-Practical" className="font-normal">Practical</Label>
                            </FormItem>
                             {SPECIAL_TYPES.map((type) => (
                                <FormItem key={type} className="flex items-center space-x-2">
                                    <FormControl><RadioGroupItem value={type} id={`r-${type}`} /></FormControl>
-                                   <Label htmlFor={`r-${type}`}>{type}</Label>
+                                   <Label htmlFor={`r-${type}`} className="font-normal">{type}</Label>
                                </FormItem>
                            ))}
                         </RadioGroup>
                     </FormControl>
-                    <FormMessage className="col-start-2 col-span-3 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -154,12 +154,12 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="subject"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Subject</FormLabel>
+                <FormItem>
+                    <FormLabel>Subject</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isSpecialType} />
+                        <Input {...field} disabled={isSpecialType} />
                     </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -167,12 +167,12 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="lecturer"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Lecturer(s)</FormLabel>
+                <FormItem>
+                    <FormLabel>Lecturer(s)</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isSpecialType} placeholder="e.g. John Doe, Jane Smith"/>
+                        <Input {...field} disabled={isSpecialType} placeholder="e.g. John Doe, Jane Smith"/>
                     </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -180,12 +180,12 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="room"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Room/Lab</FormLabel>
+                <FormItem>
+                    <FormLabel>Room/Lab</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={isSpecialType} />
+                        <Input {...field} disabled={isSpecialType} />
                     </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -193,12 +193,12 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="batches"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Batches</FormLabel>
+                <FormItem>
+                    <FormLabel>Batches</FormLabel>
                     <FormControl>
-                        <Input className="col-span-3" {...field} disabled={classType !== 'Practical'} placeholder="e.g. A1, A2" />
+                        <Input {...field} disabled={classType !== 'Practical'} placeholder="e.g. A1, A2" />
                     </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -206,11 +206,11 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="day"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Day</FormLabel>
+                <FormItem>
+                    <FormLabel>Day</FormLabel>
                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                            <SelectTrigger className="col-span-3">
+                            <SelectTrigger>
                                 <SelectValue placeholder="Select a day" />
                             </SelectTrigger>
                         </FormControl>
@@ -220,7 +220,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                         ))}
                         </SelectContent>
                     </Select>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -228,11 +228,11 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="time"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Time</FormLabel>
+                <FormItem>
+                    <FormLabel>Time</FormLabel>
                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                            <SelectTrigger className="col-span-3">
+                            <SelectTrigger>
                                 <SelectValue placeholder="Select a time slot" />
                             </SelectTrigger>
                         </FormControl>
@@ -242,7 +242,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                         ))}
                         </SelectContent>
                     </Select>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
@@ -250,13 +250,13 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 control={form.control}
                 name="color"
                 render={({ field }) => (
-                <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <FormLabel className="text-right">Color</FormLabel>
+                <FormItem>
+                    <FormLabel>Color</FormLabel>
                     <FormControl>
                          <RadioGroup
                             value={field.value}
                             onValueChange={field.onChange}
-                            className="col-span-3 flex flex-wrap gap-2"
+                            className="flex flex-wrap gap-2 pt-2"
                         >
                             {PALETTE_COLORS.map((color) => (
                                 <FormItem key={color} className="flex items-center space-x-2">
@@ -278,7 +278,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             ))}
                         </RadioGroup>
                     </FormControl>
-                    <FormMessage className="col-span-4 text-right" />
+                    <FormMessage />
                 </FormItem>
                 )}
             />
