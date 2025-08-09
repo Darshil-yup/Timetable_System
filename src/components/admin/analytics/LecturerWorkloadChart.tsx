@@ -70,7 +70,7 @@ export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) 
                             }}
                         />
                         <Legend />
-                        <Bar dataKey="hours" name="Weekly Hours">
+                        <Bar dataKey="hours" name="Weekly Hours" radius={[0, 4, 4, 0]}>
                             {lecturerWorkloadData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={getColor(entry.hours)} />
                             ))}
