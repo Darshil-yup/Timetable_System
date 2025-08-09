@@ -342,18 +342,16 @@ export default function AdminDashboardPage() {
   }, [lectureSchedule, selectedRoom]);
 
   const toggleEditMode = useCallback(() => {
-    setIsEditMode(prev => {
-        const newEditMode = !prev;
-        if (newEditMode) {
-            toast({
-                title: "Edit Mode Active",
-                description: "Click on any class in the timetable to modify it.",
-                duration: 5000,
-            });
-        }
-        return newEditMode;
-    });
-  }, [toast]);
+    const newEditMode = !isEditMode;
+    setIsEditMode(newEditMode);
+    if (newEditMode) {
+      toast({
+        title: "Edit Mode Active",
+        description: "Click on any class in the timetable to modify it.",
+        duration: 5000,
+      });
+    }
+  }, [isEditMode, toast]);
   
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
