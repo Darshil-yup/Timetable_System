@@ -28,7 +28,7 @@ export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) 
 
         return Object.entries(workload)
             .map(([name, hours]) => ({ name, hours }))
-            .sort((a, b) => b.hours - a.hours);
+            .sort((a, b) => a.hours - b.hours);
     }, [schedule]);
 
     if (lecturerWorkloadData.length === 0) {
@@ -43,10 +43,19 @@ export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) 
             </CardHeader>
             <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
-                    <BarChart data={lecturerWorkloadData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <BarChart 
+                        data={lecturerWorkloadData} 
+                        layout="vertical" 
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" angle={-45} textAnchor="end" height={100} interval={0} />
-                        <YAxis allowDecimals={false} />
+                        <XAxis type="number" allowDecimals={false} />
+                        <YAxis 
+                            type="category" 
+                            dataKey="name" 
+                            width={150} 
+                            interval={0}
+                        />
                         <Tooltip
                             contentStyle={{
                                 background: 'hsl(var(--background))',
@@ -62,5 +71,3 @@ export function LecturerWorkloadChart({ schedule }: LecturerWorkloadChartProps) 
         </Card>
     );
 }
-
-    
