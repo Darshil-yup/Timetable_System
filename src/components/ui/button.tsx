@@ -47,7 +47,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const hasText = React.Children.toArray(children).some(child => typeof child === 'string' && child.trim().length > 0);
     const hasIcon = React.Children.toArray(children).some(child => React.isValidElement(child));
 
-    const gap = hasIcon && hasText ? 'gap-1' : '';
+    const gap = hasIcon && hasText ? 'gap-0.5' : '';
 
     return (
       <Comp
