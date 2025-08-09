@@ -46,7 +46,7 @@ const PasswordStrengthIndicator = ({ strength }: { strength: { value: number; la
     )
 }
 
-export function RegisterDialog() {
+export function RegisterDialog({ children }: { children?: React.ReactNode }) {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +113,7 @@ export function RegisterDialog() {
       }
     }}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full"><span className="px-0.5">Create Account</span></Button>
+        {children || <Button variant="outline" className="w-full"><span className="px-0.5">Create Account</span></Button>}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

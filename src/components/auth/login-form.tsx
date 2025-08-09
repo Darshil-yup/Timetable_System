@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -54,13 +55,20 @@ export function LoginForm() {
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
-        <Button className="w-full" onClick={() => handleLogin('admin')} disabled={isFormDisabled}>
-          {isLoading === 'admin' ? <Loader2 className="animate-spin" /> : <span className="px-0.5">Login as Admin</span>}
-        </Button>
         <Button variant="secondary" className="w-full" onClick={() => handleLogin('lecturer')} disabled={isFormDisabled}>
           {isLoading === 'lecturer' ? <Loader2 className="animate-spin" /> : <span className="px-0.5">Login as Lecturer</span>}
         </Button>
-        <RegisterDialog />
+        <Button className="w-full" onClick={() => handleLogin('admin')} disabled={isFormDisabled}>
+          {isLoading === 'admin' ? <Loader2 className="animate-spin" /> : <span className="px-0.5">Login as Admin</span>}
+        </Button>
+        <div className="text-center text-sm text-muted-foreground pt-2">
+          {"Haven't signed up yet? "}
+          <RegisterDialog>
+             <span className="underline cursor-pointer font-semibold text-primary/90">
+                Create an account
+            </span>
+          </RegisterDialog>
+        </div>
       </CardFooter>
     </Card>
   );
