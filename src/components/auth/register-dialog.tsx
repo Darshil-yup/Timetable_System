@@ -38,7 +38,7 @@ const PasswordStrengthIndicator = ({ strength }: { strength: { value: number; la
 
     return (
         <div className="space-y-2">
-            <Progress value={strength.value} className={cn("h-2", strength.color)} />
+            <Progress value={strength.value} colorClassName={strength.color} className="h-2" />
             <p className={cn("text-xs font-medium", strength.color.replace('bg-', 'text-'))}>
                 {strength.label}
             </p>
