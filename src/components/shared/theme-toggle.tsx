@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -14,15 +15,6 @@ import {
 
 export function ThemeToggle() {
   const { setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
 
   return (
     <DropdownMenu>
