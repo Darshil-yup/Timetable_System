@@ -8,11 +8,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RegisterDialog } from './register-dialog';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export function LoginForm() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState<"admin" | "lecturer" | null>(null);
 
   const handleLogin = (role: 'admin' | 'lecturer') => {
@@ -40,18 +39,7 @@ export function LoginForm() {
         </div>
         <div className="grid gap-2 relative">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type={showPassword ? 'text' : 'password'} required disabled={isFormDisabled}/>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-1 top-7 h-7 w-7"
-            onClick={() => setShowPassword(!showPassword)}
-            disabled={isFormDisabled}
-          >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
-          </Button>
+          <Input id="password" type="password" required disabled={isFormDisabled}/>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
