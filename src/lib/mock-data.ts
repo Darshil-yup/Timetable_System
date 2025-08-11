@@ -60,6 +60,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     duration: 1,
     color: 'hsl(var(--chart-2))',
   },
+   { id: 'c-recess-mon-5', subject: 'Recess', lecturer: '', room: '', day: 'Monday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   {
     id: 'c3',
     subject: 'MDM:FOG',
@@ -116,6 +117,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     duration: 1,
     color: 'hsl(var(--chart-2))',
   },
+  { id: 'c-recess-tue-5', subject: 'Recess', lecturer: '', room: '', day: 'Tuesday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   {
     id: 'c8',
     subject: 'MDM:FOG',
@@ -173,6 +175,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     duration: 1,
     color: 'hsl(var(--chart-3))',
   },
+   { id: 'c-recess-wed-5', subject: 'Recess', lecturer: '', room: '', day: 'Wednesday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   {
     id: 'c13',
     subject: 'MDM:FOG',
@@ -231,6 +234,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     batches: ['A3','A4','A1','A2'],
     color: 'hsl(var(--chart-5))',
   },
+  { id: 'c-recess-thu-5', subject: 'Recess', lecturer: '', room: '', day: 'Thursday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   {
     id: 'c18',
     subject: 'OS',
@@ -298,6 +302,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     duration: 1,
     color: 'hsl(var(--chart-5))',
   },
+  { id: 'c-recess-fri-5', subject: 'Recess', lecturer: '', room: '', day: 'Friday', time: '12:00-1:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   {
     id: 'c24',
     subject: 'DBMS',
@@ -341,28 +346,33 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     type: 'Sports',
     duration: 1,
     color: 'hsl(var(--muted))'
-  }
+  },
+  // Saturday
+  { id: 'c-recess-sat-5', subject: 'Recess', lecturer: '', room: '', day: 'Saturday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 ];
 
 const cseIotSem3Schedule: ScheduleEntry[] = [
   // Monday
   { id: 's3c1', subject: 'OE:1', lecturer: '', room: 'ET-308', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's3c2', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-  { id: 's3c3', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Monday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c3', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Monday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 'c-recess-mon-3', subject: 'Recess', lecturer: '', room: '', day: 'Monday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's3c4', subject: 'LIBRARY', lecturer: 'Lata R. Tembhare', room: '', day: 'Monday', time: '2:00-3:00', type: 'Library', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 's3c5', subject: 'LAB: DS/ CWS', lecturer: 'Lata R. Tembhare, Rina Parteki/Harsha Tembhekar, Sharayu Sangekar', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Monday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
   
   // Tuesday
   { id: 's3c6', subject: 'OE:1', lecturer: '', room: 'ET-308', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's3c7', subject: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-  { id: 's3c8', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Tuesday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c8', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Tuesday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 'c-recess-tue-3', subject: 'Recess', lecturer: '', room: '', day: 'Tuesday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's3c9', subject: 'MI', lecturer: 'S. Khan', room: 'ET-308', day: 'Tuesday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c10', subject: 'SPORTS', lecturer: '', room: '', day: 'Tuesday', time: '3:00-4:00', type: 'Sports', duration: 2, color: 'hsl(var(--chart-1))' },
 
   // Wednesday
   { id: 's3c11', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c12', subject: 'MI', lecturer: 'S. Khan', room: 'ET-308', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-  { id: 's3c13', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Wednesday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 's3c13', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Wednesday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+  { id: 'c-recess-wed-3', subject: 'Recess', lecturer: '', room: '', day: 'Wednesday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's3c14', subject: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Wednesday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
   { id: 's3c15', subject: 'FOME', lecturer: 'Dr. G. M. Vidhale', room: 'ET-308', day: 'Wednesday', time: '3:00-4:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's3c16', subject: 'HELP DESK', lecturer: '', room: '', day: 'Wednesday', time: '4:00-5:00', type: 'Help Desk', duration: 1, color: 'hsl(var(--card))' },
@@ -370,29 +380,36 @@ const cseIotSem3Schedule: ScheduleEntry[] = [
   // Thursday
   { id: 's3c17', subject: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
   { id: 's3c18', subject: 'FOME', lecturer: 'Dr. G. M. Vidhale', room: 'ET-308', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-  { id: 's3c19', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Thursday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's3c19', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Thursday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 'c-recess-thu-3', subject: 'Recess', lecturer: '', room: '', day: 'Thursday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's3c20', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c21', subject: 'LAB: DS/ CWS', lecturer: 'Lata R. Tembhare, Charvi S. Suri/Harsha Tembhekar, Sadaf', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Thursday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-1))' },
   
   // Friday
   { id: 's3c22', subject: 'MI', lecturer: 'S. Khan', room: 'ET-308', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c23', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 'c-recess-fri-3', subject: 'Recess', lecturer: '', room: '', day: 'Friday', time: '12:00-1:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's3c24', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Friday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 's3c25', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Friday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c26', subject: 'LAB: MI', lecturer: 'Dr. Rathkanthiwar, S. Khan, , Kirti S., Dr. A. B. Thatere', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
+
+  // Saturday
+  { id: 'c-recess-sat-3', subject: 'Recess', lecturer: '', room: '', day: 'Saturday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 ];
 
 const cseIotSem7Schedule: ScheduleEntry[] = [
   // Monday
   { id: 's7c1', subject: 'PE-V: Blockchain/OSC', lecturer: 'Prachi A. Bainalwar/Gousia Ahmed', room: 'EL-204/EL 203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
   { id: 's7c2', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 302', day: 'Monday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-  { id: 's7c3', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha Tembhekar/Dr. Prarthana Deshkar', room: 'EL 302/EL 102', day: 'Monday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 'c-recess-mon-7', subject: 'Recess', lecturer: '', room: '', day: 'Monday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+  { id: 's7c3', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha Tembhekar/Dr. Prarthana Deshkar', room: 'EL 302/EL 102', day: 'Monday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's7c4', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'ET 308', day: 'Monday', time: '3:00-4:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 's7c5', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'ET 308', day: 'Monday', time: '4:00-5:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
 
   // Tuesday
   { id: 's7c6', subject: 'LAB: SE/CC', lecturer: 'Nilesh U. Sambhe, Dr. Prarthana Deshkar/Dr. Ganesh Yenurkar, Gousia Ahmed', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Tuesday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A1,A2', 'A3,A4'], color: 'hsl(var(--chart-2))' },
-  { id: 's7c7', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha Tembhekar/Dr. Prarthana Deshkar', room: 'EL 302/EL 102', day: 'Tuesday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 's7c7', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha Tembhekar/Dr. Prarthana Deshkar', room: 'EL 302/EL 102', day: 'Tuesday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 'c-recess-tue-7', subject: 'Recess', lecturer: '', room: '', day: 'Tuesday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's7c8', subject: 'LIBRARY', lecturer: 'Gousia Ahmed', room: '', day: 'Tuesday', time: '2:00-3:00', type: 'Library', duration: 1, color: 'hsl(var(--card))' },
   { id: 's7c9', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'EL 103', day: 'Tuesday', time: '3:00-4:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 's7c10', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'EL 103', day: 'Tuesday', time: '4:00-5:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
@@ -400,23 +417,28 @@ const cseIotSem7Schedule: ScheduleEntry[] = [
   // Wednesday
   { id: 's7c11', subject: 'PE III: LAB: IOT/FEC', lecturer: 'Nirmik/Prachi Gawande, Dr. S. J. Kadarpachi', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Wednesday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A1,A2'], color: 'hsl(var(--chart-1))' },
   { id: 's7c12', subject: 'S. Saba', lecturer: 'S. Saba', room: '', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-  { id: 's7c13', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba/Prachi Gawande', room: 'EL-204/EL102', day: 'Wednesday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+  { id: 's7c13', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba/Prachi Gawande', room: 'EL-204/EL102', day: 'Wednesday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+  { id: 'c-recess-wed-7', subject: 'Recess', lecturer: '', room: '', day: 'Wednesday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's7c14', subject: 'Project', lecturer: '', room: '', day: 'Wednesday', time: '2:00-3:00', type: 'Lecture', duration: 3, color: 'hsl(var(--muted))' },
 
   // Thursday
   { id: 's7c15', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's7c16', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha Tembhekar/Dr. Prarthana Deshkar', room: 'ET316/EL 211', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+  { id: 'c-recess-thu-7', subject: 'Recess', lecturer: '', room: '', day: 'Thursday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 's7c17', subject: 'PE-V: Blockchain/OSC', lecturer: 'Prachi A. Bainalwar/Gousia Ahmed', room: 'AIDS Lab 2/AIDS Lab 1', day: 'Thursday', time: '2:00-3:00', type: 'Practical', duration: 2, color: 'hsl(var(--chart-1))' },
-  { id: 's7c18', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'EL 211', day: 'Thursday', time: '4:00-5:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+  { id: 's7c18', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'EL 211', day: 'Thursday', time: '3:00-4:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
   { id: 's7c19', subject: 'HELP DESK', lecturer: '', room: '', day: 'Thursday', time: '4:00-5:00', type: 'Help Desk', duration: 1, color: 'hsl(var(--card))' },
 
   // Friday
   { id: 's7c20', subject: 'LAB: SE/CC', lecturer: 'Nilesh U. Sambhe, Dr. G. M. Vidhale/Dr. Ganesh Yenurkar, S. S. Bhadoria', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A3,A4', 'A1,A2'], color: 'hsl(var(--chart-2))' },
-  { id: 's7c21', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba/Prachi Gawande', room: 'ET 308/ET 316', day: 'Friday', time: '12:00-1:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+  { id: 'c-recess-fri-7', subject: 'Recess', lecturer: '', room: '', day: 'Friday', time: '12:00-1:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+  { id: 's7c21', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba/Prachi Gawande', room: 'ET 308/ET 316', day: 'Friday', time: '1:00-2:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
   { id: 's7c22', subject: 'PE-V: Blockchain/OSC', lecturer: 'Prachi A. Bainalwar/Gousia Ahmed', room: 'AIDS Lab 2/EL-204', day: 'Friday', time: '2:00-3:00', type: 'Practical', duration: 2, color: 'hsl(var(--chart-1))' },
-  { id: 's7c23', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Friday', time: '4:00-5:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+  { id: 's7c23', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Friday', time: '3:00-4:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's7c24', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'EL 102', day: 'Friday', time: '4:00-5:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-
+  
+  // Saturday
+  { id: 'c-recess-sat-7', subject: 'Recess', lecturer: '', room: '', day: 'Saturday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 ];
 
 
