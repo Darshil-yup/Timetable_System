@@ -347,8 +347,6 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
     duration: 1,
     color: 'hsl(var(--muted))'
   },
-  // Saturday
-  { id: 'c-recess-sat-5', subject: 'Recess', lecturer: '', room: '', day: 'Saturday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 ];
 
 const cseIotSem3Schedule: ScheduleEntry[] = [
@@ -393,8 +391,6 @@ const cseIotSem3Schedule: ScheduleEntry[] = [
   { id: 's3c25', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Friday', time: '2:00-3:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
   { id: 's3c26', subject: 'LAB: MI', lecturer: 'Dr. Rathkanthiwar, S. Khan, , Kirti S., Dr. A. B. Thatere', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '3:00-4:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
 
-  // Saturday
-  { id: 'c-recess-sat-3', subject: 'Recess', lecturer: '', room: '', day: 'Saturday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 ];
 
 const cseIotSem7Schedule: ScheduleEntry[] = [
@@ -437,8 +433,6 @@ const cseIotSem7Schedule: ScheduleEntry[] = [
   { id: 's7c23', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Friday', time: '3:00-4:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's7c24', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'EL 102', day: 'Friday', time: '4:00-5:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   
-  // Saturday
-  { id: 'c-recess-sat-7', subject: 'Recess', lecturer: '', room: '', day: 'Saturday', time: '1:00-2:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 ];
 
 
