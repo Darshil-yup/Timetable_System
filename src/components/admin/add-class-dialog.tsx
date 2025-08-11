@@ -33,8 +33,8 @@ export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          <span className="px-0.5">Add New Class</span>
+          <PlusCircle />
+          Add New Class
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] flex flex-col">

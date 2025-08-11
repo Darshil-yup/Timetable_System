@@ -65,8 +65,8 @@ export function EditClassDialog({
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button type="button" variant="destructive">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  <span className="px-0.5">Delete Class</span>
+                  <Trash2 />
+                  Delete Class
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>

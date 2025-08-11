@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -23,7 +24,7 @@ import { ThemeToggle } from './theme-toggle';
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-sm">
-      <div className="container flex h-24 items-center px-4 sm:px-6 lg:px-8">
+      <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <Link
           href="/admin"
           className="flex items-center gap-2 font-bold text-lg text-foreground mr-auto"
@@ -60,8 +61,8 @@ export default function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <Users className="mr-2 h-4 w-4" />
-                  <span className="px-0.5">Members</span>
+                  <Users />
+                  Members
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
@@ -78,8 +79,8 @@ export default function Header() {
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span className="px-0.5">Log out</span>
+                  <LogOut />
+                  Log out
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>

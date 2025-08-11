@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 gap-0.5",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 gap-2",
   {
     variants: {
       variant: {
@@ -44,6 +44,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
+    // Check if children contain an icon and text to apply specific padding.
+    const hasIcon = React.Children.toArray(children).some(child => React.isValidElement(child) && (child.type as any).displayName?.includes("Icon"));
+    const hasText = React.Children.toArray(children).some(child => typeof child === 'string' && child.trim().length > 0);
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
@@ -52,9 +56,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {React.Children.map(children, child => {
           if (typeof child === 'string' && child.trim().length > 0) {
-            return <span className="px-0.5">{child}</span>;
+            // Apply padding only if there is also an icon
+            return <span className={cn(hasIcon && "px-0.5")}>{child}</span>;
           }
           if(React.isValidElement(child)) {
+             // Add size and shrink-0 to prevent icon from shrinking
              return React.cloneElement(child as React.ReactElement, { className: 'size-4 shrink-0' });
           }
           return child;

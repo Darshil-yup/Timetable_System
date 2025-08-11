@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Trash2, FileSpreadsheet } from 'lucide-react';
+import { Pencil, Trash2, XCircle, FileSpreadsheet } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,16 +36,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
 
-const TimetableActions = React.memo(({ onAddClass, handleExportSheet }: {
+const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode, handleExportSheet }: {
     onAddClass: (newClass: Omit<ScheduleEntry, 'id'>) => void;
+    isEditMode: boolean;
+    onToggleEditMode: () => void;
     handleExportSheet: () => void;
 }) => (
     <div className="flex items-center justify-end gap-2 flex-wrap">
         <Button variant="outline" onClick={handleExportSheet}>
             <FileSpreadsheet />
-            <span className="px-0.5">Export as Sheet</span>
+            Export as Sheet
         </Button>
         <AddClassDialog onAddClass={onAddClass} />
+        <Button variant="outline" onClick={onToggleEditMode}>
+            {isEditMode ? <XCircle /> : <Pencil />}
+            {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+        </Button>
     </div>
 ));
 TimetableActions.displayName = 'TimetableActions';
@@ -332,6 +338,18 @@ export default function AdminDashboardPage() {
       return lectureSchedule.filter(e => e.room === selectedRoom);
   }, [lectureSchedule, selectedRoom]);
 
+  const toggleEditMode = useCallback(() => {
+    const newEditMode = !isEditMode;
+    setIsEditMode(newEditMode);
+    if (newEditMode) {
+      toast({
+        title: "Edit Mode Active",
+        description: "Click on any class in the timetable to modify it.",
+        duration: 5000,
+      });
+    }
+  }, [isEditMode, toast]);
+  
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
@@ -358,7 +376,7 @@ export default function AdminDashboardPage() {
                   <AlertDialogTrigger asChild>
                       <Button variant="destructive">
                       <Trash2 />
-                      <span className="px-0.5">Delete Timetable</span>
+                      Delete Timetable
                       </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -397,6 +415,8 @@ export default function AdminDashboardPage() {
                         <TimetableActions 
                             handleExportSheet={handleExportSheet}
                             onAddClass={handleAddClass}
+                            isEditMode={isEditMode}
+                            onToggleEditMode={toggleEditMode}
                         />
                     </CardHeader>
                     <CardContent>
@@ -432,6 +452,8 @@ export default function AdminDashboardPage() {
                             <TimetableActions 
                                 handleExportSheet={handleExportSheet}
                                 onAddClass={handleAddClass}
+                                isEditMode={isEditMode}
+                                onToggleEditMode={toggleEditMode}
                             />
                         </div>
                     </CardHeader>
@@ -455,6 +477,8 @@ export default function AdminDashboardPage() {
                         <TimetableActions 
                             handleExportSheet={handleExportSheet}
                             onAddClass={handleAddClass}
+                            isEditMode={isEditMode}
+                            onToggleEditMode={toggleEditMode}
                         />
                     </CardHeader>
                     <CardContent>
@@ -473,7 +497,7 @@ export default function AdminDashboardPage() {
           <p className="text-muted-foreground mb-4">No timetables to display.</p>
           <AddTimetableDialog onCreateTimetable={handleCreateTimetable}>
             <Button>
-              <span className="px-0.5">Create New Timetable</span>
+              Create New Timetable
             </Button>
           </AddTimetableDialog>
         </div>
