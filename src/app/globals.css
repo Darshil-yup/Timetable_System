@@ -63,6 +63,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: #F1F3F5; /* Fallback for older browsers */
+    background-image: linear-gradient(160deg, #E3FDF5 0%, #F8F9FA 100%);
+    @apply text-foreground;
   }
 }
