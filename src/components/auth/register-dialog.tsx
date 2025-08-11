@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -46,10 +46,18 @@ const PasswordStrengthIndicator = ({ strength }: { strength: { value: number; la
     )
 }
 
+type PasswordStrength = {
+    value: number;
+    label: string;
+    color: string;
+};
+
 export function RegisterDialog({ children }: { children?: React.ReactNode }) {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({ value: 0, label: '', color: '' });
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -63,28 +71,38 @@ export function RegisterDialog({ children }: { children?: React.ReactNode }) {
   
   const password = form.watch("password");
 
-  const passwordStrength = useMemo(() => {
-    let score = 0;
-    if (!password) return { value: 0, label: '', color: '' };
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        let score = 0;
+        if (!password) {
+            setPasswordStrength({ value: 0, label: '', color: '' });
+            return;
+        }
 
-    if (password.length >= 8) score++;
-    if (/[a-z]/.test(password)) score++;
-    if (/[A-Z]/.test(password)) score++;
-    if (/[0-9]/.test(password)) score++;
-    if (/[^a-zA-Z0-9]/.test(password)) score++;
-
-    switch (score) {
-        case 0:
-        case 1:
-        case 2:
-            return { value: (score / 5) * 100, label: "Weak", color: "bg-destructive" };
-        case 3:
-            return { value: 65, label: "Medium", color: "bg-yellow-500" };
-        case 4:
-        case 5:
-            return { value: 100, label: "Strong", color: "bg-green-500" };
-        default:
-            return { value: 0, label: '', color: '' };
+        if (password.length >= 8) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^a-zA-Z0-9]/.test(password)) score++;
+        
+        let strength: PasswordStrength;
+        switch (score) {
+            case 0:
+            case 1:
+            case 2:
+                strength = { value: (score / 5) * 100, label: "Weak", color: "bg-destructive" };
+                break;
+            case 3:
+                strength = { value: 65, label: "Medium", color: "bg-yellow-500" };
+                break;
+            case 4:
+            case 5:
+                strength = { value: 100, label: "Strong", color: "bg-green-500" };
+                break;
+            default:
+                strength = { value: 0, label: '', color: '' };
+        }
+        setPasswordStrength(strength);
     }
   }, [password]);
 
