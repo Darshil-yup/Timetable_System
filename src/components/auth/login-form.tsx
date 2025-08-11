@@ -38,22 +38,24 @@ export function LoginForm() {
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" required disabled={isFormDisabled} />
         </div>
-        <div className="grid gap-2 relative">
+        <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" type={showPassword ? 'text' : 'password'} required disabled={isFormDisabled}/>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-1 top-7 h-7 w-7"
-            onClick={() => setShowPassword(!showPassword)}
-            disabled={isFormDisabled}
-          >
-            {showPassword ? <EyeOff /> : <Eye />}
-            <span className="sr-only">
-              {showPassword ? 'Hide password' : 'Show password'}
-            </span>
-          </Button>
+          <div className="relative">
+            <Input id="password" type={showPassword ? 'text' : 'password'} required disabled={isFormDisabled}/>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute inset-y-0 right-1 h-full px-2"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={isFormDisabled}
+            >
+              {showPassword ? <EyeOff /> : <Eye />}
+              <span className="sr-only">
+                {showPassword ? 'Hide password' : 'Show password'}
+              </span>
+            </Button>
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
