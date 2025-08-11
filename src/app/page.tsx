@@ -11,9 +11,6 @@ export default function Home() {
         <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
           Welcome to TimeTableSync
         </h1>
-        <p className="mt-3 text-lg text-muted-foreground max-w-2xl">
-          The smart, automated solution for generating lecturer timetables. Sign in to access your dashboard.
-        </p>
       </div>
       <LoginForm />
     </main>
