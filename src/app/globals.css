@@ -66,13 +66,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-@layer components {
-  .app-background {
-    @apply bg-cover bg-center bg-fixed transition-all duration-500;
-    background-image: url('/dark.jpeg');
-  }
-  .dark .app-background {
-    background-image: url('/light.jpeg');
-  }
-}
