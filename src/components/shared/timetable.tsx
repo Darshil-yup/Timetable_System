@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ScheduleEntry, SpecialClassType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { User, Book, MapPin, Users, FlaskConical, Pencil, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
+import { User, Book, MapPin, Users, FlaskConical, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-1:00", "1:00-2:00", "2:00-3:00", "3:00-4:00", "4:00-5:00"];
@@ -86,11 +87,6 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
           </div>
         )}
       </CardContent>
-      {isEditMode && (
-        <div className="absolute top-1 right-1 p-1 bg-background/80 rounded-full">
-          <Pencil className="h-4 w-4 text-primary" />
-        </div>
-      )}
     </Card>
   );
 });

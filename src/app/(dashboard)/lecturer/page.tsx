@@ -7,7 +7,7 @@ import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
-import { FileSpreadsheet, User } from 'lucide-react';
+import { FileSpreadsheet } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -148,7 +148,7 @@ export default function LecturerDashboardPage() {
               </SelectContent>
             </Select>
              <Button variant="outline" onClick={handleExportSheet} disabled={!activeTimetable || !selectedLecturer}>
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              <FileSpreadsheet />
               Export as Sheet
             </Button>
         </div>
@@ -196,7 +196,6 @@ export default function LecturerDashboardPage() {
         </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <User className="w-12 h-12 mb-4 text-muted-foreground" />
             <p className="text-muted-foreground mb-2">No lecturer or timetable selected.</p>
             <p className="text-muted-foreground text-center">Please select a lecturer and a timetable from the dropdowns above to view schedules.</p>
         </div>

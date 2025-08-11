@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -5,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 gap-0.5",
   {
     variants: {
       variant: {
@@ -43,21 +44,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
-    // Check if children is a string to apply the padding, otherwise render as is.
-    const hasText = React.Children.toArray(children).some(child => typeof child === 'string' && child.trim().length > 0);
-    const hasIcon = React.Children.toArray(children).some(child => React.isValidElement(child));
-
-    const gap = hasIcon && hasText ? 'gap-0.5' : '';
-
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }), gap)}
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       >
         {React.Children.map(children, child => {
           if (typeof child === 'string' && child.trim().length > 0) {
             return <span className="px-0.5">{child}</span>;
+          }
+          if(React.isValidElement(child)) {
+             return React.cloneElement(child as React.ReactElement, { className: 'size-4 shrink-0' });
           }
           return child;
         })}
