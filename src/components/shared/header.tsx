@@ -23,7 +23,7 @@ import { ThemeToggle } from './theme-toggle';
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-sm">
       <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <Link
           href="/admin"
