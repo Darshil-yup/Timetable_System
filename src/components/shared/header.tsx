@@ -27,9 +27,9 @@ export default function Header() {
       <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
         <Link
           href="/admin"
-          className="flex items-center gap-2 font-bold text-lg text-foreground mr-auto"
+          className="flex items-center gap-3 font-bold text-2xl text-foreground mr-auto"
         >
-          <BookCopy className="h-8 w-8 text-primary" />
+          <BookCopy className="h-10 w-10 text-primary" />
           <span className="hidden sm:inline-block">YCCE Timetable</span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
