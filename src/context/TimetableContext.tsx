@@ -69,7 +69,8 @@ const cseIot5thSemTimetable: Omit<TimetableData, 'id'> = {
     // Monday
     { id: "ciot5-1", subject: "LAB: DBMS", lecturer: "RSB, Hrushikesh P", room: "IOT Lab 1,2", day: "Monday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A1", "A2"], color: "hsl(var(--chart-1))" },
     { id: "ciot5-2", subject: "LAB: OS", lecturer: "GMD, Radhika", room: "IOT Lab 3,4", day: "Monday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A3", "A4"], color: "hsl(var(--chart-1))" },
-    { id: "ciot5-3", subject: "PE-I:GIS / MFDA", lecturer: "CSS / Sharayu S", room: "ET 316 / ET-308", day: "Monday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot5-3a", subject: "PE-I:GIS", lecturer: "CSS", room: "ET 316", day: "Monday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot5-3b", subject: "PE-I:MFDA", lecturer: "Sharayu S", room: "ET-308", day: "Monday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
     { id: "ciot5-4", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Monday", time: "01:00-02:00", type: "Recess", duration: 1 },
     { id: "ciot5-5", subject: "MDM:FOG", lecturer: "Prachi Gawande", room: "ET-316", day: "Monday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
     { id: "ciot5-6", subject: "TFCS", lecturer: "SSS", room: "ET-316", day: "Monday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
@@ -77,10 +78,12 @@ const cseIot5thSemTimetable: Omit<TimetableData, 'id'> = {
     // Tuesday
     { id: "ciot5-7", subject: "DBMS", lecturer: "RSB", room: "ET-316", day: "Tuesday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
     { id: "ciot5-8", subject: "OS", lecturer: "GMD", room: "ET-316", day: "Tuesday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
-    { id: "ciot5-9", subject: "PE-I:GIS / MFDA", lecturer: "CSS / Sharayu S", room: "ET 316 / ET-308", day: "Tuesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot5-9a", subject: "PE-I:GIS", lecturer: "CSS", room: "ET 316", day: "Tuesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot5-9b", subject: "PE-I:MFDA", lecturer: "Sharayu S", room: "ET-308", day: "Tuesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
     { id: "ciot5-10", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Tuesday", time: "01:00-02:00", type: "Recess", duration: 1 },
     { id: "ciot5-11", subject: "MDM:FOG", lecturer: "Prachi Gawande", room: "ET-316", day: "Tuesday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
-    { id: "ciot5-12", subject: "PE I: LAB: GIS/MFDA", lecturer: "CSS, Radhika / Sharayu S, AG", room: "IOT Lab 3,4 / IOT Lab 1,2", day: "Tuesday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A1", "A2"], color: "hsl(var(--chart-2))" },
+    { id: "ciot5-12a", subject: "PE I: LAB: GIS", lecturer: "CSS, Radhika", room: "IOT Lab 3,4", day: "Tuesday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A1"], color: "hsl(var(--chart-2))" },
+    { id: "ciot5-12b", subject: "PE I: LAB: MFDA", lecturer: "Sharayu S, AG", room: "IOT Lab 1,2", day: "Tuesday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A2"], color: "hsl(var(--chart-2))" },
 
     // Wednesday
     { id: "ciot5-13", subject: "OE:3 Arthashashtra", lecturer: "PVB", room: "ET-316", day: "Wednesday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
@@ -110,7 +113,60 @@ const cseIot5thSemTimetable: Omit<TimetableData, 'id'> = {
   ]
 };
 
-const timetablesToSeed = [cseIotTimetable, cseIot5thSemTimetable];
+const cseIot7thSemTimetable: Omit<TimetableData, 'id'> = {
+  name: "CSE(IoT) (7th Sem)",
+  timetable: [
+    // Monday
+    { id: "ciot7-1a", subject: "PE-V: Blockchain", lecturer: "PAB", room: "EL-204", day: "Monday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot7-1b", subject: "PE-V: OSC", lecturer: "GA", room: "EL-203", day: "Monday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot7-2", subject: "SE", lecturer: "NUS", room: "EL-302", day: "Monday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "ciot7-3a", subject: "PE-IV: SPI", lecturer: "Harsha", room: "EL-302", day: "Monday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot7-3b", subject: "PE-IV: DAI", lecturer: "PD", room: "EL-102", day: "Monday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot7-4", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Monday", time: "02:00-03:00", type: "Recess", duration: 1 },
+    { id: "ciot7-5", subject: "CC", lecturer: "GKY", room: "ET-308", day: "Monday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "ciot7-6", subject: "IOT DP", lecturer: "SPP", room: "ET-308", day: "Monday", time: "04:00-05:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+
+    // Tuesday
+    { id: "ciot7-7", subject: "LAB: SE/CC", lecturer: "NUS, PI/GKY, GA", room: "IOT Lab 1,2/IOT Lab 3,4", day: "Tuesday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A1", "A2", "A3", "A4"], color: "hsl(var(--chart-3))" },
+    { id: "ciot7-8", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Tuesday", time: "12:00-01:00", type: "Recess", duration: 1 },
+    { id: "ciot7-9a", subject: "PE-IV: SPI", lecturer: "Harsha", room: "EL-302", day: "Tuesday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot7-9b", subject: "PE-IV: DAI", lecturer: "PD", room: "EL-102", day: "Tuesday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot7-10", subject: "LIBRARY", lecturer: "G. Ahmed", room: "N/A", day: "Tuesday", time: "02:00-03:00", type: "Library", duration: 1 },
+    { id: "ciot7-11", subject: "CC", lecturer: "GKY", room: "EL-103", day: "Tuesday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "ciot7-12", subject: "IOT DP", lecturer: "SPP", room: "EL-103", day: "Tuesday", time: "04:00-05:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+
+    // Wednesday
+    { id: "ciot7-13", subject: "PE-III: LAB: IOT/FEC", lecturer: "S. Saba, Nirmik/PG, SJK", room: "IOT Lab 1,2/IOT Lab 3,4", day: "Wednesday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A1", "A2"], color: "hsl(var(--chart-1))" },
+    { id: "ciot7-14", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Wednesday", time: "12:00-01:00", type: "Recess", duration: 1 },
+    { id: "ciot7-15a", subject: "PE-III: IOT", lecturer: "S. Saba", room: "EL-204", day: "Wednesday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-15b", subject: "PE-III: FEC", lecturer: "PG", room: "EL-102", day: "Wednesday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-16", subject: "Project", lecturer: "N/A", room: "N/A", day: "Wednesday", time: "02:00-05:00", type: "Practical", duration: 3, color: "hsl(var(--chart-2))" },
+
+    // Thursday
+    { id: "ciot7-17", subject: "SE", lecturer: "NUS", room: "EL-211", day: "Thursday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "ciot7-18a", subject: "PE-IV: SPI", lecturer: "Harsha", room: "ET-316", day: "Thursday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot7-18b", subject: "PE-IV: DAI", lecturer: "PD", room: "EL-211", day: "Thursday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot7-19a", subject: "PE-III: IOT", lecturer: "S. Saba", room: "ET-308", day: "Thursday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-19b", subject: "PE-III: FEC", lecturer: "PG", room: "ET-316", day: "Thursday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-20", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Thursday", time: "01:00-02:00", type: "Recess", duration: 1 },
+    { id: "ciot7-21a", subject: "PE-V: Blockchain", lecturer: "PAB", room: "AIDS Lab 2", day: "Thursday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot7-21b", subject: "PE-V: OSC", lecturer: "GA", room: "AIDS Lab 1", day: "Thursday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot7-22", subject: "IOT DP", lecturer: "SPP", room: "EL-211", day: "Thursday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-23", subject: "HELP DESK", lecturer: "N/A", room: "N/A", day: "Thursday", time: "04:00-05:00", type: "Help Desk", duration: 1 },
+
+    // Friday
+    { id: "ciot7-24", subject: "LAB: SE/CC", lecturer: "NUS, GMV/GKY, SSB", room: "IOT Lab 1,2/IOT Lab 3,4", day: "Friday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A3", "A4", "A1", "A2"], color: "hsl(var(--chart-3))" },
+    { id: "ciot7-25a", subject: "PE-III: IOT", lecturer: "S. Saba", room: "ET-308", day: "Friday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-25b", subject: "PE-III: FEC", lecturer: "PG", room: "ET-316", day: "Friday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot7-26", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Friday", time: "01:00-02:00", type: "Recess", duration: 1 },
+    { id: "ciot7-27a", subject: "PE-V: Blockchain", lecturer: "PAB", room: "AIDS Lab 2", day: "Friday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot7-27b", subject: "PE-V: OSC", lecturer: "GA", room: "EL-204", day: "Friday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot7-28", subject: "SE", lecturer: "NUS", room: "EL-211", day: "Friday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "ciot7-29", subject: "CC", lecturer: "GKY", room: "EL-102", day: "Friday", time: "04:00-05:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+  ]
+};
+
+const timetablesToSeed = [cseIotTimetable, cseIot5thSemTimetable, cseIot7thSemTimetable];
 
 export function TimetableProvider({ children }: { children: ReactNode }) {
   const [timetables, setTimetables] = useState<TimetableData[]>([]);
