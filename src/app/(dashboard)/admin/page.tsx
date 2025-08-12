@@ -32,7 +32,7 @@ import { useTimetables } from '@/context/TimetableContext';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ALL_ROOMS } from '@/components/admin/class-form';
+import { ALL_CLASSROOMS, ALL_LABS } from '@/components/admin/class-form';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -67,6 +67,7 @@ export default function AdminDashboardPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('master');
   const [selectedRoom, setSelectedRoom] = useState('all');
+  const [selectedLab, setSelectedLab] = useState('all');
 
   const activeTimetable = useMemo(() => timetables.find(t => t.id === selectedTimetableId), [timetables, selectedTimetableId]);
 
@@ -80,6 +81,7 @@ export default function AdminDashboardPage() {
   
   useEffect(() => {
     setSelectedRoom('all');
+    setSelectedLab('all');
   }, [activeTab, selectedTimetableId]);
 
   const handleSelectTimetable = useCallback((id: string) => {
@@ -262,6 +264,9 @@ export default function AdminDashboardPage() {
             break;
         case 'lab':
             timetableToExport = practicalTimetable;
+            if (selectedLab !== 'all') {
+                timetableToExport = timetableToExport.filter(e => e.room === selectedLab);
+            }
             sheetName = 'Lab Timetable';
             break;
         default:
@@ -317,7 +322,7 @@ export default function AdminDashboardPage() {
         title: "Export Successful",
         description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
     });
-  }, [activeTimetable, activeTab, selectedRoom, toast]);
+  }, [activeTimetable, activeTab, selectedRoom, selectedLab, toast]);
 
   const lectureTimetable = useMemo(() => 
     activeTimetable?.timetable.filter(e => e.type === 'Lecture') || [], 
@@ -330,13 +335,22 @@ export default function AdminDashboardPage() {
   );
   
   const classroomList = useMemo(() => {
-    return ['all', ...ALL_ROOMS];
+    return ['all', ...ALL_CLASSROOMS];
+  }, []);
+
+  const labList = useMemo(() => {
+      return ['all', ...ALL_LABS];
   }, []);
 
   const filteredLectureTimetable = useMemo(() => {
       if (selectedRoom === 'all') return lectureTimetable;
       return lectureTimetable.filter(e => e.room === selectedRoom);
   }, [lectureTimetable, selectedRoom]);
+
+  const filteredPracticalTimetable = useMemo(() => {
+    if (selectedLab === 'all') return practicalTimetable;
+    return practicalTimetable.filter(e => e.room === selectedLab);
+  }, [practicalTimetable, selectedLab]);
 
   const toggleEditMode = useCallback(() => {
     const newEditMode = !isEditMode;
@@ -469,21 +483,35 @@ export default function AdminDashboardPage() {
             </TabsContent>
             <TabsContent value="lab">
                  <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                             <CardTitle>Lab Timetable (Practicals)</CardTitle>
                             <CardDescription>Filtered view showing only lab/practical slots.</CardDescription>
                         </div>
-                        <TimetableActions 
-                            handleExportSheet={handleExportSheet}
-                            onAddClass={handleAddClass}
-                            isEditMode={isEditMode}
-                            onToggleEditMode={toggleEditMode}
-                        />
+                        <div className="flex w-full sm:w-auto items-center gap-2">
+                             <Select value={selectedLab} onValueChange={setSelectedLab}>
+                                <SelectTrigger className="w-full sm:w-[200px]">
+                                    <SelectValue placeholder="Filter by Lab" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {labList.map(lab => (
+                                        <SelectItem key={lab} value={lab}>
+                                            {lab === 'all' ? 'All Labs' : lab}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <TimetableActions 
+                                handleExportSheet={handleExportSheet}
+                                onAddClass={handleAddClass}
+                                isEditMode={isEditMode}
+                                onToggleEditMode={toggleEditMode}
+                            />
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            entries={practicalTimetable} 
+                            entries={filteredPracticalTimetable} 
                             view="admin" 
                             isEditMode={isEditMode}
                             onEdit={openEditDialog}

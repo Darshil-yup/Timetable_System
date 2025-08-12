@@ -19,10 +19,15 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
-export const ALL_ROOMS = [
+export const ALL_CLASSROOMS = [
     'EL-102', 'EL-103', 'EL-203', 'EL-204', 'EL-211', 'EL-302', 'EL-303',
-    'ET-308', 'ET-316', 'AG-0213',
-    'IOT Lab 1,2', 'IOT Lab 3,4', 'AIDS Lab 1', 'AIDS Lab 2'
+    'ET-308', 'ET-316', 'AG-0213'
+];
+
+export const ALL_LABS = [
+    'CT-LAB-01', 'CT-LAB-02', 'CT-LAB-03', 'CT-LAB-04', 'CT-LAB-05', 'CT-LAB-06', 'CT-LAB-07', 'CT-LAB-08',
+    'AIDS-LAB-01', 'AIDS-LAB-02', 'AIDS-LAB-03', 'AIDS-LAB-04', 'AIDS-LAB-05', 'AIDS-LAB-06',
+    'CSE(IoT)-ET-304', 'CSE(IoT)-ET-304A', 'CSE(IoT)-ET-304B', 'CSE(IoT)-ET-301'
 ];
 
 
@@ -99,6 +104,8 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   const classType = form.watch("type");
   const isSpecialType = SPECIAL_TYPES.includes(classType as SpecialClassType);
 
+  const roomOptions = classType === 'Lecture' ? ALL_CLASSROOMS : classType === 'Practical' ? ALL_LABS : [];
+  
   React.useEffect(() => {
     const { getValues, setValue } = form;
     if (classType === 'Practical') {
@@ -118,6 +125,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
             setValue('room', '');
         }
     }
+    setValue('room', ''); // Reset room on type change
   }, [classType, form, isSpecialType]);
 
 
@@ -191,8 +199,8 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                     <FormLabel>Room/Lab</FormLabel>
                      <Select 
                         onValueChange={field.onChange} 
-                        defaultValue={field.value}
-                        disabled={isSpecialType}
+                        value={field.value}
+                        disabled={isSpecialType || !field.value && classType !== 'Lecture' && classType !== 'Practical'}
                     >
                         <FormControl>
                             <SelectTrigger>
@@ -200,7 +208,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                        {ALL_ROOMS.map(room => (
+                        {roomOptions.map(room => (
                             <SelectItem key={room} value={room}>{room}</SelectItem>
                         ))}
                         </SelectContent>
