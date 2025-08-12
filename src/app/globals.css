@@ -59,13 +59,13 @@
     @apply border-border;
   }
   body {
-    background-image: url('https://placehold.co/1920x1080/e0e7ff/4f46e5.png'); /* Placeholder for light theme */
+    background-image: url('https://placehold.co/1920x1080/e0e7ff/e0e7ff.png'); /* Placeholder for light theme */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     @apply text-foreground;
   }
   .dark body {
-    background-image: url('https://placehold.co/1920x1080/e5e7eb/1f2937.png'); /* Placeholder for light.jpeg */
+    background-image: url('https://placehold.co/1920x1080/1f2937/1f2937.png'); /* Placeholder for light.jpeg */
   }
 }
