@@ -105,6 +105,7 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
   const isSpecialType = SPECIAL_TYPES.includes(classType as SpecialClassType);
 
   const roomOptions = classType === 'Lecture' ? ALL_CLASSROOMS : classType === 'Practical' ? ALL_LABS : [];
+  const roomLabel = classType === 'Lecture' ? 'Classroom' : classType === 'Practical' ? 'Lab' : 'Room/Lab';
   
   React.useEffect(() => {
     const { getValues, setValue } = form;
@@ -196,15 +197,15 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 name="room"
                 render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Room/Lab</FormLabel>
+                    <FormLabel>{roomLabel}</FormLabel>
                      <Select 
                         onValueChange={field.onChange} 
                         value={field.value}
-                        disabled={isSpecialType || !field.value && classType !== 'Lecture' && classType !== 'Practical'}
+                        disabled={isSpecialType || (classType !== 'Lecture' && classType !== 'Practical')}
                     >
                         <FormControl>
                             <SelectTrigger>
-                                <SelectValue placeholder="Select a room or lab" />
+                                <SelectValue placeholder={`Select a ${roomLabel.toLowerCase()}`} />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
