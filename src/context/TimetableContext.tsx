@@ -2,7 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, setDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { TimetableData, TimetableEntry } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
