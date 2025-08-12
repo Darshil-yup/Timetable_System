@@ -33,7 +33,6 @@ export default function Header() {
           <span className="hidden sm:inline-block">YCCE Timetable</span>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
-           <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -79,6 +78,9 @@ export default function Header() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
+              <DropdownMenuItem>
+                <ThemeToggle />
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
