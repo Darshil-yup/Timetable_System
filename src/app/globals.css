@@ -59,13 +59,13 @@
     @apply border-border;
   }
   body {
-    background-color: #F1F3F5; /* Fallback for older browsers */
-    background-image: linear-gradient(160deg, #E3FDF5 0%, #F8F9FA 100%);
+    background-image: url('https://placehold.co/1920x1080/e0e7ff/4f46e5.png'); /* Placeholder for light theme */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     @apply text-foreground;
   }
-  .dark {
-    background-color: #121212; /* Fallback for older browsers */
-    background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 50%), 
-                      radial-gradient(at 98% 2%, hsla(205, 68%, 56%, 0.3) 0px, transparent 50%);
+  .dark body {
+    background-image: url('https://placehold.co/1920x1080/1e1b4b/e0e7ff.png'); /* Placeholder for dlight.jpeg */
   }
 }
