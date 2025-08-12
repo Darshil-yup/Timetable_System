@@ -52,7 +52,7 @@ export function LoginForm() {
             >
               {showPassword ? <EyeOff /> : <Eye />}
               <span className="sr-only">
-                {showPassword ? 'Hide password' : 'Show password'}
+                {showPassword ? '' : ''}
               </span>
             </Button>
           </div>
