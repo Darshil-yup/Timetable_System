@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle, FileSpreadsheet } from 'lucide-react';
+import { Pencil, Trash2, XCircle, FileSpreadsheet, Loader2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +33,7 @@ import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ALL_CLASSROOMS, ALL_LABS } from '@/components/admin/class-form';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -58,7 +59,7 @@ const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode,
 TimetableActions.displayName = 'TimetableActions';
 
 export default function AdminDashboardPage() {
-  const { timetables, setTimetables } = useTimetables();
+  const { timetables, loading, addTimetable, deleteTimetable, updateTimetableEntries } = useTimetables();
   const { toast } = useToast();
 
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
@@ -72,12 +73,12 @@ export default function AdminDashboardPage() {
   const activeTimetable = useMemo(() => timetables.find(t => t.id === selectedTimetableId), [timetables, selectedTimetableId]);
 
   useEffect(() => {
-    if (!selectedTimetableId && timetables.length > 0) {
-      setSelectedTimetableId(timetables[0].id);
-    } else if (timetables.length === 0 && selectedTimetableId) {
-      setSelectedTimetableId('');
+    if (!loading && timetables.length > 0 && !timetables.find(t => t.id === selectedTimetableId)) {
+        setSelectedTimetableId(timetables[0].id);
+    } else if (!loading && timetables.length === 0) {
+        setSelectedTimetableId('');
     }
-  }, [timetables, selectedTimetableId]);
+  }, [timetables, loading, selectedTimetableId]);
   
   useEffect(() => {
     setSelectedRoom('all');
@@ -101,13 +102,10 @@ export default function AdminDashboardPage() {
     setIsEditDialogOpen(false);
   }, []);
 
-  const updateActiveTimetable = useCallback((newTimetable: TimetableEntry[]) => {
-    setTimetables(currentTimetables => 
-        currentTimetables.map(t => 
-            t.id === selectedTimetableId ? { ...t, timetable: newTimetable } : t
-        )
-    );
-  }, [selectedTimetableId, setTimetables]);
+  const updateActiveTimetable = useCallback(async (newTimetable: TimetableEntry[]) => {
+      if (!selectedTimetableId) return;
+      await updateTimetableEntries(selectedTimetableId, newTimetable);
+  }, [selectedTimetableId, updateTimetableEntries]);
 
   const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
     const newClassStartTime = parseInt(newClass.time.split('-')[0].split(':')[0]);
@@ -171,7 +169,7 @@ export default function AdminDashboardPage() {
     return false;
   }, [toast]);
   
-  const handleAddClass = useCallback((newClass: Omit<TimetableEntry, 'id'>) => {
+  const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
 
     if (checkForConflicts(newClass, activeTimetable.timetable)) {
@@ -179,21 +177,21 @@ export default function AdminDashboardPage() {
     }
 
     const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
-    updateActiveTimetable([...activeTimetable.timetable, newEntry]);
+    await updateActiveTimetable([...activeTimetable.timetable, newEntry]);
     toast({
       title: "Class Added!",
       description: `"${newClass.subject}" has been added to the timetable.`,
     });
   }, [activeTimetable, checkForConflicts, updateActiveTimetable, toast]);
   
-  const handleUpdateClass = useCallback((updatedClass: TimetableEntry) => {
+  const handleUpdateClass = useCallback(async (updatedClass: TimetableEntry) => {
     if (!activeTimetable) return;
     
     if (checkForConflicts(updatedClass, activeTimetable.timetable, updatedClass.id)) {
       return;
     }
 
-    updateActiveTimetable(activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
+    await updateActiveTimetable(activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
     closeEditDialog();
     toast({
         title: "Class Updated!",
@@ -201,9 +199,9 @@ export default function AdminDashboardPage() {
     });
   }, [activeTimetable, checkForConflicts, updateActiveTimetable, closeEditDialog, toast]);
   
-  const handleDeleteClass = useCallback((classId: string) => {
+  const handleDeleteClass = useCallback(async (classId: string) => {
     if (!activeTimetable) return;
-    updateActiveTimetable(activeTimetable.timetable.filter(entry => entry.id !== classId));
+    await updateActiveTimetable(activeTimetable.timetable.filter(entry => entry.id !== classId));
     closeEditDialog();
     toast({
        title: "Class Deleted",
@@ -212,31 +210,17 @@ export default function AdminDashboardPage() {
     });
   }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);
 
-  const handleCreateTimetable = useCallback((name: string, year: string) => {
-    const newTimetable: TimetableData = {
-        id: `tt${Date.now()}`,
-        name: `${name} (${year})`,
-        timetable: []
-    };
-    setTimetables(currentTimetables => [...currentTimetables, newTimetable]);
-    setSelectedTimetableId(newTimetable.id);
-    toast({
-        title: "Timetable Created!",
-        description: `Timetable for "${newTimetable.name}" has been created.`,
-    });
-  }, [setTimetables, toast]);
+  const handleCreateTimetable = useCallback(async (name: string, year: string) => {
+    const newId = await addTimetable(name, year);
+    if(newId) {
+      setSelectedTimetableId(newId);
+    }
+  }, [addTimetable]);
 
-  const handleDeleteTimetable = useCallback(() => {
+  const handleDeleteTimetable = useCallback(async () => {
     if (!activeTimetable) return;
-
-    setTimetables(currentTimetables => currentTimetables.filter(t => t.id !== activeTimetable.id));
-    
-    toast({
-      title: "Timetable Deleted",
-      description: `The timetable for "${activeTimetable.name}" has been deleted.`,
-      variant: "destructive",
-    })
-  }, [activeTimetable, setTimetables, toast]);
+    await deleteTimetable(activeTimetable.id);
+  }, [activeTimetable, deleteTimetable]);
 
   const handleExportSheet = useCallback(() => {
     if (!activeTimetable) {
@@ -363,6 +347,19 @@ export default function AdminDashboardPage() {
       });
     }
   }, [isEditMode, toast]);
+
+  if (loading) {
+    return (
+        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+            <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
+               <Skeleton className="h-10 w-[280px]" />
+               <Skeleton className="h-10 w-[170px]" />
+               <Skeleton className="h-10 w-[170px]" />
+            </div>
+            <Skeleton className="h-[600px] w-full" />
+        </div>
+    )
+  }
   
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -522,7 +519,7 @@ export default function AdminDashboardPage() {
         </Tabs>
       ) : (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground mb-4">No timetables to display.</p>
+          <p className="text-muted-foreground mb-4">No timetables. Create one to get started.</p>
           <AddTimetableDialog onCreateTimetable={handleCreateTimetable}>
             <Button>
               Create New Timetable

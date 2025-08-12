@@ -19,12 +19,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
 import { TimetableEntry } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 export default function LecturerDashboardPage() {
-  const { timetables } = useTimetables();
+  const { timetables, loading } = useTimetables();
   const { toast } = useToast();
   
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
@@ -32,13 +33,13 @@ export default function LecturerDashboardPage() {
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
 
   useEffect(() => {
-    if (timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
+    if (!loading && timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
       setSelectedTimetableId(timetables[0]?.id || '');
     }
     if (LECTURERS.length > 0 && !selectedLecturer) {
         setSelectedLecturer(LECTURERS[0]?.name || '');
     }
-  }, [timetables, selectedTimetableId, selectedLecturer]);
+  }, [timetables, selectedTimetableId, selectedLecturer, loading]);
 
   const activeTimetable = useMemo(() => 
     timetables.find(t => t.id === selectedTimetableId), 
@@ -122,6 +123,18 @@ export default function LecturerDashboardPage() {
     });
 }, [activeTimetable, selectedLecturer, activeTab, lecturerTimetable, toast]);
 
+if (loading) {
+    return (
+        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+            <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
+               <Skeleton className="h-10 w-[200px]" />
+               <Skeleton className="h-10 w-[280px]" />
+               <Skeleton className="h-10 w-[170px]" />
+            </div>
+            <Skeleton className="h-[600px] w-full" />
+        </div>
+    )
+  }
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -196,7 +209,7 @@ export default function LecturerDashboardPage() {
         </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <p className="text-muted-foreground mb-2">No lecturer or timetable selected.</p>
+            <p className="text-muted-foreground mb-2">No timetables found or selected.</p>
             <p className="text-muted-foreground text-center">Please select a lecturer and a timetable from the dropdowns above to view timetables.</p>
         </div>
        )}
