@@ -219,7 +219,7 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   
   useEffect(() => {
-    const seedDatabase = async () => {
+    const seedAndFetch = async () => {
         try {
             const timetablesCollection = collection(db, "timetables");
             const querySnapshot = await getDocs(timetablesCollection);
@@ -243,30 +243,32 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
                 description: 'Could not seed the initial timetable.',
                 variant: 'destructive',
             });
+        } finally {
+            const unsubscribe = onSnapshot(collection(db, "timetables"), (snapshot) => {
+              const timetablesData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+              } as TimetableData));
+              setTimetables(timetablesData);
+              setLoading(false);
+            }, (error) => {
+                console.error("Error fetching timetables:", error);
+                toast({
+                    title: 'Error Fetching Data',
+                    description: 'Could not fetch timetables from the database.',
+                    variant: 'destructive',
+                });
+                setLoading(false);
+            });
+            return unsubscribe;
         }
     };
     
-    setLoading(true);
-    seedDatabase().then(() => {
-        const unsubscribe = onSnapshot(collection(db, "timetables"), (snapshot) => {
-          const timetablesData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          } as TimetableData));
-          setTimetables(timetablesData);
-          setLoading(false);
-        }, (error) => {
-            console.error("Error fetching timetables:", error);
-            toast({
-                title: 'Error Fetching Data',
-                description: 'Could not fetch timetables from the database.',
-                variant: 'destructive',
-            });
-            setLoading(false);
-        });
+    const unsubscribePromise = seedAndFetch();
 
-        return () => unsubscribe();
-    });
+    return () => {
+        unsubscribePromise.then(unsubscribe => unsubscribe && unsubscribe());
+    };
   }, [toast]);
 
   const addTimetable = useCallback(async (name: string, year: string): Promise<string | null> => {
