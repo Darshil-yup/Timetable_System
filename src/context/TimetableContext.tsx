@@ -60,11 +60,57 @@ const cseIotTimetable: Omit<TimetableData, 'id'> = {
     { id: "ciot29", subject: "DS", lecturer: "LRT", room: "ET-308", day: "Friday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
     { id: "ciot30", subject: "MDM 1: IOT Arch. Pro.", lecturer: "Priya Kotewar", room: "ET-308", day: "Friday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
     { id: "ciot31", subject: "MI", lecturer: "Rath., SN,, Kirti S., ABT", room: "IOT Lab 1,2 / IOT Lab 3,4", day: "Friday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A1", "A2", "A3", "A4"], color: "hsl(var(--chart-4))" },
-    
-    // Saturday - Empty
   ]
 };
 
+const cseIot5thSemTimetable: Omit<TimetableData, 'id'> = {
+  name: "CSE(IoT) (5th Sem)",
+  timetable: [
+    // Monday
+    { id: "ciot5-1", subject: "LAB: DBMS", lecturer: "RSB, Hrushikesh P", room: "IOT Lab 1,2", day: "Monday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A1", "A2"], color: "hsl(var(--chart-1))" },
+    { id: "ciot5-2", subject: "LAB: OS", lecturer: "GMD, Radhika", room: "IOT Lab 3,4", day: "Monday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A3", "A4"], color: "hsl(var(--chart-1))" },
+    { id: "ciot5-3", subject: "PE-I:GIS / MFDA", lecturer: "CSS / Sharayu S", room: "ET 316 / ET-308", day: "Monday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot5-4", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Monday", time: "01:00-02:00", type: "Recess", duration: 1 },
+    { id: "ciot5-5", subject: "MDM:FOG", lecturer: "Prachi Gawande", room: "ET-316", day: "Monday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "ciot5-6", subject: "TFCS", lecturer: "SSS", room: "ET-316", day: "Monday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    
+    // Tuesday
+    { id: "ciot5-7", subject: "DBMS", lecturer: "RSB", room: "ET-316", day: "Tuesday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot5-8", subject: "OS", lecturer: "GMD", room: "ET-316", day: "Tuesday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "ciot5-9", subject: "PE-I:GIS / MFDA", lecturer: "CSS / Sharayu S", room: "ET 316 / ET-308", day: "Tuesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "ciot5-10", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Tuesday", time: "01:00-02:00", type: "Recess", duration: 1 },
+    { id: "ciot5-11", subject: "MDM:FOG", lecturer: "Prachi Gawande", room: "ET-316", day: "Tuesday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "ciot5-12", subject: "PE I: LAB: GIS/MFDA", lecturer: "CSS, Radhika / Sharayu S, AG", room: "IOT Lab 3,4 / IOT Lab 1,2", day: "Tuesday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A1", "A2"], color: "hsl(var(--chart-2))" },
+
+    // Wednesday
+    { id: "ciot5-13", subject: "OE:3 Arthashashtra", lecturer: "PVB", room: "ET-316", day: "Wednesday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot5-14", subject: "DAA", lecturer: "SAS", room: "ET-316", day: "Wednesday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot5-15", subject: "DAA", lecturer: "SAS", room: "ET-316", day: "Wednesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot5-16", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Wednesday", time: "01:00-02:00", type: "Recess", duration: 1 },
+    { id: "ciot5-17", subject: "MDM:FOG", lecturer: "Prachi Gawande", room: "ET-316", day: "Wednesday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "ciot5-18", subject: "LAB: OS/DAA", lecturer: "GMD, Hrushikesh P/SAS, RinaP", room: "IOT Lab 3,4/IOT Lab 1,2", day: "Wednesday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A1", "A2", "A3", "A4"], color: "hsl(var(--chart-5))" },
+
+    // Thursday
+    { id: "ciot5-19", subject: "OE:3 Arthashashtra", lecturer: "PVB", room: "ET-316", day: "Thursday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot5-20", subject: "DBMS", lecturer: "RSB", room: "ET-316", day: "Thursday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot5-21", subject: "LAB: DBMS/DAA", lecturer: "RSB, RinaP/SAS, Nirmik", room: "IOT Lab 1,2/IOT Lab 3,4", day: "Thursday", time: "12:00-02:00", type: "Practical", duration: 2, batches: ["A3", "A4", "A1", "A2"], color: "hsl(var(--chart-4))" },
+    { id: "ciot5-22", subject: "OS", lecturer: "GMD", room: "ET-316", day: "Thursday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "ciot5-23", subject: "HELP DESK", lecturer: "N/A", room: "N/A", day: "Thursday", time: "04:00-05:00", type: "Help Desk", duration: 1, },
+    { id: "ciot5-24", subject: "SPORTS", lecturer: "N/A", room: "N/A", day: "Thursday", time: "04:00-05:00", type: "Sports", duration: 1, },
+
+    // Friday
+    { id: "ciot5-25", subject: "OE:3 Arthashashtra", lecturer: "PVB", room: "ET-316", day: "Friday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot5-26", subject: "OS", lecturer: "GMD", room: "ET-316", day: "Friday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "ciot5-27", subject: "TFCS", lecturer: "SSS", room: "ET-316", day: "Friday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot5-28", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Friday", time: "01:00-02:00", type: "Recess", duration: 1 },
+    { id: "ciot5-29", subject: "DBMS", lecturer: "RSB", room: "ET-316", day: "Friday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "ciot5-30", subject: "DAA", lecturer: "SAS", room: "ET-316", day: "Friday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "ciot5-31", subject: "LIBRARY", lecturer: "RADHIKA Tekade", room: "N/A", day: "Friday", time: "04:00-05:00", type: "Library", duration: 1 },
+    { id: "ciot5-32", subject: "SPORTS", lecturer: "N/A", room: "N/A", day: "Friday", time: "04:00-05:00", type: "Sports", duration: 1 },
+  ]
+};
+
+const timetablesToSeed = [cseIotTimetable, cseIot5thSemTimetable];
 
 export function TimetableProvider({ children }: { children: ReactNode }) {
   const [timetables, setTimetables] = useState<TimetableData[]>([]);
@@ -75,12 +121,19 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
     try {
         const timetablesCollection = collection(db, "timetables");
         const querySnapshot = await getDocs(timetablesCollection);
-        const timetableExists = querySnapshot.docs.some(doc => doc.data().name === cseIotTimetable.name);
+        const existingTimetableNames = querySnapshot.docs.map(doc => doc.data().name);
 
-        if (!timetableExists) {
-            await addDoc(timetablesCollection, cseIotTimetable);
-            console.log("CSE(IoT) timetable seeded successfully.");
+        const batch = writeBatch(db);
+
+        for (const timetableToSeed of timetablesToSeed) {
+            if (!existingTimetableNames.includes(timetableToSeed.name)) {
+                const newDocRef = doc(timetablesCollection);
+                batch.set(newDocRef, timetableToSeed);
+                console.log(`Seeding timetable: ${timetableToSeed.name}`);
+            }
         }
+        await batch.commit();
+
     } catch (error) {
         console.error("Error seeding database: ", error);
         toast({
@@ -94,26 +147,26 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setLoading(true);
-    seedDatabase(); 
-
-    const unsubscribe = onSnapshot(collection(db, "timetables"), (snapshot) => {
-      const timetablesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as TimetableData));
-      setTimetables(timetablesData);
-      setLoading(false);
-    }, (error) => {
-        console.error("Error fetching timetables:", error);
-        toast({
-            title: 'Error Fetching Data',
-            description: 'Could not fetch timetables from the database.',
-            variant: 'destructive',
+    seedDatabase().then(() => {
+        const unsubscribe = onSnapshot(collection(db, "timetables"), (snapshot) => {
+          const timetablesData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          } as TimetableData));
+          setTimetables(timetablesData);
+          setLoading(false);
+        }, (error) => {
+            console.error("Error fetching timetables:", error);
+            toast({
+                title: 'Error Fetching Data',
+                description: 'Could not fetch timetables from the database.',
+                variant: 'destructive',
+            });
+            setLoading(false);
         });
-        setLoading(false);
-    });
 
-    return () => unsubscribe();
+        return () => unsubscribe();
+    });
   }, [toast, seedDatabase]);
 
   const addTimetable = useCallback(async (name: string, year: string): Promise<string | null> => {
@@ -189,5 +242,3 @@ export function useTimetables() {
   }
   return context;
 }
-
-    
