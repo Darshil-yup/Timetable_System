@@ -218,35 +218,34 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   
-  const seedDatabase = useCallback(async () => {
-    try {
-        const timetablesCollection = collection(db, "timetables");
-        const querySnapshot = await getDocs(timetablesCollection);
-        const existingTimetableNames = querySnapshot.docs.map(doc => doc.data().name);
-
-        const batch = writeBatch(db);
-
-        for (const timetableToSeed of timetablesToSeed) {
-            if (!existingTimetableNames.includes(timetableToSeed.name)) {
-                const newDocRef = doc(timetablesCollection);
-                batch.set(newDocRef, timetableToSeed);
-                console.log(`Seeding timetable: ${timetableToSeed.name}`);
-            }
-        }
-        await batch.commit();
-
-    } catch (error) {
-        console.error("Error seeding database: ", error);
-        toast({
-            title: 'Error Seeding Data',
-            description: 'Could not seed the initial timetable.',
-            variant: 'destructive',
-        });
-    }
-  }, [toast]);
-
-
   useEffect(() => {
+    const seedDatabase = async () => {
+        try {
+            const timetablesCollection = collection(db, "timetables");
+            const querySnapshot = await getDocs(timetablesCollection);
+            const existingTimetableNames = querySnapshot.docs.map(doc => doc.data().name);
+
+            const batch = writeBatch(db);
+
+            for (const timetableToSeed of timetablesToSeed) {
+                if (!existingTimetableNames.includes(timetableToSeed.name)) {
+                    const newDocRef = doc(timetablesCollection);
+                    batch.set(newDocRef, timetableToSeed);
+                    console.log(`Seeding timetable: ${timetableToSeed.name}`);
+                }
+            }
+            await batch.commit();
+
+        } catch (error) {
+            console.error("Error seeding database: ", error);
+            toast({
+                title: 'Error Seeding Data',
+                description: 'Could not seed the initial timetable.',
+                variant: 'destructive',
+            });
+        }
+    };
+    
     setLoading(true);
     seedDatabase().then(() => {
         const unsubscribe = onSnapshot(collection(db, "timetables"), (snapshot) => {
@@ -268,7 +267,7 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
 
         return () => unsubscribe();
     });
-  }, [toast, seedDatabase]);
+  }, [toast]);
 
   const addTimetable = useCallback(async (name: string, year: string): Promise<string | null> => {
     try {

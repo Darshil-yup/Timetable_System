@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Pencil, Trash2, XCircle, FileSpreadsheet } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast';
-import type { TimetableEntry, TimetableData } from '@/lib/types';
+import type { TimetableEntry } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { useTimetables } from '@/context/TimetableContext';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
@@ -35,6 +35,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ALL_CLASSROOMS, ALL_LABS } from '@/components/admin/class-form';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FreeRoomSlots } from '@/components/admin/analytics/FreeRoomSlots';
+import { LecturerWorkloadChart } from '@/components/admin/analytics/LecturerWorkloadChart';
+import { ClassUsageChart } from '@/components/admin/analytics/ClassUsageChart';
+
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -526,9 +529,8 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <FreeRoomSlots timetable={activeTimetable.timetable} />
-                        {/* Placeholder for other charts */}
-                        {/* <LecturerWorkloadChart timetable={activeTimetable.timetable} /> */}
-                        {/* <ClassUsageChart timetable={activeTimetable.timetable} /> */}
+                        <LecturerWorkloadChart timetable={activeTimetable.timetable} />
+                        <ClassUsageChart timetable={activeTimetable.timetable} />
                     </CardContent>
                 </Card>
             </TabsContent>
@@ -556,5 +558,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    
