@@ -19,6 +19,13 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
+export const ALL_ROOMS = [
+    'EL-102', 'EL-103', 'EL-203', 'EL-204', 'EL-211', 'EL-302', 'EL-303',
+    'ET-308', 'ET-316', 'AG-0213',
+    'IOT Lab 1,2', 'IOT Lab 3,4', 'AIDS Lab 1', 'AIDS Lab 2'
+];
+
+
 const PALETTE_COLORS = [
     'hsl(var(--chart-1))',
     'hsl(var(--chart-2))',
@@ -182,9 +189,22 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Room/Lab</FormLabel>
-                    <FormControl>
-                        <Input {...field} disabled={isSpecialType} />
-                    </FormControl>
+                     <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                        disabled={isSpecialType}
+                    >
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a room or lab" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                        {ALL_ROOMS.map(room => (
+                            <SelectItem key={room} value={room}>{room}</SelectItem>
+                        ))}
+                        </SelectContent>
+                    </Select>
                     <FormMessage />
                 </FormItem>
                 )}

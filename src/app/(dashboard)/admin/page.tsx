@@ -32,6 +32,7 @@ import { useTimetables } from '@/context/TimetableContext';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ALL_ROOMS } from '@/components/admin/class-form';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -329,9 +330,8 @@ export default function AdminDashboardPage() {
   );
   
   const classroomList = useMemo(() => {
-    const rooms = lectureTimetable.map(e => e.room).filter(Boolean) as string[];
-    return ['all', ...Array.from(new Set(rooms))];
-  }, [lectureTimetable]);
+    return ['all', ...ALL_ROOMS];
+  }, []);
 
   const filteredLectureTimetable = useMemo(() => {
       if (selectedRoom === 'all') return lectureTimetable;
