@@ -66,6 +66,9 @@
     @apply text-foreground;
   }
   .dark body {
-    background-image: url('https://placehold.co/1920x1080/1f2937/1f2937.png'); /* Placeholder for light.jpeg */
+    background-color: #121212;
+    background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 50%), 
+                      radial-gradient(at 98% 2%, hsla(205, 68%, 56%, 0.3) 0px, transparent 50%);
+    background-attachment: fixed;
   }
 }
