@@ -46,7 +46,7 @@ export function LoginForm() {
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute inset-y-0 right-1 h-full px-2"
+              className="absolute inset-y-0 right-1 h-full px-2 hover:bg-transparent"
               onClick={() => setShowPassword(!showPassword)}
               disabled={isFormDisabled}
             >
