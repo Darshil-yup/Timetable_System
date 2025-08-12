@@ -166,7 +166,52 @@ const cseIot7thSemTimetable: Omit<TimetableData, 'id'> = {
   ]
 };
 
-const timetablesToSeed = [cseIotTimetable, cseIot5thSemTimetable, cseIot7thSemTimetable];
+const cseAids3rdSemTimetable: Omit<TimetableData, 'id'> = {
+  name: "CSE(AIDS) (3rd Sem)",
+  timetable: [
+    // Monday
+    { id: "aids3-1", subject: "OE:1", lecturer: "N/A", room: "EL-302", day: "Monday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "aids3-2", subject: "LA", lecturer: "NAB", room: "EL-302", day: "Monday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "aids3-3", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Monday", time: "12:00-01:00", type: "Recess", duration: 1, },
+    { id: "aids3-4", subject: "Library", lecturer: "NEHA INGOLE", room: "N/A", day: "Monday", time: "01:00-02:00", type: "Library", duration: 1, },
+    { id: "aids3-5", subject: "DS", lecturer: "PAB", room: "EL-302", day: "Monday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "aids3-6", subject: "SDS", lecturer: "SAG", room: "EL-302", day: "Monday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "aids3-7", subject: "FOME", lecturer: "SSN", room: "EL-302", day: "Monday", time: "04:00-05:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+
+    // Tuesday
+    { id: "aids3-8", subject: "OE:1", lecturer: "N/A", room: "EL-302", day: "Tuesday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "aids3-9", subject: "DS", lecturer: "PAB", room: "EL-302", day: "Tuesday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "aids3-10", subject: "LA", lecturer: "NAB", room: "EL-302", day: "Tuesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "aids3-11", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Tuesday", time: "01:00-02:00", type: "Recess", duration: 1, },
+    { id: "aids3-12", subject: "ESPM", lecturer: "PVG", room: "EL-302", day: "Tuesday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "aids3-13", subject: "LAB: SDS/DS", lecturer: "SAG,HARSHA/PAB,S. SABA", room: "AIDS LAB2/AIDS LAB 1", day: "Tuesday", time: "03:00-05:00", type: "Practical", duration: 2, batches: ["A1", "A2", "A3", "A4"], color: "hsl(var(--chart-4))" },
+
+    // Wednesday
+    { id: "aids3-14", subject: "SDS", lecturer: "SAG", room: "EL-302", day: "Wednesday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "aids3-15", subject: "DS", lecturer: "PAB", room: "EL-302", day: "Wednesday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "aids3-16", subject: "FOME", lecturer: "SSN", room: "EL-302", day: "Wednesday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "aids3-17", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Wednesday", time: "01:00-02:00", type: "Recess", duration: 1, },
+    { id: "aids3-18", subject: "ESPM", lecturer: "PVG", room: "EL-302", day: "Wednesday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-3))" },
+    { id: "aids3-19", subject: "LA", lecturer: "NAB", room: "EL-302", day: "Wednesday", time: "03:00-04:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+
+    // Thursday
+    { id: "aids3-20", subject: "SDS", lecturer: "SAG", room: "EL-302", day: "Thursday", time: "10:00-11:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "aids3-21", subject: "DS", lecturer: "PAB", room: "EL-302", day: "Thursday", time: "11:00-12:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-5))" },
+    { id: "aids3-22", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Thursday", time: "12:00-01:00", type: "Recess", duration: 1, },
+    { id: "aids3-23", subject: "LA", lecturer: "NAB", room: "EL-302", day: "Thursday", time: "01:00-02:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-1))" },
+    { id: "aids3-24", subject: "MDM 1: BDS/MDM2:Front End", lecturer: "AG/Nirmik", room: "EL-302/EL-303", day: "Thursday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "aids3-25", subject: "HELP DESK", lecturer: "N/A", room: "N/A", day: "Thursday", time: "03:00-04:00", type: "Help Desk", duration: 1, },
+
+    // Friday
+    { id: "aids3-26", subject: "LAB: SDS/DS", lecturer: "SAG,NI/PAB,S. SABA", room: "AIDS LAB2/AIDS LAB 1", day: "Friday", time: "10:00-12:00", type: "Practical", duration: 2, batches: ["A3", "A4", "A1", "A2"], color: "hsl(var(--chart-4))" },
+    { id: "aids3-27", subject: "SDS", lecturer: "SAG", room: "EL-302", day: "Friday", time: "12:00-01:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-4))" },
+    { id: "aids3-28", subject: "Recess", lecturer: "N/A", room: "N/A", day: "Friday", time: "01:00-02:00", type: "Recess", duration: 1, },
+    { id: "aids3-29", subject: "MDM 1: BDS/MDM2:Front End", lecturer: "AG/Nirmik", room: "EL-302/EL-303", day: "Friday", time: "02:00-03:00", type: "Lecture", duration: 1, color: "hsl(var(--chart-2))" },
+    { id: "aids3-30", subject: "SPORTS", lecturer: "N/A", room: "N/A", day: "Friday", time: "03:00-05:00", type: "Sports", duration: 2, },
+  ]
+};
+
+const timetablesToSeed = [cseIotTimetable, cseIot5thSemTimetable, cseIot7thSemTimetable, cseAids3rdSemTimetable];
 
 export function TimetableProvider({ children }: { children: ReactNode }) {
   const [timetables, setTimetables] = useState<TimetableData[]>([]);
