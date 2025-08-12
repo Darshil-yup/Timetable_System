@@ -34,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ALL_CLASSROOMS, ALL_LABS } from '@/components/admin/class-form';
 import { Skeleton } from '@/components/ui/skeleton';
+import { FreeRoomSlots } from '@/components/admin/analytics/FreeRoomSlots';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -410,10 +411,11 @@ export default function AdminDashboardPage() {
      
       {activeTimetable ? (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-3 max-w-lg">
+            <TabsList className="mb-4 grid w-full grid-cols-4 max-w-2xl">
                 <TabsTrigger value="master">Master Timetable</TabsTrigger>
                 <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
                 <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
 
             <TabsContent value="master">
@@ -516,6 +518,20 @@ export default function AdminDashboardPage() {
                     </CardContent>
                 </Card>
             </TabsContent>
+            <TabsContent value="analytics">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Timetable Analytics</CardTitle>
+                        <CardDescription>Insights and reports based on the current timetable.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <FreeRoomSlots timetable={activeTimetable.timetable} />
+                        {/* Placeholder for other charts */}
+                        {/* <LecturerWorkloadChart timetable={activeTimetable.timetable} /> */}
+                        {/* <ClassUsageChart timetable={activeTimetable.timetable} /> */}
+                    </CardContent>
+                </Card>
+            </TabsContent>
         </Tabs>
       ) : (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
@@ -540,3 +556,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    

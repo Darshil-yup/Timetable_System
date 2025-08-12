@@ -29,7 +29,8 @@ export function FreeRoomSlots({ timetable }: FreeRoomSlotsProps) {
                 }
                 const startTime = parseInt(entry.time.split(':')[0]);
                 for (let i = 0; i < (entry.duration || 1); i++) {
-                    const slotTime = `${String(startTime + i).padStart(2, '0')}:00`;
+                    const currentHour = (startTime + i);
+                    const slotTime = `${String(currentHour).padStart(2, '0')}:00`;
                     const slot = TIME_SLOTS.find(ts => ts.startsWith(slotTime));
                     if(slot) {
                        scheduledSlots[entry.room].push({ day: entry.day, time: slot });
@@ -117,6 +118,5 @@ export function FreeRoomSlots({ timetable }: FreeRoomSlotsProps) {
         </Card>
     );
 }
-
 
     

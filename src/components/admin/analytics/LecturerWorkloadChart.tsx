@@ -1,517 +1,94 @@
 
 "use client"
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import * as XLSX from 'xlsx';
-import { Timetable } from '@/components/shared/timetable';
-import { AddClassDialog } from '@/components/admin/add-class-dialog';
-import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, XCircle, FileSpreadsheet } from 'lucide-react';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { useToast } from '@/hooks/use-toast';
-import type { TimetableEntry, TimetableData } from '@/lib/types';
-import { EditClassDialog } from '@/components/admin/edit-class-dialog';
-import { useTimetables } from '@/context/TimetableContext';
-import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Bar, BarChart, XAxis, YAxis } from 'recharts';
+import type { TimetableEntry } from '@/lib/types';
+import type { ChartConfig } from '@/components/ui/chart';
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
-
-const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode, handleExportSheet }: {
-    onAddClass: (newClass: Omit<TimetableEntry, 'id'>) => void;
-    isEditMode: boolean;
-    onToggleEditMode: () => void;
-    handleExportSheet: () => void;
-}) => (
-    <div className="flex items-center justify-end gap-2 flex-wrap">
-        <Button variant="outline" onClick={handleExportSheet}>
-            <FileSpreadsheet className="mr-2 h-4 w-4" />
-            <span className="px-0.5">Export as Sheet</span>
-        </Button>
-        <AddClassDialog onAddClass={onAddClass} />
-        <Button variant="outline" onClick={onToggleEditMode}>
-            {isEditMode ? <XCircle className="mr-2 h-4 w-4" /> : <Pencil className="mr-2 h-4 w-4" />}
-            <span className="px-0.5">{isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}</span>
-        </Button>
-    </div>
-));
-TimetableActions.displayName = 'TimetableActions';
-
-export default function AdminDashboardPage() {
-  const { timetables, setTimetables } = useTimetables();
-  const { toast } = useToast();
-
-  const [selectedTimetableId, setSelectedTimetableId] = useState('');
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('master');
-  const [selectedRoom, setSelectedRoom] = useState('all');
-
-  const activeTimetable = useMemo(() => timetables.find(t => t.id === selectedTimetableId), [timetables, selectedTimetableId]);
-
-  useEffect(() => {
-    if (!selectedTimetableId && timetables.length > 0) {
-      setSelectedTimetableId(timetables[0].id);
-    } else if (timetables.length === 0 && selectedTimetableId) {
-      setSelectedTimetableId('');
-    }
-  }, [timetables, selectedTimetableId]);
-  
-  useEffect(() => {
-    setSelectedRoom('all');
-  }, [activeTab, selectedTimetableId]);
-
-  const handleSelectTimetable = useCallback((id: string) => {
-    setSelectedTimetableId(id);
-    setIsEditMode(false);
-    setSelectedClass(null);
-    setIsEditDialogOpen(false);
-  }, []);
-  
-  const openEditDialog = useCallback((entry: TimetableEntry) => {
-    setSelectedClass(entry);
-    setIsEditDialogOpen(true);
-  }, []);
-
-  const closeEditDialog = useCallback(() => {
-    setSelectedClass(null);
-    setIsEditDialogOpen(false);
-  }, []);
-
-  const updateActiveTimetable = useCallback((newTimetable: TimetableEntry[]) => {
-    setTimetables(currentTimetables => 
-        currentTimetables.map(t => 
-            t.id === selectedTimetableId ? { ...t, timetable: newTimetable } : t
-        )
-    );
-  }, [selectedTimetableId, setTimetables]);
-
-  const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
-    const newClassStartTime = parseInt(newClass.time.split('-')[0].split(':')[0]);
-    const newClassEndTime = newClassStartTime + (newClass.duration || 1);
-  
-    const timetableToCheck = existingTimetable.filter(entry => entry.id !== updatingClassId);
-
-    for (const existingEntry of timetableToCheck) {
-      if (existingEntry.day !== newClass.day || existingEntry.type === 'Recess' || newClass.type === 'Recess') {
-        continue;
-      }
-      
-      const existingStartTime = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
-      const existingEndTime = existingStartTime + (existingEntry.duration || 1);
-
-      // Check for any overlap in time
-      const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
-
-      if (isOverlapping) {
-        // Lecturer conflict check
-        if (newClass.lecturer && existingEntry.lecturer) {
-          const newLecturers = newClass.lecturer.split(',').map(l => l.trim()).filter(Boolean);
-          const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim()).filter(Boolean);
-          const conflictingLecturer = newLecturers.find(l => existingLecturers.includes(l));
-          if (conflictingLecturer) {
-            toast({
-              variant: "destructive",
-              title: "Lecturer Conflict",
-              description: `${conflictingLecturer} is already scheduled for "${existingEntry.subject}" at this time.`,
-            });
-            return true;
-          }
-        }
-        
-        // Room/Lab conflict check
-        if (newClass.room && existingEntry.room && newClass.room === existingEntry.room) {
-          toast({
-            variant: "destructive",
-            title: "Room/Lab Conflict",
-            description: `Room ${newClass.room} is already booked for "${existingEntry.subject}" at this time.`,
-          });
-          return true;
-        }
-
-        // Batch conflict for practicals
-        if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
-           const newBatches = newClass.batches;
-           const existingBatches = existingEntry.batches;
-           const conflictingBatch = newBatches.find(b => existingBatches.includes(b));
-           if (conflictingBatch) {
-             toast({
-               variant: "destructive",
-               title: "Batch Conflict",
-               description: `Batch ${conflictingBatch} is already scheduled for a practical ("${existingEntry.subject}") at this time.`,
-             });
-             return true;
-           }
-        }
-      }
-    }
-    return false;
-  }, [toast]);
-  
-  const handleAddClass = useCallback((newClass: Omit<TimetableEntry, 'id'>) => {
-    if (!activeTimetable) return;
-
-    if (checkForConflicts(newClass, activeTimetable.timetable)) {
-      return;
-    }
-
-    const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
-    updateActiveTimetable([...activeTimetable.timetable, newEntry]);
-    toast({
-      title: "Class Added!",
-      description: `"${newClass.subject}" has been added to the timetable.`,
-    });
-  }, [activeTimetable, checkForConflicts, updateActiveTimetable, toast]);
-  
-  const handleUpdateClass = useCallback((updatedClass: TimetableEntry) => {
-    if (!activeTimetable) return;
-    
-    if (checkForConflicts(updatedClass, activeTimetable.timetable, updatedClass.id)) {
-      return;
-    }
-
-    updateActiveTimetable(activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
-    closeEditDialog();
-    toast({
-        title: "Class Updated!",
-        description: `"${updatedClass.subject}" has been successfully updated.`,
-    });
-  }, [activeTimetable, checkForConflicts, updateActiveTimetable, closeEditDialog, toast]);
-  
-  const handleDeleteClass = useCallback((classId: string) => {
-    if (!activeTimetable) return;
-    updateActiveTimetable(activeTimetable.timetable.filter(entry => entry.id !== classId));
-    closeEditDialog();
-    toast({
-       title: "Class Deleted",
-       description: "The class has been removed from the timetable.",
-       variant: "destructive",
-    });
-  }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);
-
-  const handleCreateTimetable = useCallback((name: string, year: string) => {
-    const newTimetable: TimetableData = {
-        id: `tt${Date.now()}`,
-        name: `${name} (${year})`,
-        timetable: []
-    };
-    setTimetables(currentTimetables => [...currentTimetables, newTimetable]);
-    setSelectedTimetableId(newTimetable.id);
-    toast({
-        title: "Timetable Created!",
-        description: `Timetable for "${newTimetable.name}" has been created.`,
-    });
-  }, [setTimetables, toast]);
-
-  const handleDeleteTimetable = useCallback(() => {
-    if (!activeTimetable) return;
-
-    setTimetables(currentTimetables => currentTimetables.filter(t => t.id !== activeTimetable.id));
-    
-    toast({
-      title: "Timetable Deleted",
-      description: `The timetable for "${activeTimetable.name}" has been deleted.`,
-      variant: "destructive",
-    })
-  }, [activeTimetable, setTimetables, toast]);
-
-  const handleExportSheet = useCallback(() => {
-    if (!activeTimetable) {
-        toast({
-            title: "Export Failed",
-            description: "No active timetable to export.",
-            variant: "destructive",
-        });
-        return;
-    }
-
-    let timetableToExport: TimetableEntry[];
-    let sheetName: string;
-
-    const lectureTimetable = activeTimetable.timetable.filter(e => e.type === 'Lecture');
-    const practicalTimetable = activeTimetable.timetable.filter(e => e.type === 'Practical');
-
-    switch (activeTab) {
-        case 'classroom':
-            timetableToExport = lectureTimetable;
-            if (selectedRoom !== 'all') {
-                timetableToExport = timetableToExport.filter(e => e.room === selectedRoom);
-            }
-            sheetName = 'Classroom Timetable';
-            break;
-        case 'lab':
-            timetableToExport = practicalTimetable;
-            sheetName = 'Lab Timetable';
-            break;
-        default:
-            timetableToExport = activeTimetable.timetable;
-            sheetName = 'Master Timetable';
-            break;
-    }
-
-    const grid: (string | null)[][] = Array(DAYS.length + 1).fill(null).map(() => Array(TIME_SLOTS.length + 1).fill(null));
-
-    grid[0][0] = "Day/Time";
-    TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
-    DAYS.forEach((day, i) => grid[i + 1][0] = day);
-
-    timetableToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex !== -1 && timeIndex !== -1) {
-            const cellContent = [
-                entry.subject,
-                entry.lecturer,
-                entry.room,
-                entry.batches && entry.batches.length > 0 ? `Batches: ${entry.batches.join(', ')}` : null,
-            ].filter(Boolean).join('\n');
-
-            for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + i < TIME_SLOTS.length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = cellContent;
-                }
-            }
-        }
-    });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(grid);
-    
-    worksheet['!merges'] = [];
-    timetableToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
-            worksheet['!merges']?.push({
-                s: { r: dayIndex + 1, c: timeIndex + 1 },
-                e: { r: dayIndex + 1, c: timeIndex + entry.duration }
-            });
-        }
-    });
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-    XLSX.writeFile(workbook, `${activeTimetable.name}-${sheetName}.xlsx`);
-
-    toast({
-        title: "Export Successful",
-        description: `The ${sheetName.toLowerCase()} has been exported to an Excel file.`,
-    });
-  }, [activeTimetable, activeTab, selectedRoom, toast]);
-
-  const lectureTimetable = useMemo(() => 
-    activeTimetable?.timetable.filter(e => e.type === 'Lecture') || [], 
-    [activeTimetable]
-  );
-  
-  const practicalTimetable = useMemo(() => 
-    activeTimetable?.timetable.filter(e => e.type === 'Practical') || [], 
-    [activeTimetable]
-  );
-  
-  const classroomList = useMemo(() => {
-    const rooms = lectureTimetable.map(e => e.room).filter(Boolean) as string[];
-    return ['all', ...Array.from(new Set(rooms))];
-  }, [lectureTimetable]);
-
-  const filteredLectureTimetable = useMemo(() => {
-      if (selectedRoom === 'all') return lectureTimetable;
-      return lectureTimetable.filter(e => e.room === selectedRoom);
-  }, [lectureTimetable, selectedRoom]);
-
-  const toggleEditMode = useCallback(() => {
-    const newEditMode = !isEditMode;
-    setIsEditMode(newEditMode);
-    if (newEditMode) {
-      toast({
-        title: "Edit Mode Active",
-        description: "Click on any class in the timetable to modify it.",
-        duration: 5000,
-      });
-    }
-  }, [isEditMode, toast]);
-  
-  return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
-        <div className="flex items-center gap-2 flex-wrap">
-            <Select 
-              value={selectedTimetableId} 
-              onValueChange={handleSelectTimetable} 
-              disabled={timetables.length === 0}
-            >
-              <SelectTrigger className="w-auto md:w-[280px]">
-                  <SelectValue placeholder="Select a timetable" />
-              </SelectTrigger>
-              <SelectContent>
-                  {timetables.map(timetable => (
-                    <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-
-            <AddTimetableDialog onCreateTimetable={handleCreateTimetable} />
-
-             {activeTimetable && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                      <Button variant="destructive">
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      <span className="px-0.5">Delete Timetable</span>
-                      </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the
-                            entire timetable for {activeTimetable.name}.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteTimetable}>Continue</AlertDialogAction>
-                      </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-            )}
-        </div>
-      </div>
-     
-      {activeTimetable ? (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-3 max-w-lg">
-                <TabsTrigger value="master">Master Timetable</TabsTrigger>
-                <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
-                <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="master">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div>
-                            <CardTitle>Master Timetable</CardTitle>
-                            <CardDescription>Combined view of all lectures and practicals.</CardDescription>
-                        </div>
-                        <TimetableActions 
-                            handleExportSheet={handleExportSheet}
-                            onAddClass={handleAddClass}
-                            isEditMode={isEditMode}
-                            onToggleEditMode={toggleEditMode}
-                        />
-                    </CardHeader>
-                    <CardContent>
-                        <Timetable 
-                            entries={activeTimetable.timetable} 
-                            view="admin" 
-                            isEditMode={isEditMode}
-                            onEdit={openEditDialog}
-                        />
-                    </CardContent>
-                </Card>
-            </TabsContent>
-            <TabsContent value="classroom">
-                 <Card>
-                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div>
-                            <CardTitle>Classroom Timetable (Lectures)</CardTitle>
-                            <CardDescription>Filtered view showing only lecture slots.</CardDescription>
-                        </div>
-                        <div className="flex w-full sm:w-auto items-center gap-2">
-                             <Select value={selectedRoom} onValueChange={setSelectedRoom}>
-                                <SelectTrigger className="w-full sm:w-[200px]">
-                                    <SelectValue placeholder="Filter by Classroom" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {classroomList.map(room => (
-                                        <SelectItem key={room} value={room}>
-                                            {room === 'all' ? 'All Classrooms' : room}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <TimetableActions 
-                                handleExportSheet={handleExportSheet}
-                                onAddClass={handleAddClass}
-                                isEditMode={isEditMode}
-                                onToggleEditMode={toggleEditMode}
-                            />
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                       <Timetable 
-                            entries={filteredLectureTimetable} 
-                            view="admin" 
-                            isEditMode={isEditMode}
-                            onEdit={openEditDialog}
-                        />
-                    </CardContent>
-                </Card>
-            </TabsContent>
-            <TabsContent value="lab">
-                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div>
-                            <CardTitle>Lab Timetable (Practicals)</CardTitle>
-                            <CardDescription>Filtered view showing only lab/practical slots.</CardDescription>
-                        </div>
-                        <TimetableActions 
-                            handleExportSheet={handleExportSheet}
-                            onAddClass={handleAddClass}
-                            isEditMode={isEditMode}
-                            onToggleEditMode={toggleEditMode}
-                        />
-                    </CardHeader>
-                    <CardContent>
-                        <Timetable 
-                            entries={practicalTimetable} 
-                            view="admin" 
-                            isEditMode={isEditMode}
-                            onEdit={openEditDialog}
-                        />
-                    </CardContent>
-                </Card>
-            </TabsContent>
-        </Tabs>
-      ) : (
-        <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground mb-4">No timetables to display.</p>
-          <AddTimetableDialog onCreateTimetable={handleCreateTimetable}>
-            <Button>
-              <span className="px-0.5">Create New Timetable</span>
-            </Button>
-          </AddTimetableDialog>
-        </div>
-      )}
-      
-      {selectedClass && (
-        <EditClassDialog
-            isOpen={isEditDialogOpen}
-            onOpenChange={setIsEditDialogOpen}
-            classEntry={selectedClass}
-            onUpdateClass={handleUpdateClass}
-            onDeleteClass={handleDeleteClass}
-        />
-      )}
-    </div>
-  );
+interface LecturerWorkloadChartProps {
+    timetable: TimetableEntry[];
 }
+
+export function LecturerWorkloadChart({ timetable }: LecturerWorkloadChartProps) {
+    const { chartData, chartConfig, totalHours } = useMemo(() => {
+        const lecturerWorkload: { [key: string]: number } = {};
+
+        timetable.forEach(entry => {
+            if (entry.lecturer && entry.type !== 'Recess' && entry.lecturer !== 'N/A') {
+                const lecturers = entry.lecturer.split(',').map(l => l.trim());
+                lecturers.forEach(lecturer => {
+                    const duration = entry.duration || 1;
+                    lecturerWorkload[lecturer] = (lecturerWorkload[lecturer] || 0) + duration;
+                });
+            }
+        });
+
+        const sortedLecturers = Object.entries(lecturerWorkload)
+            .sort(([, a], [, b]) => b - a);
+
+        const chartData = sortedLecturers.map(([name, hours], index) => ({
+            name,
+            hours,
+            fill: `hsl(var(--chart-${(index % 5) + 1}))`
+        }));
+
+        const chartConfig: ChartConfig = {};
+        chartData.forEach((data, index) => {
+            chartConfig[data.name] = {
+                label: data.name,
+                color: `hsl(var(--chart-${(index % 5) + 1}))`,
+            };
+        });
+        
+        const totalHours = chartData.reduce((acc, curr) => acc + curr.hours, 0);
+
+        return { chartData, chartConfig, totalHours };
+    }, [timetable]);
+
+    if (!chartData || chartData.length === 0) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Lecturer Workload</CardTitle>
+                    <CardDescription>No lecturer workload data available in this timetable.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">Please add classes with assigned lecturers.</p>
+                </CardContent>
+            </Card>
+        )
+    }
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Lecturer Workload</CardTitle>
+                <CardDescription>
+                    Total weekly hours per lecturer. Total across all lecturers: {totalHours} hours.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+                    <BarChart accessibilityLayer data={chartData} layout="vertical" margin={{ left: 30 }}>
+                        <XAxis type="number" hide />
+                        <YAxis 
+                            dataKey="name" 
+                            type="category" 
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fill: 'hsl(var(--foreground))' }}
+                            width={120}
+                        />
+                        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                        <Bar dataKey="hours" radius={4} />
+                    </BarChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
+    );
+}
+
+    
