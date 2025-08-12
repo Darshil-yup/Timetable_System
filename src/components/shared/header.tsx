@@ -78,9 +78,7 @@ export default function Header() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-              <DropdownMenuItem>
-                <ThemeToggle />
-              </DropdownMenuItem>
+              <ThemeToggle />
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
