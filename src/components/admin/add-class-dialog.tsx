@@ -13,18 +13,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { PlusCircle } from "lucide-react"
-import type { ScheduleEntry } from "@/lib/types";
+import type { TimetableEntry } from "@/lib/types";
 import { ClassForm } from "./class-form";
 
 
 type AddClassDialogProps = {
-    onAddClass: (newClass: Omit<ScheduleEntry, 'id'>) => void;
+    onAddClass: (newClass: Omit<TimetableEntry, 'id'>) => void;
 }
 
 export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleFormSubmit = (data: Omit<ScheduleEntry, 'id'>) => {
+  const handleFormSubmit = (data: Omit<TimetableEntry, 'id'>) => {
     onAddClass(data);
     setIsOpen(false);
   }
@@ -41,7 +41,7 @@ export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
           <DialogHeader className="px-6 pt-6">
             <DialogTitle>Add New Class</DialogTitle>
             <DialogDescription>
-              Fill in the details for the new class. This will be added to the master schedule.
+              Fill in the details for the new class. This will be added to the master timetable.
             </DialogDescription>
           </DialogHeader>
           <ClassForm 

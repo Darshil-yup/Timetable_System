@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ScheduleEntry, SpecialClassType } from "@/lib/types";
+import type { TimetableEntry, SpecialClassType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
 
@@ -9,7 +9,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
-const SpecialCard = React.memo(({ entry }: { entry: ScheduleEntry }) => {
+const SpecialCard = React.memo(({ entry }: { entry: TimetableEntry }) => {
     const ICONS: Record<SpecialClassType, React.ReactNode> = {
         'Recess': <Coffee className="h-8 w-8 text-muted-foreground" />,
         'Library': <Library className="h-8 w-8 text-muted-foreground" />,
@@ -29,9 +29,9 @@ SpecialCard.displayName = 'SpecialCard';
 
 
 const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
-  entry: ScheduleEntry;
+  entry: TimetableEntry;
   isEditMode?: boolean;
-  onEdit?: (entry: ScheduleEntry) => void;
+  onEdit?: (entry: TimetableEntry) => void;
   isHighlighted?: boolean;
 }) => {
   const cardStyle = {
@@ -94,10 +94,10 @@ ClassCard.displayName = 'ClassCard';
 
 
 interface TimetableProps {
-    entries: ScheduleEntry[];
+    entries: TimetableEntry[];
     view: 'admin' | 'lecturer';
     isEditMode?: boolean;
-    onEdit?: (entry: ScheduleEntry) => void;
+    onEdit?: (entry: TimetableEntry) => void;
     highlightedLecturer?: string;
 }
 
@@ -149,7 +149,7 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
         ))}
 
 
-        {/* Schedule Entries */}
+        {/* Timetable Entries */}
         {entries.map((entry) => {
           const dayIndex = DAYS.indexOf(entry.day);
           const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));

@@ -21,14 +21,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Trash2 } from "lucide-react";
-import type { ScheduleEntry } from "@/lib/types";
+import type { TimetableEntry } from "@/lib/types";
 import { ClassForm } from "./class-form";
 
 type EditClassDialogProps = {
     isOpen: boolean;
     onOpenChange: (isOpen: boolean) => void;
-    classEntry: ScheduleEntry;
-    onUpdateClass: (updatedClass: ScheduleEntry) => void;
+    classEntry: TimetableEntry;
+    onUpdateClass: (updatedClass: TimetableEntry) => void;
     onDeleteClass: (classId: string) => void;
 };
 
@@ -40,7 +40,7 @@ export function EditClassDialog({
     onDeleteClass
 }: EditClassDialogProps) {
 
-  const handleFormSubmit = (data: Omit<ScheduleEntry, 'id'>) => {
+  const handleFormSubmit = (data: Omit<TimetableEntry, 'id'>) => {
     onUpdateClass({ ...data, id: classEntry.id });
   };
   

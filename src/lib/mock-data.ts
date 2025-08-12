@@ -1,5 +1,5 @@
 
-import type { Lecturer, ScheduleEntry, TimetableData } from './types';
+import type { Lecturer, TimetableEntry, TimetableData } from './types';
 
 export const LECTURERS: Lecturer[] = [
     { id: 'lec1', name: 'Roshan S. Bhanuse' },
@@ -35,7 +35,7 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec31', name: 'S. S. Bhadoria' },
 ];
 
-const cseIotSem5Schedule: ScheduleEntry[] = [
+const cseIotSem5Timetable: TimetableEntry[] = [
   // Monday
   {
     id: 'c1',
@@ -349,7 +349,7 @@ const cseIotSem5Schedule: ScheduleEntry[] = [
   },
 ];
 
-const cseIotSem3Schedule: ScheduleEntry[] = [
+const cseIotSem3Timetable: TimetableEntry[] = [
   // Monday
   { id: 's3c1', subject: 'OE:1', lecturer: '', room: 'ET-308', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
   { id: 's3c2', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
@@ -393,7 +393,7 @@ const cseIotSem3Schedule: ScheduleEntry[] = [
 
 ];
 
-const cseIotSem7Schedule: ScheduleEntry[] = [
+const cseIotSem7Timetable: TimetableEntry[] = [
   // Monday
   { id: 's7c1', subject: 'PE-V: Blockchain/OSC', lecturer: 'Prachi A. Bainalwar/Gousia Ahmed', room: 'EL-204/EL 203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
   { id: 's7c2', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 302', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -436,20 +436,20 @@ const cseIotSem7Schedule: ScheduleEntry[] = [
 ];
 
 
-export const MASTER_SCHEDULE: TimetableData[] = [
+export const MASTER_TIMETABLE: TimetableData[] = [
     {
         id: 'tt1',
         name: 'CSE(IOT) - Semester 5',
-        schedule: cseIotSem5Schedule
+        timetable: cseIotSem5Timetable
     },
     {
         id: 'tt2',
         name: 'CSE(IOT) - Semester 3',
-        schedule: cseIotSem3Schedule
+        timetable: cseIotSem3Timetable
     },
     {
         id: 'tt3',
         name: 'CSE(IOT) - Semester 7',
-        schedule: cseIotSem7Schedule
+        timetable: cseIotSem7Timetable
     }
 ];

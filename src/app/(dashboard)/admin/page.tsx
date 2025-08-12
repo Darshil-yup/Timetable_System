@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from '@/hooks/use-toast';
-import type { ScheduleEntry, TimetableData } from '@/lib/types';
+import type { TimetableEntry, TimetableData } from '@/lib/types';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { useTimetables } from '@/context/TimetableContext';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
@@ -37,7 +37,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode, handleExportSheet }: {
-    onAddClass: (newClass: Omit<ScheduleEntry, 'id'>) => void;
+    onAddClass: (newClass: Omit<TimetableEntry, 'id'>) => void;
     isEditMode: boolean;
     onToggleEditMode: () => void;
     handleExportSheet: () => void;
@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
 
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedClass, setSelectedClass] = useState<ScheduleEntry | null>(null);
+  const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('master');
   const [selectedRoom, setSelectedRoom] = useState('all');
@@ -88,7 +88,7 @@ export default function AdminDashboardPage() {
     setIsEditDialogOpen(false);
   }, []);
   
-  const openEditDialog = useCallback((entry: ScheduleEntry) => {
+  const openEditDialog = useCallback((entry: TimetableEntry) => {
     setSelectedClass(entry);
     setIsEditDialogOpen(true);
   }, []);
@@ -98,21 +98,21 @@ export default function AdminDashboardPage() {
     setIsEditDialogOpen(false);
   }, []);
 
-  const updateActiveTimetableSchedule = useCallback((newSchedule: ScheduleEntry[]) => {
+  const updateActiveTimetable = useCallback((newTimetable: TimetableEntry[]) => {
     setTimetables(currentTimetables => 
         currentTimetables.map(t => 
-            t.id === selectedTimetableId ? { ...t, schedule: newSchedule } : t
+            t.id === selectedTimetableId ? { ...t, timetable: newTimetable } : t
         )
     );
   }, [selectedTimetableId, setTimetables]);
 
-  const checkForConflicts = useCallback((newClass: Omit<ScheduleEntry, 'id'>, existingSchedule: ScheduleEntry[], updatingClassId?: string): boolean => {
+  const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
     const newClassStartTime = parseInt(newClass.time.split('-')[0].split(':')[0]);
     const newClassEndTime = newClassStartTime + (newClass.duration || 1);
   
-    const scheduleToCheck = existingSchedule.filter(entry => entry.id !== updatingClassId);
+    const timetableToCheck = existingTimetable.filter(entry => entry.id !== updatingClassId);
 
-    for (const existingEntry of scheduleToCheck) {
+    for (const existingEntry of timetableToCheck) {
       if (existingEntry.day !== newClass.day || existingEntry.type === 'Recess' || newClass.type === 'Recess') {
         continue;
       }
@@ -168,52 +168,52 @@ export default function AdminDashboardPage() {
     return false;
   }, [toast]);
   
-  const handleAddClass = useCallback((newClass: Omit<ScheduleEntry, 'id'>) => {
+  const handleAddClass = useCallback((newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
 
-    if (checkForConflicts(newClass, activeTimetable.schedule)) {
+    if (checkForConflicts(newClass, activeTimetable.timetable)) {
       return;
     }
 
-    const newEntry: ScheduleEntry = { ...newClass, id: `c${Date.now()}` };
-    updateActiveTimetableSchedule([...activeTimetable.schedule, newEntry]);
+    const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
+    updateActiveTimetable([...activeTimetable.timetable, newEntry]);
     toast({
       title: "Class Added!",
       description: `"${newClass.subject}" has been added to the timetable.`,
     });
-  }, [activeTimetable, checkForConflicts, updateActiveTimetableSchedule, toast]);
+  }, [activeTimetable, checkForConflicts, updateActiveTimetable, toast]);
   
-  const handleUpdateClass = useCallback((updatedClass: ScheduleEntry) => {
+  const handleUpdateClass = useCallback((updatedClass: TimetableEntry) => {
     if (!activeTimetable) return;
     
-    if (checkForConflicts(updatedClass, activeTimetable.schedule, updatedClass.id)) {
+    if (checkForConflicts(updatedClass, activeTimetable.timetable, updatedClass.id)) {
       return;
     }
 
-    updateActiveTimetableSchedule(activeTimetable.schedule.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
+    updateActiveTimetable(activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
     closeEditDialog();
     toast({
         title: "Class Updated!",
         description: `"${updatedClass.subject}" has been successfully updated.`,
     });
-  }, [activeTimetable, checkForConflicts, updateActiveTimetableSchedule, closeEditDialog, toast]);
+  }, [activeTimetable, checkForConflicts, updateActiveTimetable, closeEditDialog, toast]);
   
   const handleDeleteClass = useCallback((classId: string) => {
     if (!activeTimetable) return;
-    updateActiveTimetableSchedule(activeTimetable.schedule.filter(entry => entry.id !== classId));
+    updateActiveTimetable(activeTimetable.timetable.filter(entry => entry.id !== classId));
     closeEditDialog();
     toast({
        title: "Class Deleted",
        description: "The class has been removed from the timetable.",
        variant: "destructive",
     });
-  }, [activeTimetable, updateActiveTimetableSchedule, closeEditDialog, toast]);
+  }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);
 
   const handleCreateTimetable = useCallback((name: string, year: string) => {
     const newTimetable: TimetableData = {
         id: `tt${Date.now()}`,
         name: `${name} (${year})`,
-        schedule: []
+        timetable: []
     };
     setTimetables(currentTimetables => [...currentTimetables, newTimetable]);
     setSelectedTimetableId(newTimetable.id);
@@ -245,27 +245,27 @@ export default function AdminDashboardPage() {
         return;
     }
 
-    let scheduleToExport: ScheduleEntry[];
+    let timetableToExport: TimetableEntry[];
     let sheetName: string;
 
-    const lectureSchedule = activeTimetable.schedule.filter(e => e.type === 'Lecture');
-    const practicalSchedule = activeTimetable.schedule.filter(e => e.type === 'Practical');
+    const lectureTimetable = activeTimetable.timetable.filter(e => e.type === 'Lecture');
+    const practicalTimetable = activeTimetable.timetable.filter(e => e.type === 'Practical');
 
     switch (activeTab) {
         case 'classroom':
-            scheduleToExport = lectureSchedule;
+            timetableToExport = lectureTimetable;
             if (selectedRoom !== 'all') {
-                scheduleToExport = scheduleToExport.filter(e => e.room === selectedRoom);
+                timetableToExport = timetableToExport.filter(e => e.room === selectedRoom);
             }
-            sheetName = 'Classroom Schedule';
+            sheetName = 'Classroom Timetable';
             break;
         case 'lab':
-            scheduleToExport = practicalSchedule;
-            sheetName = 'Lab Schedule';
+            timetableToExport = practicalTimetable;
+            sheetName = 'Lab Timetable';
             break;
         default:
-            scheduleToExport = activeTimetable.schedule;
-            sheetName = 'Master Schedule';
+            timetableToExport = activeTimetable.timetable;
+            sheetName = 'Master Timetable';
             break;
     }
 
@@ -275,7 +275,7 @@ export default function AdminDashboardPage() {
     TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
     DAYS.forEach((day, i) => grid[i + 1][0] = day);
 
-    scheduleToExport.forEach(entry => {
+    timetableToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
@@ -297,7 +297,7 @@ export default function AdminDashboardPage() {
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     
     worksheet['!merges'] = [];
-    scheduleToExport.forEach(entry => {
+    timetableToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
@@ -318,25 +318,25 @@ export default function AdminDashboardPage() {
     });
   }, [activeTimetable, activeTab, selectedRoom, toast]);
 
-  const lectureSchedule = useMemo(() => 
-    activeTimetable?.schedule.filter(e => e.type === 'Lecture') || [], 
+  const lectureTimetable = useMemo(() => 
+    activeTimetable?.timetable.filter(e => e.type === 'Lecture') || [], 
     [activeTimetable]
   );
   
-  const practicalSchedule = useMemo(() => 
-    activeTimetable?.schedule.filter(e => e.type === 'Practical') || [], 
+  const practicalTimetable = useMemo(() => 
+    activeTimetable?.timetable.filter(e => e.type === 'Practical') || [], 
     [activeTimetable]
   );
   
   const classroomList = useMemo(() => {
-    const rooms = lectureSchedule.map(e => e.room).filter(Boolean) as string[];
+    const rooms = lectureTimetable.map(e => e.room).filter(Boolean) as string[];
     return ['all', ...Array.from(new Set(rooms))];
-  }, [lectureSchedule]);
+  }, [lectureTimetable]);
 
-  const filteredLectureSchedule = useMemo(() => {
-      if (selectedRoom === 'all') return lectureSchedule;
-      return lectureSchedule.filter(e => e.room === selectedRoom);
-  }, [lectureSchedule, selectedRoom]);
+  const filteredLectureTimetable = useMemo(() => {
+      if (selectedRoom === 'all') return lectureTimetable;
+      return lectureTimetable.filter(e => e.room === selectedRoom);
+  }, [lectureTimetable, selectedRoom]);
 
   const toggleEditMode = useCallback(() => {
     const newEditMode = !isEditMode;
@@ -409,7 +409,7 @@ export default function AdminDashboardPage() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
-                            <CardTitle>Master Schedule</CardTitle>
+                            <CardTitle>Master Timetable</CardTitle>
                             <CardDescription>Combined view of all lectures and practicals.</CardDescription>
                         </div>
                         <TimetableActions 
@@ -421,7 +421,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            entries={activeTimetable.schedule} 
+                            entries={activeTimetable.timetable} 
                             view="admin" 
                             isEditMode={isEditMode}
                             onEdit={openEditDialog}
@@ -433,7 +433,7 @@ export default function AdminDashboardPage() {
                  <Card>
                     <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
-                            <CardTitle>Classroom Schedule (Lectures)</CardTitle>
+                            <CardTitle>Classroom Timetable (Lectures)</CardTitle>
                             <CardDescription>Filtered view showing only lecture slots.</CardDescription>
                         </div>
                         <div className="flex w-full sm:w-auto items-center gap-2">
@@ -459,7 +459,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                        <Timetable 
-                            entries={filteredLectureSchedule} 
+                            entries={filteredLectureTimetable} 
                             view="admin" 
                             isEditMode={isEditMode}
                             onEdit={openEditDialog}
@@ -471,7 +471,7 @@ export default function AdminDashboardPage() {
                  <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
-                            <CardTitle>Lab Schedule (Practicals)</CardTitle>
+                            <CardTitle>Lab Timetable (Practicals)</CardTitle>
                             <CardDescription>Filtered view showing only lab/practical slots.</CardDescription>
                         </div>
                         <TimetableActions 
@@ -483,7 +483,7 @@ export default function AdminDashboardPage() {
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            entries={practicalSchedule} 
+                            entries={practicalTimetable} 
                             view="admin" 
                             isEditMode={isEditMode}
                             onEdit={openEditDialog}

@@ -1,7 +1,7 @@
 export type SpecialClassType = 'Recess' | 'Library' | 'Help Desk' | 'Sports';
 export type ClassType = 'Lecture' | 'Practical' | SpecialClassType;
 
-export type ScheduleEntry = {
+export type TimetableEntry = {
   id: string;
   subject: string;
   lecturer: string; // Can be a comma-separated list of names for labs
@@ -22,5 +22,5 @@ export type Lecturer = {
 export type TimetableData = {
   id: string;
   name: string;
-  schedule: ScheduleEntry[];
+  timetable: TimetableEntry[];
 };

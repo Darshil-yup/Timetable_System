@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { cn } from "@/lib/utils"
-import type { ScheduleEntry, SpecialClassType } from "@/lib/types";
+import type { TimetableEntry, SpecialClassType } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DialogFooter } from "@/components/ui/dialog";
 
@@ -51,11 +51,11 @@ const formSchema = z.object({
 });
 
 
-type FormValues = Omit<ScheduleEntry, 'id' | 'batches'> & { batches?: string };
+type FormValues = Omit<TimetableEntry, 'id' | 'batches'> & { batches?: string };
 
 type ClassFormProps = {
-    defaultValues?: ScheduleEntry;
-    onSubmit: (data: Omit<ScheduleEntry, 'id'>) => void;
+    defaultValues?: TimetableEntry;
+    onSubmit: (data: Omit<TimetableEntry, 'id'>) => void;
     submitButtonText?: string;
     children?: React.ReactNode;
 }

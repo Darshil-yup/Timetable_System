@@ -3,7 +3,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import type { TimetableData } from '@/lib/types';
-import { MASTER_SCHEDULE } from '@/lib/mock-data';
+import { MASTER_TIMETABLE } from '@/lib/mock-data';
 
 interface TimetableContextType {
   timetables: TimetableData[];
@@ -13,7 +13,7 @@ interface TimetableContextType {
 const TimetableContext = createContext<TimetableContextType | undefined>(undefined);
 
 export function TimetableProvider({ children }: { children: ReactNode }) {
-  const [timetables, setTimetables] = useState<TimetableData[]>(MASTER_SCHEDULE);
+  const [timetables, setTimetables] = useState<TimetableData[]>(MASTER_TIMETABLE);
 
   return (
     <TimetableContext.Provider value={{ timetables, setTimetables }}>

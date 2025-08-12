@@ -5,23 +5,23 @@ import React, { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import type { ScheduleEntry } from '@/lib/types';
+import type { TimetableEntry } from '@/lib/types';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 interface FreeRoomSlotsProps {
-    schedule: ScheduleEntry[];
+    timetable: TimetableEntry[];
 }
 
-type RoomSchedule = Record<string, { day: string, time: string }[]>;
+type RoomTimetable = Record<string, { day: string, time: string }[]>;
 
-export function FreeRoomSlots({ schedule }: FreeRoomSlotsProps) {
+export function FreeRoomSlots({ timetable }: FreeRoomSlotsProps) {
     const { freeSlotsByRoom, allRooms } = useMemo(() => {
-        const scheduledSlots: RoomSchedule = {};
+        const scheduledSlots: RoomTimetable = {};
         const allRooms = new Set<string>();
 
-        schedule.forEach(entry => {
+        timetable.forEach(entry => {
             if (entry.room && (entry.type === 'Lecture' || entry.type === 'Practical')) {
                 allRooms.add(entry.room);
                 if (!scheduledSlots[entry.room]) {
@@ -57,7 +57,7 @@ export function FreeRoomSlots({ schedule }: FreeRoomSlotsProps) {
         });
 
         return { freeSlotsByRoom, allRooms: Array.from(allRooms).sort() };
-    }, [schedule]);
+    }, [timetable]);
 
     if (allRooms.length === 0) {
         return (
@@ -67,7 +67,7 @@ export function FreeRoomSlots({ schedule }: FreeRoomSlotsProps) {
                     <CardDescription>Report of all available (unscheduled) room slots.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">No rooms found in the schedule to analyze.</p>
+                    <p className="text-muted-foreground">No rooms found in the timetable to analyze.</p>
                 </CardContent>
             </Card>
         )

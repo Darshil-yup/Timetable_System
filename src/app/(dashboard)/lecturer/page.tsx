@@ -18,7 +18,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
-import { ScheduleEntry } from '@/lib/types';
+import { TimetableEntry } from '@/lib/types';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -45,9 +45,9 @@ export default function LecturerDashboardPage() {
     [timetables, selectedTimetableId]
   );
 
-  const lecturerSchedule = useMemo(() => 
+  const lecturerTimetable = useMemo(() => 
     activeTimetable && selectedLecturer 
-      ? activeTimetable.schedule.filter(entry => entry.lecturer.includes(selectedLecturer))
+      ? activeTimetable.timetable.filter(entry => entry.lecturer.includes(selectedLecturer))
       : [],
     [activeTimetable, selectedLecturer]
   );
@@ -62,14 +62,14 @@ export default function LecturerDashboardPage() {
         return;
     }
 
-    let scheduleToExport: ScheduleEntry[];
+    let timetableToExport: TimetableEntry[];
     let sheetName: string;
 
     if (activeTab === 'my-timetable') {
-        scheduleToExport = lecturerSchedule;
-        sheetName = `${selectedLecturer}-Schedule`;
+        timetableToExport = lecturerTimetable;
+        sheetName = `${selectedLecturer}-Timetable`;
     } else {
-        scheduleToExport = activeTimetable.schedule;
+        timetableToExport = activeTimetable.timetable;
         sheetName = `${activeTimetable.name}-Master`;
     }
 
@@ -79,7 +79,7 @@ export default function LecturerDashboardPage() {
     TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
     DAYS.forEach((day, i) => grid[i + 1][0] = day);
 
-    scheduleToExport.forEach(entry => {
+    timetableToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1) {
@@ -101,7 +101,7 @@ export default function LecturerDashboardPage() {
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
 
     worksheet['!merges'] = [];
-    scheduleToExport.forEach(entry => {
+    timetableToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
         if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
@@ -118,9 +118,9 @@ export default function LecturerDashboardPage() {
 
     toast({
         title: "Export Successful",
-        description: `The schedule has been exported to an Excel file.`,
+        description: `The timetable has been exported to an Excel file.`,
     });
-}, [activeTimetable, selectedLecturer, activeTab, lecturerSchedule, toast]);
+}, [activeTimetable, selectedLecturer, activeTab, lecturerTimetable, toast]);
 
 
   return (
@@ -163,14 +163,14 @@ export default function LecturerDashboardPage() {
             <TabsContent value="my-timetable">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Schedule for {selectedLecturer}</CardTitle>
+                        <CardTitle>Timetable for {selectedLecturer}</CardTitle>
                         <CardDescription>
-                            Displaying the personalized timetable for {selectedLecturer} from the {activeTimetable.name} schedule.
+                            Displaying the personalized timetable for {selectedLecturer} from the {activeTimetable.name} timetable.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            entries={lecturerSchedule} 
+                            entries={lecturerTimetable} 
                             view="lecturer"
                         />
                     </CardContent>
@@ -179,14 +179,14 @@ export default function LecturerDashboardPage() {
              <TabsContent value="master-timetable">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Master Schedule: {activeTimetable.name}</CardTitle>
+                        <CardTitle>Master Timetable: {activeTimetable.name}</CardTitle>
                         <CardDescription>
                             This is the full, read-only timetable. Your classes are highlighted for convenience.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Timetable 
-                            entries={activeTimetable.schedule} 
+                            entries={activeTimetable.timetable} 
                             view="lecturer"
                             highlightedLecturer={selectedLecturer}
                         />
@@ -197,7 +197,7 @@ export default function LecturerDashboardPage() {
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
             <p className="text-muted-foreground mb-2">No lecturer or timetable selected.</p>
-            <p className="text-muted-foreground text-center">Please select a lecturer and a timetable from the dropdowns above to view schedules.</p>
+            <p className="text-muted-foreground text-center">Please select a lecturer and a timetable from the dropdowns above to view timetables.</p>
         </div>
        )}
     </div>
