@@ -106,6 +106,7 @@ export default function AdminDashboardPage() {
     const timetableToCheck = existingTimetable.filter(entry => entry.id !== updatingClassId);
 
     for (const existingEntry of timetableToCheck) {
+      // Skip irrelevant entries
       if (existingEntry.day !== newClass.day || existingEntry.type === 'Recess' || newClass.type === 'Recess') {
         continue;
       }
@@ -113,9 +114,13 @@ export default function AdminDashboardPage() {
       const existingStartTime = parseInt(existingEntry.time.split(':')[0]);
       const existingEndTime = existingStartTime + (existingEntry.duration || 1);
 
+      // Check for any time overlap
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
       if (isOverlapping) {
+        // --- CONFLICT CHECKS FOR OVERLAPPING SLOTS ---
+
+        // 1. Lecturer Conflict
         if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A') {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim());
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim());
@@ -130,6 +135,7 @@ export default function AdminDashboardPage() {
           }
         }
         
+        // 2. Room/Lab Conflict
         if (newClass.room && existingEntry.room && newClass.room !== 'N/A' && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
           toast({ 
               variant: "destructive", 
@@ -139,6 +145,7 @@ export default function AdminDashboardPage() {
           return true;
         }
 
+        // 3. Batch Conflict (only if both are practicals)
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
            if (conflictingBatch) {
@@ -175,10 +182,11 @@ export default function AdminDashboardPage() {
   
   const handleDeleteClass = useCallback(async (classId: string) => {
     if (!activeTimetable) return;
+    const classToDelete = activeTimetable.timetable.find(c => c.id === classId);
     const newTimetable = activeTimetable.timetable.filter(entry => entry.id !== classId)
     await updateActiveTimetable(newTimetable);
     closeEditDialog();
-    toast({ title: "Class Deleted", description: "The class has been removed.", variant: "destructive" });
+    toast({ title: "Class Deleted", description: `"${classToDelete?.subject}" has been removed.`, variant: "destructive" });
   }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);
 
   const toggleEditMode = useCallback(() => {
@@ -283,3 +291,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
