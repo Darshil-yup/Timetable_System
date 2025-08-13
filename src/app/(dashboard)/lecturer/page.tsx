@@ -5,7 +5,6 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
-import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
 import { FileSpreadsheet } from 'lucide-react';
 import {
@@ -20,31 +19,37 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
 import type { TimetableEntry } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTimetableData } from '@/hooks/use-timetable-data';
+import { useTimetables } from '@/context/TimetableContext';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 export default function LecturerDashboardPage() {
-  const { timetables, loading } = useTimetables();
+  const { timetables: timetableMetadatas, loading: metadataLoading } = useTimetableData();
+  const { setActiveTimetable } = useTimetables();
   const { toast } = useToast();
   
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [activeTab, setActiveTab] = useState('my-timetable');
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
 
+  const { timetable: activeTimetable, loading: timetableLoading } = useTimetableData(selectedTimetableId);
+
   useEffect(() => {
-    if (!loading && timetables.length > 0 && !selectedTimetableId) {
-      setSelectedTimetableId(timetables[0].id);
+    if (activeTimetable) {
+        setActiveTimetable(activeTimetable);
+    }
+  }, [activeTimetable, setActiveTimetable]);
+
+  useEffect(() => {
+    if (!metadataLoading && timetableMetadatas.length > 0 && !selectedTimetableId) {
+      setSelectedTimetableId(timetableMetadatas[0].id);
     }
     if (LECTURERS.length > 0 && !selectedLecturer) {
         setSelectedLecturer(LECTURERS[0].name);
     }
-  }, [timetables, selectedTimetableId, selectedLecturer, loading]);
-
-  const activeTimetable = useMemo(() => 
-    timetables.find(t => t.id === selectedTimetableId), 
-    [timetables, selectedTimetableId]
-  );
+  }, [timetableMetadatas, selectedTimetableId, selectedLecturer, metadataLoading]);
 
   const lecturerTimetable = useMemo(() => 
     activeTimetable && selectedLecturer 
@@ -110,7 +115,9 @@ export default function LecturerDashboardPage() {
     toast({ title: "Export Successful", description: `Timetable exported.` });
 }, [activeTimetable, selectedLecturer, activeTab, lecturerTimetable, toast]);
 
-if (loading) {
+const isLoading = metadataLoading || timetableLoading;
+
+if (isLoading) {
     return (
         <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
             <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
@@ -137,12 +144,12 @@ if (loading) {
                     ))}
                 </SelectContent>
             </Select>
-            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetables.length === 0}>
+            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetableMetadatas.length === 0}>
               <SelectTrigger className="w-auto md:w-[280px]">
                   <SelectValue placeholder="Select Department & Year" />
               </SelectTrigger>
               <SelectContent>
-                  {timetables.map(timetable => (
+                  {timetableMetadatas.map(timetable => (
                     <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
                   ))}
               </SelectContent>
@@ -203,5 +210,3 @@ if (loading) {
     </div>
   );
 }
-
-    

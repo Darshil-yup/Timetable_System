@@ -19,6 +19,7 @@ import type { TimetableData, TimetableEntry } from '@/lib/types';
 import { Pencil, FileSpreadsheet, XCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '../ui/skeleton';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -46,7 +47,8 @@ const TimetableActions = React.memo(({ onAddClass, isEditMode, onToggleEditMode,
 TimetableActions.displayName = 'TimetableActions';
 
 interface TimetableTabsProps {
-  activeTimetable: TimetableData | undefined;
+  activeTimetable: TimetableData | undefined | null;
+  isLoading: boolean;
   onAddClass: (newClass: Omit<TimetableEntry, 'id'>) => void;
   isEditMode: boolean;
   onToggleEditMode: () => void;
@@ -55,6 +57,7 @@ interface TimetableTabsProps {
 
 export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
   activeTimetable,
+  isLoading,
   onAddClass,
   isEditMode,
   onToggleEditMode,
@@ -70,14 +73,16 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
     setSelectedLab('all');
   }, [activeTab, activeTimetable?.id]);
 
+  const timetableEntries = useMemo(() => activeTimetable?.timetable || [], [activeTimetable]);
+
   const lectureTimetable = useMemo(() =>
-    activeTimetable?.timetable.filter(e => e.type === 'Lecture') || [],
-    [activeTimetable]
+    timetableEntries.filter(e => e.type === 'Lecture') || [],
+    [timetableEntries]
   );
 
   const practicalTimetable = useMemo(() =>
-    activeTimetable?.timetable.filter(e => e.type === 'Practical') || [],
-    [activeTimetable]
+    timetableEntries.filter(e => e.type === 'Practical') || [],
+    [timetableEntries]
   );
   
   const filteredLectureTimetable = useMemo(() => {
@@ -145,7 +150,12 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
     toast({ title: "Export Successful" });
   }, [activeTimetable, activeTab, filteredLectureTimetable, filteredPracticalTimetable, toast]);
 
-  if (!activeTimetable) {
+  const renderTimetable = (entries: TimetableEntry[]) => (
+    isLoading ? <Skeleton className="h-[600px] w-full" /> : 
+    <Timetable entries={entries} view="admin" isEditMode={isEditMode} onEdit={onEditClass} />
+  );
+
+  if (!activeTimetable && !isLoading) {
     return null; // Or a message indicating no timetable is selected
   }
 
@@ -167,7 +177,7 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
             <TimetableActions {...{ onAddClass, isEditMode, onToggleEditMode, handleExportSheet }} />
           </CardHeader>
           <CardContent>
-            <Timetable entries={activeTimetable.timetable} view="admin" isEditMode={isEditMode} onEdit={onEditClass} />
+            {renderTimetable(timetableEntries)}
           </CardContent>
         </Card>
       </TabsContent>
@@ -190,7 +200,7 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
             </div>
           </CardHeader>
           <CardContent>
-            <Timetable entries={filteredLectureTimetable} view="admin" isEditMode={isEditMode} onEdit={onEditClass} />
+             {renderTimetable(filteredLectureTimetable)}
           </CardContent>
         </Card>
       </TabsContent>
@@ -213,7 +223,7 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
             </div>
           </CardHeader>
           <CardContent>
-            <Timetable entries={filteredPracticalTimetable} view="admin" isEditMode={isEditMode} onEdit={onEditClass} />
+            {renderTimetable(filteredPracticalTimetable)}
           </CardContent>
         </Card>
       </TabsContent>

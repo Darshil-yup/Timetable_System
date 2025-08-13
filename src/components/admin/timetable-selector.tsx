@@ -23,10 +23,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Trash2 } from 'lucide-react';
-import type { TimetableData } from '@/lib/types';
+import type { TimetableMetadata } from '@/lib/types';
 
 interface TimetableSelectorProps {
-  timetables: TimetableData[];
+  timetables: TimetableMetadata[];
   selectedTimetableId: string;
   onSelectTimetable: (id: string) => void;
   onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;

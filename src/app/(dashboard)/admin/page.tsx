@@ -2,32 +2,39 @@
 "use client"
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import type { TimetableEntry } from '@/lib/types';
-import { useTimetables } from '@/context/TimetableContext';
+import type { TimetableEntry, TimetableData, TimetableMetadata } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
 import { TimetableTabs } from '@/components/admin/timetable-tabs';
 import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTimetables } from '@/context/TimetableContext';
+import { useTimetableData } from '@/hooks/use-timetable-data';
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export default function AdminDashboardPage() {
-  const { timetables, loading, addTimetable, deleteTimetable, updateTimetableEntries } = useTimetables();
+  const { timetables: timetableMetadatas, loading: metadataLoading, mutate: mutateMetadatas } = useTimetableData();
+  const { activeTimetable, setActiveTimetable } = useTimetables();
   const { toast } = useToast();
 
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
 
-  const activeTimetable = useMemo(() => 
-    timetables.find(t => t.id === selectedTimetableId), 
-    [timetables, selectedTimetableId]
-  );
+  const { timetable: activeTimetableData, loading: timetableLoading, mutate: mutateTimetable } = useTimetableData(selectedTimetableId);
 
   useEffect(() => {
-    if (!loading && timetables.length > 0 && !selectedTimetableId) {
-        setSelectedTimetableId(timetables[0].id);
+      if (activeTimetableData) {
+          setActiveTimetable(activeTimetableData);
+      }
+  }, [activeTimetableData, setActiveTimetable]);
+
+  useEffect(() => {
+    if (!metadataLoading && timetableMetadatas.length > 0 && !selectedTimetableId) {
+        setSelectedTimetableId(timetableMetadatas[0].id);
     }
-  }, [timetables, loading, selectedTimetableId]);
+  }, [timetableMetadatas, metadataLoading, selectedTimetableId]);
 
   const handleSelectTimetable = useCallback((id: string) => {
     setSelectedTimetableId(id);
@@ -45,8 +52,44 @@ export default function AdminDashboardPage() {
 
   const updateActiveTimetable = useCallback(async (newTimetable: TimetableEntry[]) => {
       if (!selectedTimetableId) return;
-      await updateTimetableEntries(selectedTimetableId, newTimetable);
-  }, [selectedTimetableId, updateTimetableEntries]);
+      try {
+        const timetableRef = doc(db, "timetables", selectedTimetableId);
+        await updateDoc(timetableRef, { timetable: newTimetable });
+        mutateTimetable(); // Revalidate the current timetable data
+      } catch (error) {
+         console.error("Error updating timetable entries: ", error);
+         toast({ title: 'Error Updating Timetable', description: 'Could not save changes to the database.', variant: 'destructive' });
+      }
+  }, [selectedTimetableId, mutateTimetable, toast]);
+  
+  const addTimetable = useCallback(async (name: string, year: string, entries: TimetableEntry[] = []): Promise<string | null> => {
+    try {
+      const newTimetable = { name: `${name} (${year})`, timetable: entries };
+      const docRef = await addDoc(collection(db, "timetables"), newTimetable);
+      toast({ title: "Timetable Created!", description: `Timetable for "${newTimetable.name}" has been created.` });
+      mutateMetadatas(); // Revalidate the list of timetables
+      setSelectedTimetableId(docRef.id);
+      return docRef.id;
+    } catch (error) {
+      console.error("Error creating timetable: ", error);
+      toast({ title: 'Error Creating Timetable', description: 'Could not save the new timetable to the database.', variant: 'destructive' });
+      return null;
+    }
+  }, [toast, mutateMetadatas]);
+
+  const deleteTimetable = useCallback(async (id: string) => {
+    try {
+      const timetableToDelete = timetableMetadatas.find(t => t.id === id);
+      await deleteDoc(doc(db, "timetables", id));
+      toast({ title: "Timetable Deleted", description: `The timetable for "${timetableToDelete?.name}" has been deleted.`, variant: "destructive" });
+      mutateMetadatas(); // Revalidate the list of timetables
+      setSelectedTimetableId(timetableMetadatas.length > 1 ? timetableMetadatas.filter(t => t.id !== id)[0].id : '');
+    } catch (error) {
+      console.error("Error deleting timetable: ", error);
+       toast({ title: 'Error Deleting Timetable', description: 'There was a problem deleting the timetable.', variant: 'destructive' });
+    }
+  }, [toast, timetableMetadatas, mutateMetadatas]);
+
 
   const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
     const newClassStartTime = parseInt(newClass.time.split(':')[0]);
@@ -124,7 +167,7 @@ export default function AdminDashboardPage() {
     });
   }, [isEditMode, toast]);
 
-  if (loading) {
+  if (metadataLoading) {
     return (
         <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
             <Skeleton className="h-10 w-full max-w-lg ml-auto" />
@@ -136,7 +179,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <TimetableSelector
-        timetables={timetables}
+        timetables={timetableMetadatas}
         selectedTimetableId={selectedTimetableId}
         onSelectTimetable={handleSelectTimetable}
         onCreateTimetable={addTimetable}
@@ -145,6 +188,7 @@ export default function AdminDashboardPage() {
      
       <TimetableTabs
         activeTimetable={activeTimetable}
+        isLoading={timetableLoading}
         onAddClass={handleAddClass}
         isEditMode={isEditMode}
         onToggleEditMode={toggleEditMode}
@@ -163,5 +207,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    

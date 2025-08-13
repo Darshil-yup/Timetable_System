@@ -1,3 +1,4 @@
+
 export type SpecialClassType = 'Recess' | 'Library' | 'Help Desk' | 'Sports';
 export type ClassType = 'Lecture' | 'Practical' | SpecialClassType;
 
@@ -23,4 +24,9 @@ export type TimetableData = {
   id: string;
   name: string;
   timetable: TimetableEntry[];
+};
+
+export type TimetableMetadata = {
+  id: string;
+  name: string;
 };
