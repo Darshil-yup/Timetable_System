@@ -34,9 +34,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ALL_CLASSROOMS, ALL_LABS } from '@/components/admin/class-form';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FreeRoomSlots } from '@/components/admin/analytics/FreeRoomSlots';
-import { LecturerWorkloadChart } from '@/components/admin/analytics/LecturerWorkloadChart';
-import { ClassUsageChart } from '@/components/admin/analytics/ClassUsageChart';
 
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -414,11 +411,10 @@ export default function AdminDashboardPage() {
      
       {activeTimetable ? (
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="mb-4 grid w-full grid-cols-4 max-w-2xl">
+            <TabsList className="mb-4 grid w-full grid-cols-3 max-w-lg">
                 <TabsTrigger value="master">Master Timetable</TabsTrigger>
                 <TabsTrigger value="classroom">Classroom Timetable</TabsTrigger>
                 <TabsTrigger value="lab">Lab Timetable</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
 
             <TabsContent value="master">
@@ -518,19 +514,6 @@ export default function AdminDashboardPage() {
                             isEditMode={isEditMode}
                             onEdit={openEditDialog}
                         />
-                    </CardContent>
-                </Card>
-            </TabsContent>
-            <TabsContent value="analytics">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Timetable Analytics</CardTitle>
-                        <CardDescription>Insights and reports based on the current timetable.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <FreeRoomSlots timetable={activeTimetable.timetable} />
-                        <LecturerWorkloadChart timetable={activeTimetable.timetable} />
-                        <ClassUsageChart timetable={activeTimetable.timetable} />
                     </CardContent>
                 </Card>
             </TabsContent>
