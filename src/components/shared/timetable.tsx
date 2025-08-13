@@ -27,7 +27,6 @@ const SpecialCard = React.memo(({ entry }: { entry: TimetableEntry }) => {
 });
 SpecialCard.displayName = 'SpecialCard';
 
-
 const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   entry: TimetableEntry;
   isEditMode?: boolean;
@@ -47,6 +46,12 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
     color: entry.color ? `${entry.color}CC` : 'hsl(var(--muted-foreground))',
   }
 
+  const handleEditClick = () => {
+    if (isEditMode && onEdit) {
+      onEdit(entry);
+    }
+  };
+
   if (SPECIAL_TYPES.includes(entry.type as SpecialClassType)) {
       return <SpecialCard entry={entry} />;
   }
@@ -59,31 +64,31 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
         isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background"
       )}
       style={cardStyle}
-      onClick={() => isEditMode && onEdit && onEdit(entry)}
+      onClick={handleEditClick}
     >
       <CardHeader className="p-2 md:p-3">
         <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
           {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
-          <span>{entry.subject}</span>
+          <span className="truncate">{entry.subject}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow">
+      <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
         <div className="flex items-start gap-2">
           <Clock className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
           <span>{entry.time}</span>
         </div>
         <div className="flex items-start gap-2">
           <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-          <span>{entry.lecturer}</span>
+          <span className="truncate">{entry.lecturer}</span>
         </div>
         <div className="flex items-start gap-2">
           <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-          <span>Room: {entry.room}</span>
+          <span className="truncate">Room: {entry.room}</span>
         </div>
         {entry.batches && entry.batches.length > 0 && (
           <div className="flex items-start gap-2">
             <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-            <span>Batches: {entry.batches.join(', ')}</span>
+            <span className="truncate">Batches: {entry.batches.join(', ')}</span>
           </div>
         )}
       </CardContent>
@@ -91,7 +96,6 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   );
 });
 ClassCard.displayName = 'ClassCard';
-
 
 interface TimetableProps {
     entries: TimetableEntry[];
@@ -104,7 +108,7 @@ interface TimetableProps {
 export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
    if (!entries || entries.length === 0) {
     return (
-       <div ref={ref} className="flex flex-col items-center justify-center h-48 border rounded-lg bg-card text-card-foreground shadow-sm">
+       <div ref={ref} className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
           <p className="text-muted-foreground">No classes scheduled for this view.</p>
         </div>
     )
@@ -115,8 +119,8 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
       <div
         className="grid relative"
         style={{
-          gridTemplateColumns: `minmax(100px, auto) repeat(${TIME_SLOTS.length}, minmax(140px, 1fr))`,
-          gridTemplateRows: `auto repeat(${DAYS.length}, minmax(120px, auto))`
+          gridTemplateColumns: `minmax(100px, auto) repeat(${TIME_SLOTS.length}, minmax(150px, 1fr))`,
+          gridTemplateRows: `auto repeat(${DAYS.length}, minmax(130px, auto))`
         }}
       >
         {/* Empty corner */}
@@ -148,7 +152,6 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
           </React.Fragment>
         ))}
 
-
         {/* Timetable Entries */}
         {entries.map((entry) => {
           const dayIndex = DAYS.indexOf(entry.day);
@@ -158,21 +161,21 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
             return null;
           }
 
-          const duration = entry.duration || 1;
-          const isHighlighted = highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false;
-          let columnStart = timeIndex + 2;
-
           return (
             <div
               key={entry.id}
               className="p-1"
               style={{
                 gridRow: dayIndex + 2,
-                gridColumnStart: columnStart,
-                gridColumnEnd: `span ${duration}`,
+                gridColumn: `${timeIndex + 2} / span ${entry.duration || 1}`,
               }}
             >
-               <ClassCard entry={entry} isEditMode={isEditMode} onEdit={onEdit} isHighlighted={isHighlighted} />
+               <ClassCard 
+                  entry={entry} 
+                  isEditMode={isEditMode} 
+                  onEdit={onEdit} 
+                  isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false} 
+                />
             </div>
           );
         })}
@@ -181,3 +184,5 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
   )
 });
 Timetable.displayName = 'Timetable';
+
+    

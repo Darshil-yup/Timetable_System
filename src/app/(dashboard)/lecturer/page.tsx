@@ -18,7 +18,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
-import { TimetableEntry } from '@/lib/types';
+import type { TimetableEntry } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -33,11 +33,11 @@ export default function LecturerDashboardPage() {
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
 
   useEffect(() => {
-    if (!loading && timetables.length > 0 && !timetables.some(t => t.id === selectedTimetableId)) {
-      setSelectedTimetableId(timetables[0]?.id || '');
+    if (!loading && timetables.length > 0 && !selectedTimetableId) {
+      setSelectedTimetableId(timetables[0].id);
     }
     if (LECTURERS.length > 0 && !selectedLecturer) {
-        setSelectedLecturer(LECTURERS[0]?.name || '');
+        setSelectedLecturer(LECTURERS[0].name);
     }
   }, [timetables, selectedTimetableId, selectedLecturer, loading]);
 
@@ -57,58 +57,48 @@ export default function LecturerDashboardPage() {
     if (!activeTimetable || !selectedLecturer) {
         toast({
             title: "Export Failed",
-            description: "No active timetable or lecturer selected to export.",
+            description: "No timetable or lecturer selected.",
             variant: "destructive",
         });
         return;
     }
 
-    let timetableToExport: TimetableEntry[];
-    let sheetName: string;
+    const timetableToExport = activeTab === 'my-timetable' ? lecturerTimetable : activeTimetable.timetable;
+    const sheetName = activeTab === 'my-timetable' ? `${selectedLecturer}-Timetable` : `${activeTimetable.name}-Master`;
 
-    if (activeTab === 'my-timetable') {
-        timetableToExport = lecturerTimetable;
-        sheetName = `${selectedLecturer}-Timetable`;
-    } else {
-        timetableToExport = activeTimetable.timetable;
-        sheetName = `${activeTimetable.name}-Master`;
-    }
-
-    const grid: (string | null)[][] = Array(DAYS.length + 1).fill(null).map(() => Array(TIME_SLOTS.length + 1).fill(null));
-    
-    grid[0][0] = "Day/Time";
-    TIME_SLOTS.forEach((time, i) => grid[0][i + 1] = time);
-    DAYS.forEach((day, i) => grid[i + 1][0] = day);
+    const grid = [
+        ["Day/Time", ...TIME_SLOTS],
+        ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
+    ];
 
     timetableToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex !== -1 && timeIndex !== -1) {
+        const dayIndex = DAYS.indexOf(entry.day) + 1;
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
+        if (dayIndex > 0 && timeIndex > 0) {
              const cellContent = [
                 entry.subject,
                 entry.lecturer,
                 entry.room,
-                entry.batches && entry.batches.length > 0 ? `${entry.batches.join(', ')}` : null,
+                entry.batches?.join(', '),
             ].filter(Boolean).join('\n');
             
             for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + i < TIME_SLOTS.length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = cellContent;
+                if (timeIndex + i < grid[0].length) {
+                    grid[dayIndex][timeIndex + i] = cellContent;
                 }
             }
         }
     });
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
-
     worksheet['!merges'] = [];
     timetableToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex !== -1 && timeIndex !== -1 && entry.duration && entry.duration > 1) {
+        const dayIndex = DAYS.indexOf(entry.day) + 1;
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
+        if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
             worksheet['!merges']?.push({
-                s: { r: dayIndex + 1, c: timeIndex + 1 },
-                e: { r: dayIndex + 1, c: timeIndex + entry.duration }
+                s: { r: dayIndex, c: timeIndex },
+                e: { r: dayIndex, c: timeIndex + entry.duration - 1 }
             });
         }
     });
@@ -117,10 +107,7 @@ export default function LecturerDashboardPage() {
     XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     XLSX.writeFile(workbook, `${sheetName}.xlsx`);
 
-    toast({
-        title: "Export Successful",
-        description: `The timetable has been exported to an Excel file.`,
-    });
+    toast({ title: "Export Successful", description: `Timetable exported.` });
 }, [activeTimetable, selectedLecturer, activeTab, lecturerTimetable, toast]);
 
 if (loading) {
@@ -152,11 +139,11 @@ if (loading) {
             </Select>
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetables.length === 0}>
               <SelectTrigger className="w-auto md:w-[280px]">
-                  <SelectValue placeholder="Select Department &amp; Year" />
+                  <SelectValue placeholder="Select Department & Year" />
               </SelectTrigger>
               <SelectContent>
                   {timetables.map(timetable => (
-                  <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
+                    <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
                   ))}
               </SelectContent>
             </Select>
@@ -178,7 +165,7 @@ if (loading) {
                     <CardHeader>
                         <CardTitle>Timetable for {selectedLecturer}</CardTitle>
                         <CardDescription>
-                            Displaying the personalized timetable for {selectedLecturer} from the {activeTimetable.name} timetable.
+                            Personalized timetable for {selectedLecturer} from {activeTimetable.name}.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -194,7 +181,7 @@ if (loading) {
                     <CardHeader>
                         <CardTitle>Master Timetable: {activeTimetable.name}</CardTitle>
                         <CardDescription>
-                            This is the full, read-only timetable. Your classes are highlighted for convenience.
+                            Full read-only timetable. Your classes are highlighted.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -209,10 +196,12 @@ if (loading) {
         </Tabs>
        ) : (
          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <p className="text-muted-foreground mb-2">No timetables found or selected.</p>
-            <p className="text-muted-foreground text-center">Please select a lecturer and a timetable from the dropdowns above to view timetables.</p>
+            <p className="text-muted-foreground mb-2">No timetable data to display.</p>
+            <p className="text-muted-foreground text-center">Please select a lecturer and a timetable.</p>
         </div>
        )}
     </div>
   );
 }
+
+    

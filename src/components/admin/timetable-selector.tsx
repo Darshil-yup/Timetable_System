@@ -1,0 +1,114 @@
+
+"use client";
+
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
+import { Trash2 } from 'lucide-react';
+import type { TimetableData } from '@/lib/types';
+
+interface TimetableSelectorProps {
+  timetables: TimetableData[];
+  selectedTimetableId: string;
+  onSelectTimetable: (id: string) => void;
+  onCreateTimetable: (name: string, year: string) => Promise<string | null>;
+  onDeleteTimetable: (id: string) => Promise<void>;
+}
+
+export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
+  timetables,
+  selectedTimetableId,
+  onSelectTimetable,
+  onCreateTimetable,
+  onDeleteTimetable
+}) => {
+  const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
+
+  const handleDelete = () => {
+    if (activeTimetable) {
+      onDeleteTimetable(activeTimetable.id);
+    }
+  };
+  
+  if (timetables.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
+          <p className="text-muted-foreground mb-4">No timetables. Create one to get started.</p>
+          <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
+            <Button>
+              Create New Timetable
+            </Button>
+          </AddTimetableDialog>
+        </div>
+      )
+  }
+
+  return (
+    <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
+      <div className="flex items-center gap-2 flex-wrap">
+        <Select 
+          value={selectedTimetableId} 
+          onValueChange={onSelectTimetable} 
+          disabled={timetables.length === 0}
+        >
+          <SelectTrigger className="w-auto md:w-[280px]">
+            <SelectValue placeholder="Select a timetable" />
+          </SelectTrigger>
+          <SelectContent>
+            {timetables.map(timetable => (
+              <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
+
+        {activeTimetable && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 />
+                Delete Timetable
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  entire timetable for {activeTimetable.name}.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </div>
+    </div>
+  );
+});
+
+TimetableSelector.displayName = 'TimetableSelector';
+
+    
