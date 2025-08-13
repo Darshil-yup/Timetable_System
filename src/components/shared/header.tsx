@@ -23,17 +23,16 @@ import { ThemeToggle } from './theme-toggle';
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-sm">
-      <div className="container flex h-16 items-center px-8">
+    <header className="sticky top-0 z-50 w-full border-b bg-transparent backdrop-blur-sm">
+      <div className="container flex h-16 items-center px-4 sm:px-8">
         <Link
           href="/admin"
           className="flex items-center gap-3 font-bold text-2xl text-foreground mr-auto"
         >
           <BookCopy className="h-10 w-10 text-primary" />
-          <span className="inline-block">YCCE Timetable</span>
+          <span className="hidden sm:inline-block">YCCE Timetable</span>
         </Link>
         <div className="flex items-center gap-4">
-          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -76,6 +75,7 @@ export default function Header() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
+              <ThemeToggle />
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
