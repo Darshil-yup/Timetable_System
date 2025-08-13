@@ -53,8 +53,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
   
   if (timetables.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-          <p className="text-muted-foreground mb-4">No timetables. Create one to get started.</p>
+        <div className="flex items-center justify-end mb-6">
           <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
             <Button>
               Create New Timetable
