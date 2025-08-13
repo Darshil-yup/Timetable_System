@@ -75,7 +75,7 @@ CREATE TABLE timetable_entries (
 
 CREATE TABLE entry_batches (
     entry_id VARCHAR(255) NOT NULL,      -- Foreign key linking to the timetable entry (must be a 'Practical')
-    batch_name VARCHAR(50) NOT NULL,     -- The name of the batch (e.g., "A1")
+    batch_name VARCHAR(50)   NOT NULL,     -- The name of the batch (e.g., "A1")
     
     PRIMARY KEY (entry_id, batch_name),
     FOREIGN KEY (entry_id) REFERENCES timetable_entries(id) ON DELETE CASCADE
