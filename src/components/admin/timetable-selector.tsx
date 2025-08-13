@@ -23,10 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from 'lucide-react';
 import type { TimetableMetadata } from '@/lib/types';
-import dynamic from 'next/dynamic';
-
-const AddTimetableDialog = dynamic(() => import('@/components/admin/add-timetable-dialog').then(mod => mod.AddTimetableDialog));
-
+import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 
 interface TimetableSelectorProps {
   timetables: TimetableMetadata[];
@@ -36,7 +33,7 @@ interface TimetableSelectorProps {
   onDeleteTimetable: (id: string) => Promise<void>;
 }
 
-export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
+export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
   timetables,
   selectedTimetableId,
   onSelectTimetable,
@@ -109,6 +106,6 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
       </div>
     </div>
   );
-});
+};
 
 TimetableSelector.displayName = 'TimetableSelector';
