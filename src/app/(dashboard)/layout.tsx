@@ -10,7 +10,7 @@ export default function DashboardLayout({
     <TimetableProvider>
       <div className="flex flex-col min-h-screen bg-transparent">
         <Header />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="flex-1 p-8">{children}</main>
         <footer className="py-4 text-center text-sm text-muted-foreground bg-transparent">
           @YCCE.D,A
         </footer>

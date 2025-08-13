@@ -119,7 +119,7 @@ const isLoading = metadataLoading || timetableLoading;
 
 if (isLoading) {
     return (
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+        <div className="container mx-auto p-8 space-y-8">
             <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
                <Skeleton className="h-10 w-[200px]" />
                <Skeleton className="h-10 w-[280px]" />
@@ -131,11 +131,11 @@ if (isLoading) {
   }
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="container mx-auto p-8">
        <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2 flex-wrap">
             <Select value={selectedLecturer} onValueChange={setSelectedLecturer} disabled={LECTURERS.length === 0}>
-                <SelectTrigger className="w-auto md:w-[200px]">
+                <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select Lecturer" />
                 </SelectTrigger>
                 <SelectContent>
@@ -145,7 +145,7 @@ if (isLoading) {
                 </SelectContent>
             </Select>
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetableMetadatas.length === 0}>
-              <SelectTrigger className="w-auto md:w-[280px]">
+              <SelectTrigger className="w-[280px]">
                   <SelectValue placeholder="Select Department & Year" />
               </SelectTrigger>
               <SelectContent>

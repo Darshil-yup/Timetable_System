@@ -1,17 +1,19 @@
 
 "use client"
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import type { TimetableEntry, TimetableData, TimetableMetadata } from '@/lib/types';
+import React, { useState, useEffect, useCallback } from 'react';
+import type { TimetableEntry } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
 import { TimetableTabs } from '@/components/admin/timetable-tabs';
-import { EditClassDialog } from '@/components/admin/edit-class-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import { useTimetableData } from '@/hooks/use-timetable-data';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import dynamic from 'next/dynamic';
+
+const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 
 export default function AdminDashboardPage() {
   const { timetables: timetableMetadatas, loading: metadataLoading, mutate: mutateMetadatas } = useTimetableData();
@@ -169,7 +171,7 @@ export default function AdminDashboardPage() {
 
   if (metadataLoading) {
     return (
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+        <div className="container mx-auto p-8 space-y-8">
             <Skeleton className="h-10 w-full max-w-lg ml-auto" />
             <Skeleton className="h-[600px] w-full" />
         </div>
@@ -177,7 +179,7 @@ export default function AdminDashboardPage() {
   }
   
   return (
-    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="container mx-auto p-8">
       <TimetableSelector
         timetables={timetableMetadatas}
         selectedTimetableId={selectedTimetableId}

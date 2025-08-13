@@ -69,7 +69,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
             </Button>
         }
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Timetable</DialogTitle>
           <DialogDescription>

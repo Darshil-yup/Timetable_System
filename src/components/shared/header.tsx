@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Users, BookCopy, Menu } from 'lucide-react';
+import { LogOut, Users, BookCopy } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,40 +24,38 @@ import { ThemeToggle } from './theme-toggle';
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-transparent backdrop-blur-sm">
-      <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
+      <div className="container flex h-16 items-center px-8">
         <Link
           href="/admin"
           className="flex items-center gap-3 font-bold text-2xl text-foreground mr-auto"
         >
           <BookCopy className="h-10 w-10 text-primary" />
-          <span className="hidden sm:inline-block">YCCE Timetable</span>
+          <span className="inline-block">YCCE Timetable</span>
         </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 className="relative h-9 w-9 rounded-full"
               >
-                <Menu className="h-6 w-6" />
+                <Avatar className="h-9 w-9">
+                  <AvatarImage
+                    src="https://i.pravatar.cc/150"
+                    alt="User Avatar"
+                  />
+                  <AvatarFallback>U</AvatarFallback>
+                </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
                <DropdownMenuLabel className="font-normal">
-                <div className="flex items-center gap-3">
-                   <Avatar className="h-9 w-9">
-                    <AvatarImage
-                      src="https://i.pravatar.cc/150"
-                      alt="User Avatar"
-                    />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">Admin</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      admin@example.com
-                    </p>
-                  </div>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">Admin</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    admin@example.com
+                  </p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -78,7 +76,6 @@ export default function Header() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-              <ThemeToggle />
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">

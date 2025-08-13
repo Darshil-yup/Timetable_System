@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RegisterDialog } from './register-dialog';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
+import dynamic from 'next/dynamic';
+
+const RegisterDialog = dynamic(() => import('./register-dialog').then(mod => mod.RegisterDialog));
 
 export function LoginForm() {
   const router = useRouter();

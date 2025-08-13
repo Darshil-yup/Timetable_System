@@ -21,9 +21,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { Trash2 } from 'lucide-react';
 import type { TimetableMetadata } from '@/lib/types';
+import dynamic from 'next/dynamic';
+
+const AddTimetableDialog = dynamic(() => import('@/components/admin/add-timetable-dialog').then(mod => mod.AddTimetableDialog));
+
 
 interface TimetableSelectorProps {
   timetables: TimetableMetadata[];
@@ -69,7 +72,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
           onValueChange={onSelectTimetable} 
           disabled={timetables.length === 0}
         >
-          <SelectTrigger className="w-auto md:w-[280px]">
+          <SelectTrigger className="w-[280px]">
             <SelectValue placeholder="Select a timetable" />
           </SelectTrigger>
           <SelectContent>

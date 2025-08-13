@@ -183,14 +183,14 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
       </TabsContent>
       <TabsContent value="classroom">
         <Card>
-          <CardHeader className="flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <CardHeader className="flex-row items-center justify-between gap-4">
             <div>
               <CardTitle>Classroom Timetable</CardTitle>
               <CardDescription>Filtered view for lectures.</CardDescription>
             </div>
-            <div className="flex w-full sm:w-auto items-center gap-2">
+            <div className="flex items-center gap-2">
               <Select value={selectedRoom} onValueChange={setSelectedRoom}>
-                <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Classrooms</SelectItem>
                   {ALL_CLASSROOMS.map(room => <SelectItem key={room} value={room}>{room}</SelectItem>)}
@@ -206,14 +206,14 @@ export const TimetableTabs: React.FC<TimetableTabsProps> = React.memo(({
       </TabsContent>
       <TabsContent value="lab">
         <Card>
-          <CardHeader className="flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <CardHeader className="flex-row items-center justify-between gap-4">
             <div>
               <CardTitle>Lab Timetable</CardTitle>
               <CardDescription>Filtered view for practicals.</CardDescription>
             </div>
-            <div className="flex w-full sm:w-auto items-center gap-2">
+            <div className="flex items-center gap-2">
               <Select value={selectedLab} onValueChange={setSelectedLab}>
-                <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Labs</SelectItem>
                   {ALL_LABS.map(lab => <SelectItem key={lab} value={lab}>{lab}</SelectItem>)}

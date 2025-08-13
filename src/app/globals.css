@@ -59,10 +59,7 @@
     @apply border-border;
   }
   body {
-    background-image: url('https://placehold.co/1920x1080/e0e7ff/e0e7ff.png'); /* Placeholder for light theme */
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-color: hsl(var(--background));
     @apply text-foreground;
   }
   .dark body {
