@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -61,8 +62,8 @@ export function EditClassDialog({
           defaultValues={classEntry}
           onSubmit={handleFormSubmit}
           submitButtonText="Save Changes"
-        >
-            <AlertDialog>
+          footerContent={
+             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button type="button" variant="destructive">
                   <Trash2 />
@@ -74,7 +75,7 @@ export function EditClassDialog({
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This will permanently delete this class slot. This action cannot be undone.
-                  </AlertDialogDescription>
+                  </dlv>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -82,10 +83,9 @@ export function EditClassDialog({
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-        </ClassForm>
+          }
+        />
       </DialogContent>
     </Dialog>
   );
 }
-
-    

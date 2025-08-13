@@ -69,10 +69,10 @@ type ClassFormProps = {
     defaultValues?: TimetableEntry;
     onSubmit: (data: Omit<TimetableEntry, 'id'>) => void;
     submitButtonText?: string;
-    children?: React.ReactNode;
+    footerContent?: React.ReactNode;
 }
 
-export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit", children }: ClassFormProps) {
+export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit", footerContent }: ClassFormProps) {
   const formatedDefaultValues = defaultValues ? {
         ...defaultValues,
         batches: defaultValues.batches?.join(", ") || "",
@@ -310,9 +310,11 @@ export function ClassForm({ defaultValues, onSubmit, submitButtonText = "Submit"
                 )}
             />
         </div>
-        <DialogFooter className="mt-auto px-6 py-4 bg-background">
-          {children}
-          <Button type="submit">{submitButtonText}</Button>
+        <DialogFooter className="mt-auto px-6 py-4 bg-background flex justify-between w-full">
+            <div>
+              {footerContent}
+            </div>
+            <Button type="submit">{submitButtonText}</Button>
         </DialogFooter>
       </form>
     </Form>
