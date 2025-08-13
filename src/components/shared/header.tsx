@@ -14,9 +14,9 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuPortal
+  DropdownMenuPortal,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { LECTURERS } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
 
@@ -32,7 +32,6 @@ export default function Header() {
           <span className="hidden sm:inline-block">TimeTableSync</span>
         </Link>
         <div className="flex items-center gap-4">
-          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -70,6 +69,7 @@ export default function Header() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
+              <ThemeToggle />
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
