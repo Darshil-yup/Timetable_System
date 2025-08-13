@@ -121,7 +121,6 @@ if (isLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
             <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
-               <Skeleton className="h-10 w-[200px]" />
                <Skeleton className="h-10 w-[280px]" />
                <Skeleton className="h-10 w-[170px]" />
             </div>
@@ -134,16 +133,6 @@ if (isLoading) {
     <div className="container mx-auto p-8">
        <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2 flex-wrap">
-            <Select value={selectedLecturer} onValueChange={setSelectedLecturer} disabled={LECTURERS.length === 0}>
-                <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select Lecturer" />
-                </SelectTrigger>
-                <SelectContent>
-                    {LECTURERS.map(lecturer => (
-                        <SelectItem key={lecturer.id} value={lecturer.name}>{lecturer.name}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
             <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetableMetadatas.length === 0}>
               <SelectTrigger className="w-[280px]">
                   <SelectValue placeholder="Select Department & Year" />
