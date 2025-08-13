@@ -2,13 +2,13 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react';
-import type { TimetableEntry } from '@/lib/types';
+import type { TimetableEntry, TimetableData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import { useTimetableData } from '@/hooks/use-timetable-data';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,6 @@ import { Pencil, FileSpreadsheet, XCircle } from 'lucide-react';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
-import { MASTER_TIMETABLE } from '@/lib/mock-data';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -42,7 +41,7 @@ export default function AdminDashboardPage() {
   }, [activeTimetable, setActiveTimetable]);
 
   useEffect(() => {
-    if (!metadataLoading && timetableMetadatas.length > 0 && !selectedTimetableId) {
+    if (!metadataLoading && timetableMetadatas && timetableMetadatas.length > 0 && !selectedTimetableId) {
         setSelectedTimetableId(timetableMetadatas[0].id);
     }
   }, [timetableMetadatas, metadataLoading, selectedTimetableId]);
@@ -60,27 +59,14 @@ export default function AdminDashboardPage() {
   const closeEditDialog = useCallback(() => {
     setSelectedClass(null);
   }, []);
-
-  const updateActiveTimetable = useCallback(async (newTimetable: TimetableEntry[]) => {
-    if (!selectedTimetableId || !activeTimetable) return;
-    
-    // This is a mock implementation for local data
-    const timetableIndex = MASTER_TIMETABLE.findIndex(t => t.id === selectedTimetableId);
-    if (timetableIndex !== -1) {
-        MASTER_TIMETABLE[timetableIndex].timetable = newTimetable;
-    }
-    
-    // Optimistically update the local SWR cache
-    mutateTimetable({ ...activeTimetable, timetable: newTimetable }, false);
-
-  }, [selectedTimetableId, mutateTimetable, activeTimetable]);
   
   const addTimetable = useCallback(async (name: string, year: string, entries: TimetableEntry[] = []): Promise<string | null> => {
     try {
       const newTimetable = { name: `${name} (${year})`, timetable: entries };
-      // This would be an addDoc call in a real DB
-      toast({ title: "Read-only Mode", description: `Cannot create timetable in local mock data mode.` });
-      return null;
+      const docRef = await addDoc(collection(db, "timetables"), newTimetable);
+      toast({ title: "Timetable Created!", description: `The timetable for "${name} (${year})" has been created.` });
+      mutateMetadatas();
+      return docRef.id;
     } catch (error) {
       console.error("Error creating timetable: ", error);
       toast({ title: 'Error Creating Timetable', description: 'Could not save the new timetable to the database.', variant: 'destructive' });
@@ -90,11 +76,22 @@ export default function AdminDashboardPage() {
 
   const deleteTimetable = useCallback(async (id: string) => {
     try {
-      const timetableToDelete = timetableMetadatas.find(t => t.id === id);
-       toast({ title: "Read-only Mode", description: `Cannot delete timetable in local mock data mode.` });
+      const timetableToDelete = timetableMetadatas?.find(t => t.id === id);
+      await deleteDoc(doc(db, "timetables", id));
+      toast({ title: "Timetable Deleted", description: `The timetable for "${timetableToDelete?.name}" has been deleted.`, variant: "destructive" });
+      
+      const updatedMetadatas = timetableMetadatas?.filter(t => t.id !== id) || [];
+      mutateMetadatas(updatedMetadatas, false); // Optimistic update
+      
+      if (updatedMetadatas.length > 0) {
+        setSelectedTimetableId(updatedMetadatas[0].id);
+      } else {
+        setSelectedTimetableId('');
+      }
     } catch (error) {
       console.error("Error deleting timetable: ", error);
        toast({ title: 'Error Deleting Timetable', description: 'There was a problem deleting the timetable.', variant: 'destructive' });
+       mutateMetadatas(); // Revalidate on error
     }
   }, [toast, timetableMetadatas, mutateMetadatas]);
 
@@ -106,7 +103,6 @@ export default function AdminDashboardPage() {
     const timetableToCheck = existingTimetable.filter(entry => entry.id !== updatingClassId);
 
     for (const existingEntry of timetableToCheck) {
-      // Skip irrelevant entries
       if (existingEntry.day !== newClass.day || existingEntry.type === 'Recess' || newClass.type === 'Recess') {
         continue;
       }
@@ -114,13 +110,9 @@ export default function AdminDashboardPage() {
       const existingStartTime = parseInt(existingEntry.time.split(':')[0]);
       const existingEndTime = existingStartTime + (existingEntry.duration || 1);
 
-      // Check for any time overlap
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
       if (isOverlapping) {
-        // --- CONFLICT CHECKS FOR OVERLAPPING SLOTS ---
-
-        // 1. Lecturer Conflict
         if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A') {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim());
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim());
@@ -135,7 +127,6 @@ export default function AdminDashboardPage() {
           }
         }
         
-        // 2. Room/Lab Conflict
         if (newClass.room && existingEntry.room && newClass.room !== 'N/A' && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
           toast({ 
               variant: "destructive", 
@@ -145,7 +136,6 @@ export default function AdminDashboardPage() {
           return true;
         }
 
-        // 3. Batch Conflict (only if both are practicals)
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
            if (conflictingBatch) {
@@ -163,31 +153,61 @@ export default function AdminDashboardPage() {
   }, [toast]);
   
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
-    if (!activeTimetable) return;
+    if (!activeTimetable || !selectedTimetableId) return;
     if (checkForConflicts(newClass, activeTimetable.timetable)) return;
 
     const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
-    await updateActiveTimetable([...activeTimetable.timetable, newEntry]);
-    toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
-  }, [activeTimetable, checkForConflicts, updateActiveTimetable, toast]);
+    const updatedTimetable = [...activeTimetable.timetable, newEntry];
+
+    try {
+      mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
+      const timetableRef = doc(db, 'timetables', selectedTimetableId);
+      await updateDoc(timetableRef, { timetable: updatedTimetable });
+      toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
+    } catch(e) {
+      console.error("Failed to add class", e);
+      toast({ title: 'Error Adding Class', description: 'Could not save the new class.', variant: 'destructive' });
+      mutateTimetable();
+    }
+  }, [activeTimetable, selectedTimetableId, checkForConflicts, mutateTimetable, toast]);
   
   const handleUpdateClass = useCallback(async (updatedClass: TimetableEntry) => {
-    if (!activeTimetable) return;
+    if (!activeTimetable || !selectedTimetableId) return;
     if (checkForConflicts(updatedClass, activeTimetable.timetable, updatedClass.id)) return;
+    
+    const updatedTimetable = activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry);
 
-    await updateActiveTimetable(activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry));
-    closeEditDialog();
-    toast({ title: "Class Updated!", description: `"${updatedClass.subject}" has been updated.` });
-  }, [activeTimetable, checkForConflicts, updateActiveTimetable, closeEditDialog, toast]);
+    try {
+      mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
+      const timetableRef = doc(db, 'timetables', selectedTimetableId);
+      await updateDoc(timetableRef, { timetable: updatedTimetable });
+      closeEditDialog();
+      toast({ title: "Class Updated!", description: `"${updatedClass.subject}" has been updated.` });
+    } catch(e) {
+      console.error("Failed to update class", e);
+      toast({ title: 'Error Updating Class', description: 'Could not save the changes.', variant: 'destructive' });
+      mutateTimetable();
+    }
+  }, [activeTimetable, selectedTimetableId, checkForConflicts, mutateTimetable, closeEditDialog, toast]);
   
   const handleDeleteClass = useCallback(async (classId: string) => {
-    if (!activeTimetable) return;
+    if (!activeTimetable || !selectedTimetableId) return;
+
     const classToDelete = activeTimetable.timetable.find(c => c.id === classId);
-    const newTimetable = activeTimetable.timetable.filter(entry => entry.id !== classId)
-    await updateActiveTimetable(newTimetable);
-    closeEditDialog();
-    toast({ title: "Class Deleted", description: `"${classToDelete?.subject}" has been removed.`, variant: "destructive" });
-  }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);
+    const updatedTimetable = activeTimetable.timetable.filter(entry => entry.id !== classId);
+    
+    try {
+      mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
+      const timetableRef = doc(db, 'timetables', selectedTimetableId);
+      await updateDoc(timetableRef, { timetable: updatedTimetable });
+      closeEditDialog();
+      toast({ title: "Class Deleted", description: `"${classToDelete?.subject}" has been removed.`, variant: "destructive" });
+    } catch(e) {
+      console.error("Failed to delete class", e);
+      toast({ title: 'Error Deleting Class', description: 'Could not remove the class.', variant: 'destructive' });
+      mutateTimetable();
+    }
+  }, [activeTimetable, selectedTimetableId, mutateTimetable, closeEditDialog, toast]);
 
   const toggleEditMode = useCallback(() => {
     setIsEditMode(prev => !prev);
@@ -235,6 +255,8 @@ export default function AdminDashboardPage() {
     toast({ title: "Export Successful" });
   }, [activeTimetable, toast]);
 
+  const hasTimetables = timetableMetadatas && timetableMetadatas.length > 0;
+
   if (metadataLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
@@ -247,37 +269,44 @@ export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-8">
       <TimetableSelector
-        timetables={timetableMetadatas}
+        timetables={timetableMetadatas || []}
         selectedTimetableId={selectedTimetableId}
         onSelectTimetable={handleSelectTimetable}
         onCreateTimetable={addTimetable}
         onDeleteTimetable={deleteTimetable}
       />
      
-      <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <div>
-              <CardTitle>Master Timetable</CardTitle>
-              <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
-            </div>
-             <div className="flex items-center justify-end gap-2 flex-wrap">
-                <Button variant="outline" onClick={handleExportSheet}>
-                  <FileSpreadsheet />
-                  Export as Sheet
-                </Button>
-                <AddClassDialog onAddClass={handleAddClass} />
-                <Button variant="outline" onClick={toggleEditMode}>
-                  {isEditMode ? <XCircle /> : <Pencil />}
-                  {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-                </Button>
+     {hasTimetables ? (
+        <Card>
+            <CardHeader className="flex-row items-center justify-between">
+              <div>
+                <CardTitle>Master Timetable</CardTitle>
+                <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
               </div>
-          </CardHeader>
-          <CardContent>
-            {timetableLoading ? <Skeleton className="h-[600px] w-full" /> : 
-                <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onEdit={openEditDialog} />
-            }
-          </CardContent>
-        </Card>
+               <div className="flex items-center justify-end gap-2 flex-wrap">
+                  <Button variant="outline" onClick={handleExportSheet} disabled={!activeTimetable}>
+                    <FileSpreadsheet />
+                    Export as Sheet
+                  </Button>
+                  <AddClassDialog onAddClass={handleAddClass} />
+                  <Button variant="outline" onClick={toggleEditMode}>
+                    {isEditMode ? <XCircle /> : <Pencil />}
+                    {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+                  </Button>
+                </div>
+            </CardHeader>
+            <CardContent>
+              {timetableLoading ? <Skeleton className="h-[600px] w-full" /> : 
+                  <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onEdit={openEditDialog} />
+              }
+            </CardContent>
+          </Card>
+      ) : (
+          <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
+            <p className="text-muted-foreground mb-2">No timetables found.</p>
+            <p className="text-muted-foreground text-center">Create your first timetable using the button above.</p>
+        </div>
+      )}
       
       {selectedClass && (
         <EditClassDialog

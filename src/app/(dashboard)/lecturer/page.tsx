@@ -17,7 +17,6 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
-import type { TimetableEntry } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTimetableData } from '@/hooks/use-timetable-data';
 import { useTimetables } from '@/context/TimetableContext';
@@ -43,7 +42,7 @@ export default function LecturerDashboardPage() {
   }, [activeTimetable, setActiveTimetable]);
 
   useEffect(() => {
-    if (!metadataLoading && timetableMetadatas.length > 0 && !selectedTimetableId) {
+    if (!metadataLoading && timetableMetadatas && timetableMetadatas.length > 0 && !selectedTimetableId) {
       setSelectedTimetableId(timetableMetadatas[0].id);
     }
     if (LECTURERS.length > 0 && !selectedLecturer) {
@@ -133,12 +132,12 @@ if (isLoading) {
     <div className="container mx-auto p-8">
        <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-2 flex-wrap">
-            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={timetableMetadatas.length === 0}>
+            <Select value={selectedTimetableId} onValueChange={setSelectedTimetableId} disabled={!timetableMetadatas || timetableMetadatas.length === 0}>
               <SelectTrigger className="w-[280px]">
                   <SelectValue placeholder="Select Department & Year" />
               </SelectTrigger>
               <SelectContent>
-                  {timetableMetadatas.map(timetable => (
+                  {timetableMetadatas?.map(timetable => (
                     <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
                   ))}
               </SelectContent>
@@ -199,3 +198,5 @@ if (isLoading) {
     </div>
   );
 }
+
+    
