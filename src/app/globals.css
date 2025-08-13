@@ -63,10 +63,8 @@
     @apply text-foreground;
   }
   html:not(.dark) body {
-    background-image: url('/light.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-color: #6bbfa9;
+    background-image: linear-gradient(to bottom right, #d9f1e6, #6bbfa9, #1f7a75);
     background-attachment: fixed;
   }
   .dark body {
@@ -77,3 +75,4 @@
     background-attachment: fixed;
   }
 }
+
