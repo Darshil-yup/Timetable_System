@@ -129,6 +129,50 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'sa1-5', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Saturday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
 ];
 
+const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
+    // Recess
+    { id: 'rec-mon-7', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'rec-tue-7', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'rec-wed-7', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'rec-thu-7', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '02:00-03:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'rec-fri-7', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '02:00-03:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+
+    // Monday
+    { id: 'm1-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'PAB / GA', room: 'EL-204 / EL 203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'm2-7', subject: 'SE', lecturer: 'NUS', room: 'EL 302', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'm3-7', subject: 'PE-IV: SPI / DAI', lecturer: 'Harsha / PD', room: 'EL 302 / EL 102', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'm4-7', subject: 'CC', lecturer: 'GKY', room: 'ET 308', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'm5-7', subject: 'IOT DP', lecturer: 'SPP', room: 'ET 308', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+
+    // Tuesday
+    { id: 't1-7', subject: 'LAB: SE / CC', lecturer: 'NUS, PI / GKY, GA', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Tuesday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
+    { id: 't2-7', subject: 'PE-IV: SPI / DAI', lecturer: 'Harsha / PD', room: 'EL 302 / EL 102', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 't3-7', subject: 'LIBRARY', lecturer: 'G. AHMED', room: 'N/A', day: 'Tuesday', time: '02:00-03:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 't4-7', subject: 'CC', lecturer: 'GKY', room: 'EL 103', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 't5-7', subject: 'IOT DP', lecturer: 'SPP', room: 'EL 103', day: 'Tuesday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+
+    // Wednesday
+    { id: 'w1-7', subject: 'PE III: LAB: IOT / FEC', lecturer: 'S. Saba, Nirmik / PG, SJK', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Wednesday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-3))' },
+    { id: 'w2-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / PG', room: 'EL-204 / EL102', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'w3-7', subject: 'Project', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '02:00-05:00', type: 'Practical', duration: 3, color: '#E0E0E0' },
+
+    // Thursday
+    { id: 'th1-7', subject: 'SE', lecturer: 'NUS', room: 'EL 211', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'th2-7', subject: 'PE-IV: SPI / DAI', lecturer: 'Harsha / PD', room: 'ET316 / EL 211', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'th3-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / PG', room: 'ET 308 / ET 316', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'th4-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'PAB / GA', room: 'AIDS Lab 2 / AIDS Lab 1', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 1, batches: ['A1','A2'], color: 'hsl(var(--chart-2))' },
+    { id: 'th5-7', subject: 'IOT DP', lecturer: 'SPP', room: 'EL 211', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'th6-7', subject: 'HELP DESK', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    
+    // Friday
+    { id: 'f1-7', subject: 'LAB: SE / CC', lecturer: 'NUS, GMV / GKY, SSB', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Friday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-5))' },
+    { id: 'f2-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / PG', room: 'ET 308 / ET 316', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'f3-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'PAB / GA', room: 'AIDS Lab 2 / EL-204', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 1, batches: ['A3','A4'], color: 'hsl(var(--chart-2))' },
+    { id: 'f4-7', subject: 'SE', lecturer: 'NUS', room: 'EL 211', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'f5-7', subject: 'CC', lecturer: 'GKY', room: 'EL 102', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+
+];
+
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
@@ -140,5 +184,10 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         id: 'tt-sem5-iot-a',
         name: 'CSE(IOT) 5th Sem (Sec A)',
         timetable: CSE_IOT_5_SEM_TIMETABLE,
+    },
+    {
+        id: 'tt-sem7-cse-a',
+        name: 'CSE 7th Sem (Sec A)',
+        timetable: CSE_7_SEM_TIMETABLE,
     }
 ];
