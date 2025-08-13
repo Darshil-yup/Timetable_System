@@ -78,9 +78,9 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="departmentName" className="text-right">
-                Department
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="departmentName">
+                  Department
                 </Label>
                  <Controller
                     name="departmentName"
@@ -88,7 +88,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                     rules={{ required: true }}
                     render={({ field }) => (
                         <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger className="col-span-3">
+                            <SelectTrigger>
                                 <SelectValue placeholder="Select a department" />
                             </SelectTrigger>
                             <SelectContent>
@@ -101,10 +101,10 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                         </Select>
                     )}
                 />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="year" className="text-right">
-                Year
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="year">
+                  Year
                 </Label>
                 <Controller
                     name="year"
@@ -112,7 +112,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                     rules={{ required: true }}
                     render={({ field }) => (
                         <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger className="col-span-3">
+                            <SelectTrigger>
                                 <SelectValue placeholder="Select a year" />
                             </SelectTrigger>
                             <SelectContent>
@@ -125,7 +125,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                         </Select>
                     )}
                 />
-            </div>
+              </div>
             </div>
             <DialogFooter>
             <Button type="submit">Create Timetable</Button>
