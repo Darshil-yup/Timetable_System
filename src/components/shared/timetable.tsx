@@ -9,7 +9,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
-const SpecialCard = React.memo(({ entry }: { entry: TimetableEntry }) => {
+const SpecialCardContent = React.memo(({ entry }: { entry: TimetableEntry }) => {
     const ICONS: Record<SpecialClassType, React.ReactNode> = {
         'Recess': <Coffee className="h-8 w-8 text-muted-foreground" />,
         'Library': <Library className="h-8 w-8 text-muted-foreground" />,
@@ -19,13 +19,13 @@ const SpecialCard = React.memo(({ entry }: { entry: TimetableEntry }) => {
     const icon = ICONS[entry.type as SpecialClassType] || <Book className="h-8 w-8 text-muted-foreground" />;
 
     return (
-        <div className="h-full w-full rounded-lg bg-muted/80 flex flex-col items-center justify-center p-2 gap-2">
+        <div className="h-full w-full flex flex-col items-center justify-center p-2 gap-2">
             {icon}
             <span className="font-semibold text-sm text-muted-foreground tracking-wider">{entry.subject}</span>
         </div>
     );
 });
-SpecialCard.displayName = 'SpecialCard';
+SpecialCardContent.displayName = 'SpecialCardContent';
 
 const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   entry: TimetableEntry;
@@ -33,7 +33,11 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
   onEdit?: (entry: TimetableEntry) => void;
   isHighlighted?: boolean;
 }) => {
-  const cardStyle = {
+  const isSpecial = SPECIAL_TYPES.includes(entry.type as SpecialClassType);
+
+  const cardStyle = isSpecial ? {
+    backgroundColor: 'hsl(var(--muted))'
+  } : {
     backgroundColor: entry.color ? `${entry.color}1A` : 'hsl(var(--card))',
     borderColor: entry.color || 'hsl(var(--border))',
   };
@@ -52,46 +56,47 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
     }
   };
 
-  if (SPECIAL_TYPES.includes(entry.type as SpecialClassType)) {
-      return <SpecialCard entry={entry} />;
-  }
-
   return (
     <Card
       className={cn(
         "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col relative",
         isEditMode && "cursor-pointer hover:border-primary",
-        isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+        isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+        isSpecial && "bg-muted/80"
       )}
       style={cardStyle}
       onClick={handleEditClick}
     >
-      <CardHeader className="p-2 md:p-3">
-        <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
-          {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
-          <span className="truncate">{entry.subject}</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
-        <div className="flex items-start gap-2">
-          <Clock className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-          <span>{entry.time}</span>
-        </div>
-        <div className="flex items-start gap-2">
-          <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-          <span className="truncate">{entry.lecturer}</span>
-        </div>
-        <div className="flex items-start gap-2">
-          <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-          <span className="truncate">Room: {entry.room}</span>
-        </div>
-        {entry.batches && entry.batches.length > 0 && (
-          <div className="flex items-start gap-2">
-            <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-            <span className="truncate">Batches: {entry.batches.join(', ')}</span>
-          </div>
-        )}
-      </CardContent>
+      {isSpecial ? <SpecialCardContent entry={entry} /> : (
+        <>
+          <CardHeader className="p-2 md:p-3">
+            <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
+              {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
+              <span className="truncate">{entry.subject}</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
+            <div className="flex items-start gap-2">
+              <Clock className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+              <span>{entry.time}</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+              <span className="truncate">{entry.lecturer}</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+              <span className="truncate">Room: {entry.room}</span>
+            </div>
+            {entry.batches && entry.batches.length > 0 && (
+              <div className="flex items-start gap-2">
+                <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+                <span className="truncate">Batches: {entry.batches.join(', ')}</span>
+              </div>
+            )}
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 });
