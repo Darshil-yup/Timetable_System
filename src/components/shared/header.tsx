@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { LogOut, BookCopy, MoreVertical, LayoutDashboard, DoorOpen, FlaskConical } from 'lucide-react';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -31,7 +32,7 @@ export default function Header() {
           href="/admin"
           className="flex items-center gap-3 font-bold text-2xl text-foreground mr-auto"
         >
-          <BookCopy className="h-10 w-10 text-primary" />
+          <Image src="/logo.jpg" alt="TimeTableSync Logo" width={40} height={40} className="h-10 w-10 rounded-full" />
           <span className="hidden sm:inline-block">TimeTableSync</span>
         </Link>
         <div className="flex items-center gap-4">
