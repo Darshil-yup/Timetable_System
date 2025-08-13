@@ -167,15 +167,12 @@ const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'th2-7', subject: 'PE-IV: SPI / DAI', lecturer: 'Harsha Tembhekar / Dr. Prarthana Deshkar', room: 'ET316 / EL 211', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'th3-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / Prachi Gawande', room: 'ET 308 / ET 316', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'th4-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'Prachi A. Bainalwar / Gousia Ahmed', room: 'AIDS Lab 2 / AIDS Lab 1', day: 'Thursday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-2))' },
-    { id: 'th5-7', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'EL 211', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'th6-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
-    
+
     // Friday
     { id: 'f1-7', subject: 'LAB: SE / CC', lecturer: 'Nilesh U. Sambhe, Dr. G. M. Vidhale / Dr. Ganesh Yenurkar, S. S. Bhadoria', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Friday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-5))' },
     { id: 'f2-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / Prachi Gawande', room: 'ET 308 / ET 316', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'f3-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'Prachi A. Bainalwar / Gousia Ahmed', room: 'AIDS Lab 2 / EL-204', day: 'Friday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-2))' },
-    { id: 'f4-7', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'f5-7', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'EL 102', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'f3-7', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'f4-7', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'EL 102', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
 
 ];
 
