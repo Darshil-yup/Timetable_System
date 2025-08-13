@@ -35,7 +35,7 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec31', name: 'S. S. Bhadoria' },
 ];
 
-const SEMESTER_3_TIMETABLE: TimetableEntry[] = [
+const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
     // Recess for all days
     { id: 'rec-mon', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'rec-tue', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
@@ -84,8 +84,8 @@ const SEMESTER_3_TIMETABLE: TimetableEntry[] = [
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
-        id: 'tt-sem3-a',
-        name: '3rd Semester - Section A (2024)',
-        timetable: SEMESTER_3_TIMETABLE,
+        id: 'tt-sem3-iot',
+        name: 'CSE IoT 3rd Sem',
+        timetable: CSE_IOT_3_SEM_TIMETABLE,
     }
 ];
