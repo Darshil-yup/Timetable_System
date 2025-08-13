@@ -32,7 +32,7 @@ export const LabView: React.FC<LabViewProps> = ({ activeTimetable, isLoading }) 
   const [selectedLab, setSelectedLab] = useState('all');
 
   const practicalTimetable = useMemo(() =>
-    activeTimetable?.timetable.filter(e => e.type === 'Practical') || [],
+    activeTimetable?.timetable ? activeTimetable.timetable.filter(e => e.type === 'Practical') : [],
     [activeTimetable]
   );
   

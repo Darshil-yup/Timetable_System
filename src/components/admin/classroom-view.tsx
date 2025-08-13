@@ -32,7 +32,7 @@ export const ClassroomView: React.FC<ClassroomViewProps> = ({ activeTimetable, i
   const [selectedRoom, setSelectedRoom] = useState('all');
 
   const lectureTimetable = useMemo(() =>
-    activeTimetable?.timetable.filter(e => e.type === 'Lecture') || [],
+    activeTimetable?.timetable ? activeTimetable.timetable.filter(e => e.type === 'Lecture') : [],
     [activeTimetable]
   );
   
