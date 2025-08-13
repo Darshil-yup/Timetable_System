@@ -52,7 +52,7 @@ export default function LecturerDashboardPage() {
   }, [timetableMetadatas, selectedTimetableId, selectedLecturer, metadataLoading]);
 
   const lecturerTimetable = useMemo(() => 
-    activeTimetable && selectedLecturer 
+    activeTimetable && activeTimetable.timetable && selectedLecturer 
       ? activeTimetable.timetable.filter(entry => entry.lecturer.includes(selectedLecturer))
       : [],
     [activeTimetable, selectedLecturer]
