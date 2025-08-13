@@ -177,17 +177,17 @@ const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
         id: 'tt-sem3-iot',
-        name: 'CSE IoT 3rd Sem',
+        name: 'CSE(IOT) 3rd Sem',
         timetable: CSE_IOT_3_SEM_TIMETABLE,
     },
     {
         id: 'tt-sem5-iot-a',
-        name: 'CSE(IOT) 5th Sem (Sec A)',
+        name: 'CSE(IOT) 5th Sem',
         timetable: CSE_IOT_5_SEM_TIMETABLE,
     },
     {
         id: 'tt-sem7-cse-a',
-        name: 'CSE 7th Sem (Sec A)',
+        name: 'CSE 7th Sem',
         timetable: CSE_7_SEM_TIMETABLE,
     }
 ];
