@@ -119,20 +119,34 @@ export default function AdminDashboardPage() {
         if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A') {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim());
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim());
-          if (newLecturers.some(l => existingLecturers.includes(l))) {
-            toast({ variant: "destructive", title: "Lecturer Conflict", description: `A lecturer is already scheduled for "${existingEntry.subject}" at this time.` });
+          const conflictingLecturer = newLecturers.find(l => existingLecturers.includes(l));
+          if (conflictingLecturer) {
+            toast({ 
+                variant: "destructive", 
+                title: "Lecturer Conflict", 
+                description: `${conflictingLecturer} is already scheduled for "${existingEntry.subject}" at ${existingEntry.time} on ${existingEntry.day}.` 
+            });
             return true;
           }
         }
         
         if (newClass.room && existingEntry.room && newClass.room !== 'N/A' && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
-          toast({ variant: "destructive", title: "Room/Lab Conflict", description: `Room ${newClass.room} is already booked for "${existingEntry.subject}" at this time.` });
+          toast({ 
+              variant: "destructive", 
+              title: "Room/Lab Conflict", 
+              description: `Room ${newClass.room} is already booked for "${existingEntry.subject}" at ${existingEntry.time} on ${existingEntry.day}.` 
+          });
           return true;
         }
 
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
-           if (newClass.batches.some(b => existingEntry.batches?.includes(b))) {
-             toast({ variant: "destructive", title: "Batch Conflict", description: `A batch is already scheduled for a practical ("${existingEntry.subject}") at this time.` });
+           const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
+           if (conflictingBatch) {
+             toast({ 
+                 variant: "destructive", 
+                 title: "Batch Conflict", 
+                 description: `Batch ${conflictingBatch} is already scheduled for a practical ("${existingEntry.subject}") at ${existingEntry.time} on ${existingEntry.day}.` 
+             });
              return true;
            }
         }
