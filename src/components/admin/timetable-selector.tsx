@@ -31,6 +31,7 @@ interface TimetableSelectorProps {
   onSelectTimetable: (id: string) => void;
   onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;
   onDeleteTimetable: (id: string) => Promise<void>;
+  isReadOnly?: boolean;
 }
 
 export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
@@ -38,7 +39,8 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
   selectedTimetableId,
   onSelectTimetable,
   onCreateTimetable,
-  onDeleteTimetable
+  onDeleteTimetable,
+  isReadOnly = false
 }) => {
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
 
@@ -48,7 +50,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
     }
   };
   
-  if (timetables.length === 0) {
+  if (timetables.length === 0 && !isReadOnly) {
       return (
         <div className="flex items-center justify-end mb-6">
           <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
@@ -78,30 +80,34 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
           </SelectContent>
         </Select>
 
-        <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
+        {!isReadOnly && (
+          <>
+            <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
 
-        {activeTimetable && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive">
-                <Trash2 />
-                Delete Timetable
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  entire timetable for {activeTimetable.name}.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+            {activeTimetable && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Trash2 />
+                    Delete Timetable
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete the
+                      entire timetable for {activeTimetable.name}.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </>
         )}
       </div>
     </div>

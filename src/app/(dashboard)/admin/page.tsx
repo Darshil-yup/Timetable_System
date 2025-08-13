@@ -5,32 +5,40 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { TimetableEntry } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
-import { TimetableTabs } from '@/components/admin/timetable-tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import { useTimetableData } from '@/hooks/use-timetable-data';
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import dynamic from 'next/dynamic';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Pencil, FileSpreadsheet, XCircle } from 'lucide-react';
+import { AddClassDialog } from '@/components/admin/add-class-dialog';
+import { Timetable } from '@/components/shared/timetable';
+import * as XLSX from 'xlsx';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
+
 
 export default function AdminDashboardPage() {
   const { timetables: timetableMetadatas, loading: metadataLoading, mutate: mutateMetadatas } = useTimetableData();
-  const { activeTimetable, setActiveTimetable } = useTimetables();
+  const { setActiveTimetable } = useTimetables();
   const { toast } = useToast();
 
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
 
-  const { timetable: activeTimetableData, loading: timetableLoading, mutate: mutateTimetable } = useTimetableData(selectedTimetableId);
+  const { timetable: activeTimetable, loading: timetableLoading, mutate: mutateTimetable } = useTimetableData(selectedTimetableId);
 
   useEffect(() => {
-      if (activeTimetableData) {
-          setActiveTimetable(activeTimetableData);
+      if (activeTimetable) {
+          setActiveTimetable(activeTimetable);
       }
-  }, [activeTimetableData, setActiveTimetable]);
+  }, [activeTimetable, setActiveTimetable]);
 
   useEffect(() => {
     if (!metadataLoading && timetableMetadatas.length > 0 && !selectedTimetableId) {
@@ -169,6 +177,43 @@ export default function AdminDashboardPage() {
     });
   }, [isEditMode, toast]);
 
+  const handleExportSheet = useCallback(() => {
+    if (!activeTimetable) return toast({ title: "Export Failed", variant: "destructive" });
+
+    const grid = [
+      ["Day/Time", ...TIME_SLOTS],
+      ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
+    ];
+    
+    activeTimetable.timetable.forEach(entry => {
+        const dayIndex = DAYS.indexOf(entry.day) + 1;
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
+        if (dayIndex > 0 && timeIndex > 0) {
+             const cellContent = [entry.subject, entry.lecturer, entry.room, entry.batches?.join(', ')].filter(Boolean).join('\n');
+            for (let i = 0; i < (entry.duration || 1); i++) {
+                if (timeIndex + i < grid[0].length) {
+                    grid[dayIndex][timeIndex + i] = cellContent;
+                }
+            }
+        }
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(grid);
+    worksheet['!merges'] = [];
+    activeTimetable.timetable.forEach(entry => {
+      const dayIndex = DAYS.indexOf(entry.day) + 1;
+      const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
+      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
+          worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
+      }
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Master Timetable');
+    XLSX.writeFile(workbook, `${activeTimetable.name}-Master-Timetable.xlsx`);
+    toast({ title: "Export Successful" });
+  }, [activeTimetable, toast]);
+
   if (metadataLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
@@ -188,14 +233,30 @@ export default function AdminDashboardPage() {
         onDeleteTimetable={deleteTimetable}
       />
      
-      <TimetableTabs
-        activeTimetable={activeTimetable}
-        isLoading={timetableLoading}
-        onAddClass={handleAddClass}
-        isEditMode={isEditMode}
-        onToggleEditMode={toggleEditMode}
-        onEditClass={openEditDialog}
-      />
+      <Card>
+          <CardHeader className="flex-row items-center justify-between">
+            <div>
+              <CardTitle>Master Timetable</CardTitle>
+              <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
+            </div>
+             <div className="flex items-center justify-end gap-2 flex-wrap">
+                <Button variant="outline" onClick={handleExportSheet}>
+                  <FileSpreadsheet />
+                  Export as Sheet
+                </Button>
+                <AddClassDialog onAddClass={handleAddClass} />
+                <Button variant="outline" onClick={toggleEditMode}>
+                  {isEditMode ? <XCircle /> : <Pencil />}
+                  {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+                </Button>
+              </div>
+          </CardHeader>
+          <CardContent>
+            {timetableLoading ? <Skeleton className="h-[600px] w-full" /> : 
+                <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onEdit={openEditDialog} />
+            }
+          </CardContent>
+        </Card>
       
       {selectedClass && (
         <EditClassDialog

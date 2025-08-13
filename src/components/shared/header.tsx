@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Users, BookCopy, MoreVertical } from 'lucide-react';
+import { LogOut, Users, BookCopy, MoreVertical, LayoutDashboard, DoorOpen, FlaskConical } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -19,8 +19,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { LECTURERS } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+  const pathname = usePathname();
+  const isAdminRoute = pathname.startsWith('/admin');
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-transparent backdrop-blur-sm">
       <div className="container flex h-16 items-center px-4 sm:px-8">
@@ -52,6 +56,36 @@ export default function Header() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {isAdminRoute && (
+                 <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <LayoutDashboard />
+                    Admin Views
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin">
+                            <LayoutDashboard />
+                            Master Timetable
+                        </Link>
+                      </DropdownMenuItem>
+                       <DropdownMenuItem asChild>
+                        <Link href="/admin/classrooms">
+                            <DoorOpen />
+                            Classrooms
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin/labs">
+                            <FlaskConical />
+                            Labs
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              )}
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <Users />
