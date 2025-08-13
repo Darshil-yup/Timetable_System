@@ -24,21 +24,24 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
   
   // This useEffect hook sets up a real-time listener to the Firestore database.
   useEffect(() => {
-    // Reference to the "timetables" collection in Firestore.
+    // Reference to the "timetables" collection in Firestore. This is the main place
+    // where all timetable data is stored.
     const timetablesCollection = collection(db, "timetables");
 
-    // onSnapshot listens for any changes in the collection.
-    // When data is added, updated, or deleted, this function will run.
+    // onSnapshot listens for any changes in the collection (adds, updates, deletes).
+    // Whenever a change occurs in the database, this function will automatically run.
     const unsubscribe = onSnapshot(timetablesCollection, (snapshot) => {
       // We map over the documents returned from Firestore.
+      // Each 'doc' is a single timetable (e.g., "CSE - 3rd Sem").
       const timetablesData = snapshot.docs.map(doc => ({
         id: doc.id, // The unique ID of the document.
-        ...doc.data() // The rest of the data (name, timetable array).
+        ...doc.data() // The rest of the data (name, and the 'timetable' array).
       } as TimetableData));
       
-      // Update the component's state with the new data.
+      // Update the component's state with the new data from the database.
       setTimetables(timetablesData);
-      setLoading(false); // Stop loading, as we have the data now.
+      // Stop loading, as we have successfully fetched the data.
+      setLoading(false); 
     }, (error) => {
         console.error("Error fetching timetables:", error);
         toast({
@@ -49,25 +52,29 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
         setLoading(false);
     });
 
-    // Cleanup: unsubscribe from the listener when the component unmounts.
+    // Cleanup function: This will unsubscribe from the Firestore listener when the
+    // component unmounts, preventing memory leaks.
     return () => unsubscribe();
   }, [toast]);
 
   // Function to add a new timetable document to Firestore.
   const addTimetable = useCallback(async (name: string, year: string): Promise<string | null> => {
     try {
+      // This is the structure of a new timetable document. It has a name and an
+      // empty 'timetable' array to hold class entries.
       const newTimetable = {
         name: `${name} (${year})`,
-        timetable: [] // Starts with an empty timetable array.
+        timetable: [] // Starts with an empty array for classes.
       };
-      // addDoc creates a new document in the "timetables" collection.
+      // addDoc creates a new document within the "timetables" collection in Firestore.
       const docRef = await addDoc(collection(db, "timetables"), newTimetable);
        toast({
         title: "Timetable Created!",
         description: `Timetable for "${newTimetable.name}" has been created.`,
       });
       return docRef.id; // Return the new document's ID.
-    } catch (error) {
+    } catch (error)
+    {
       console.error("Error creating timetable: ", error);
       toast({
         title: 'Error Creating Timetable',
@@ -82,7 +89,7 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
   const deleteTimetable = useCallback(async (id: string) => {
     try {
       const timetableToDelete = timetables.find(t => t.id === id);
-      // deleteDoc deletes a document from Firestore using its ID.
+      // deleteDoc deletes a document from Firestore using its unique document ID.
       await deleteDoc(doc(db, "timetables", id));
       toast({
         title: "Timetable Deleted",
@@ -99,12 +106,13 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
     }
   }, [toast, timetables]);
   
-  // Function to update the 'timetable' array within a specific document.
+  // Function to update the 'timetable' array within a specific timetable document.
   const updateTimetableEntries = useCallback(async (timetableId: string, entries: TimetableEntry[]) => {
     try {
       // Get a reference to the specific document using its ID.
       const timetableRef = doc(db, "timetables", timetableId);
-      // updateDoc updates the document, here we replace the 'timetable' field.
+      // updateDoc updates the document. Here, we are replacing the entire 'timetable'
+      // field with the new array of class entries.
       await updateDoc(timetableRef, {
         timetable: entries
       });
@@ -126,6 +134,7 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// This is a custom hook to easily access the timetable context from any component.
 export function useTimetables() {
   const context = useContext(TimetableContext);
   if (context === undefined) {
