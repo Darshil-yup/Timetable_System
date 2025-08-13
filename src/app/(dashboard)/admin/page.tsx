@@ -17,6 +17,7 @@ import { Pencil, FileSpreadsheet, XCircle } from 'lucide-react';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
+import { MASTER_TIMETABLE } from '@/lib/mock-data';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -61,25 +62,25 @@ export default function AdminDashboardPage() {
   }, []);
 
   const updateActiveTimetable = useCallback(async (newTimetable: TimetableEntry[]) => {
-      if (!selectedTimetableId) return;
-      try {
-        const timetableRef = doc(db, "timetables", selectedTimetableId);
-        await updateDoc(timetableRef, { timetable: newTimetable });
-        mutateTimetable(); // Revalidate the current timetable data
-      } catch (error) {
-         console.error("Error updating timetable entries: ", error);
-         toast({ title: 'Error Updating Timetable', description: 'Could not save changes to the database.', variant: 'destructive' });
-      }
-  }, [selectedTimetableId, mutateTimetable, toast]);
+    if (!selectedTimetableId || !activeTimetable) return;
+    
+    // This is a mock implementation for local data
+    const timetableIndex = MASTER_TIMETABLE.findIndex(t => t.id === selectedTimetableId);
+    if (timetableIndex !== -1) {
+        MASTER_TIMETABLE[timetableIndex].timetable = newTimetable;
+    }
+    
+    // Optimistically update the local SWR cache
+    mutateTimetable({ ...activeTimetable, timetable: newTimetable }, false);
+
+  }, [selectedTimetableId, mutateTimetable, activeTimetable]);
   
   const addTimetable = useCallback(async (name: string, year: string, entries: TimetableEntry[] = []): Promise<string | null> => {
     try {
       const newTimetable = { name: `${name} (${year})`, timetable: entries };
-      const docRef = await addDoc(collection(db, "timetables"), newTimetable);
-      toast({ title: "Timetable Created!", description: `Timetable for "${newTimetable.name}" has been created.` });
-      mutateMetadatas(); // Revalidate the list of timetables
-      setSelectedTimetableId(docRef.id);
-      return docRef.id;
+      // This would be an addDoc call in a real DB
+      toast({ title: "Read-only Mode", description: `Cannot create timetable in local mock data mode.` });
+      return null;
     } catch (error) {
       console.error("Error creating timetable: ", error);
       toast({ title: 'Error Creating Timetable', description: 'Could not save the new timetable to the database.', variant: 'destructive' });
@@ -90,10 +91,7 @@ export default function AdminDashboardPage() {
   const deleteTimetable = useCallback(async (id: string) => {
     try {
       const timetableToDelete = timetableMetadatas.find(t => t.id === id);
-      await deleteDoc(doc(db, "timetables", id));
-      toast({ title: "Timetable Deleted", description: `The timetable for "${timetableToDelete?.name}" has been deleted.`, variant: "destructive" });
-      mutateMetadatas(); // Revalidate the list of timetables
-      setSelectedTimetableId(timetableMetadatas.length > 1 ? timetableMetadatas.filter(t => t.id !== id)[0].id : '');
+       toast({ title: "Read-only Mode", description: `Cannot delete timetable in local mock data mode.` });
     } catch (error) {
       console.error("Error deleting timetable: ", error);
        toast({ title: 'Error Deleting Timetable', description: 'There was a problem deleting the timetable.', variant: 'destructive' });
@@ -163,7 +161,8 @@ export default function AdminDashboardPage() {
   
   const handleDeleteClass = useCallback(async (classId: string) => {
     if (!activeTimetable) return;
-    await updateActiveTimetable(activeTimetable.timetable.filter(entry => entry.id !== classId));
+    const newTimetable = activeTimetable.timetable.filter(entry => entry.id !== classId)
+    await updateActiveTimetable(newTimetable);
     closeEditDialog();
     toast({ title: "Class Deleted", description: "The class has been removed.", variant: "destructive" });
   }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);

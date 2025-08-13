@@ -49,7 +49,6 @@ const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'rec-wed', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'rec-thu', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'rec-fri', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'rec-sat', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Saturday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 
     // Monday
     { id: 'm1', subject: 'OE:1', lecturer: 'N/A', room: 'ET-308', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
