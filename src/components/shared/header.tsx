@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Users, BookCopy, MoreVertical, LayoutDashboard, DoorOpen, FlaskConical } from 'lucide-react';
+import { LogOut, BookCopy, MoreVertical, LayoutDashboard, DoorOpen, FlaskConical } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +17,6 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { LECTURERS } from '@/lib/mock-data';
 import { ThemeToggle } from './theme-toggle';
 import { usePathname } from 'next/navigation';
 
@@ -86,23 +85,6 @@ export default function Header() {
                   </DropdownMenuPortal>
                 </DropdownMenuSub>
               )}
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Users />
-                  Members
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuLabel>Lecturers</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {LECTURERS.map((lecturer) => (
-                      <DropdownMenuItem key={lecturer.id}>
-                        {lecturer.name}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
               <ThemeToggle />
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
