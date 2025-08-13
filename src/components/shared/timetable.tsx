@@ -56,6 +56,35 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
     }
   };
 
+  const cardContent = isSpecial ? (
+    <SpecialCardContent entry={entry} />
+  ) : (
+    <>
+      <CardHeader className="p-2 md:p-3">
+        <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
+          {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
+          <span className="truncate">{entry.subject}</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
+        <div className="flex items-start gap-2">
+          <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+          <span className="truncate">{entry.lecturer}</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+          <span className="truncate">Room: {entry.room}</span>
+        </div>
+        {entry.batches && entry.batches.length > 0 && (
+          <div className="flex items-start gap-2">
+            <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
+            <span className="truncate">Batches: {entry.batches.join(', ')}</span>
+          </div>
+        )}
+      </CardContent>
+    </>
+  );
+
   return (
     <Card
       className={cn(
@@ -67,36 +96,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
       style={cardStyle}
       onClick={handleEditClick}
     >
-      {isSpecial ? <SpecialCardContent entry={entry} /> : (
-        <>
-          <CardHeader className="p-2 md:p-3">
-            <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
-              {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
-              <span className="truncate">{entry.subject}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
-            <div className="flex items-start gap-2">
-              <Clock className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-              <span>{entry.time}</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <User className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-              <span className="truncate">{entry.lecturer}</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-              <span className="truncate">Room: {entry.room}</span>
-            </div>
-            {entry.batches && entry.batches.length > 0 && (
-              <div className="flex items-start gap-2">
-                <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-                <span className="truncate">Batches: {entry.batches.join(', ')}</span>
-              </div>
-            )}
-          </CardContent>
-        </>
-      )}
+        {cardContent}
     </Card>
   );
 });
