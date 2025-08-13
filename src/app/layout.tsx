@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full ${inter.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/logo.jpg" type="image/jpeg" sizes="any" />
+        <link rel="icon" href="/logo.png" type="image/png" sizes="any" />
       </head>
       <body className="font-body antialiased h-full">
         <ThemeProvider

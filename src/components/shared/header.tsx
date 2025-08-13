@@ -32,7 +32,7 @@ export default function Header() {
           href="/admin"
           className="flex items-center gap-3 font-bold text-2xl text-foreground mr-auto"
         >
-          <Image src="/logo.jpg" alt="YCCE TTMS Logo" width={40} height={40} className="h-10 w-10 rounded-full" />
+          <Image src="/logo.png" alt="YCCE TTMS Logo" width={40} height={40} className="h-10 w-10 rounded-full" />
           <span className="hidden sm:inline-block">YCCE TTMS</span>
         </Link>
         <div className="flex items-center gap-4">
