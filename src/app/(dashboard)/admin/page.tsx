@@ -1,15 +1,13 @@
 
 "use client"
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, from 'react';
 import type { TimetableEntry, TimetableData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import { useTimetableData } from '@/hooks/use-timetable-data';
-import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +15,8 @@ import { Pencil, FileSpreadsheet, XCircle } from 'lucide-react';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
+import { LECTURERS, MASTER_TIMETABLE } from '@/lib/mock-data';
+import { useState, useEffect, useCallback } from 'react';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -33,6 +33,16 @@ export default function AdminDashboardPage() {
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
 
   const { timetable: activeTimetable, loading: timetableLoading, mutate: mutateTimetable } = useTimetableData(selectedTimetableId);
+
+  const updateActiveTimetable = useCallback((newTimetableData: TimetableData) => {
+    // This function will update the SWR cache for the specific timetable
+    mutateTimetable(newTimetableData, false);
+
+    // Also update the list of timetables if the name changed, for example
+    // This is a bit more complex as it requires knowing the previous state
+    // For now, we'll just revalidate the list
+    mutateMetadatas();
+  }, [mutateTimetable, mutateMetadatas]);
 
   useEffect(() => {
       if (activeTimetable) {
@@ -61,39 +71,36 @@ export default function AdminDashboardPage() {
   }, []);
   
   const addTimetable = useCallback(async (name: string, year: string, entries: TimetableEntry[] = []): Promise<string | null> => {
-    try {
-      const newTimetable = { name: `${name} (${year})`, timetable: entries };
-      const docRef = await addDoc(collection(db, "timetables"), newTimetable);
-      toast({ title: "Timetable Created!", description: `The timetable for "${name} (${year})" has been created.` });
-      mutateMetadatas();
-      return docRef.id;
-    } catch (error) {
-      console.error("Error creating timetable: ", error);
-      toast({ title: 'Error Creating Timetable', description: 'Could not save the new timetable to the database.', variant: 'destructive' });
-      return null;
-    }
-  }, [toast, mutateMetadatas]);
+    // This is a mock implementation. In a real app, you'd save this to a database.
+    const newId = `tt-${Date.now()}`;
+    const newTimetable = {
+      id: newId,
+      name: `${name} (${year})`,
+      timetable: entries,
+    };
+    MASTER_TIMETABLE.push(newTimetable);
+    mutateMetadatas(); // Re-fetch the list of timetables
+    toast({ title: "Timetable Created!", description: `The timetable for "${name} (${year})" has been created.` });
+    return newId;
+  }, [mutateMetadatas, toast]);
 
   const deleteTimetable = useCallback(async (id: string) => {
-    try {
-      const timetableToDelete = timetableMetadatas?.find(t => t.id === id);
-      await deleteDoc(doc(db, "timetables", id));
-      toast({ title: "Timetable Deleted", description: `The timetable for "${timetableToDelete?.name}" has been deleted.`, variant: "destructive" });
+    // This is a mock implementation. In a real app, you'd delete this from a database.
+    const index = MASTER_TIMETABLE.findIndex(t => t.id === id);
+    if (index !== -1) {
+      const deletedTimetableName = MASTER_TIMETABLE[index].name;
+      MASTER_TIMETABLE.splice(index, 1);
+      mutateMetadatas(); // Re-fetch the list of timetables
+      toast({ title: "Timetable Deleted", description: `The timetable for "${deletedTimetableName}" has been deleted.`, variant: "destructive" });
       
-      const updatedMetadatas = timetableMetadatas?.filter(t => t.id !== id) || [];
-      mutateMetadatas(updatedMetadatas, false); // Optimistic update
-      
-      if (updatedMetadatas.length > 0) {
-        setSelectedTimetableId(updatedMetadatas[0].id);
+      // Select the first timetable in the list if one exists
+      if (MASTER_TIMETABLE.length > 0) {
+        setSelectedTimetableId(MASTER_TIMETABLE[0].id);
       } else {
         setSelectedTimetableId('');
       }
-    } catch (error) {
-      console.error("Error deleting timetable: ", error);
-       toast({ title: 'Error Deleting Timetable', description: 'There was a problem deleting the timetable.', variant: 'destructive' });
-       mutateMetadatas(); // Revalidate on error
     }
-  }, [toast, timetableMetadatas, mutateMetadatas]);
+  }, [mutateMetadatas, toast]);
 
 
   const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
@@ -103,9 +110,7 @@ export default function AdminDashboardPage() {
     const timetableToCheck = existingTimetable.filter(entry => entry.id !== updatingClassId);
 
     for (const existingEntry of timetableToCheck) {
-      if (existingEntry.day !== newClass.day || existingEntry.type === 'Recess' || newClass.type === 'Recess') {
-        continue;
-      }
+      if (existingEntry.day !== newClass.day) continue;
       
       const existingStartTime = parseInt(existingEntry.time.split(':')[0]);
       const existingEndTime = existingStartTime + (existingEntry.duration || 1);
@@ -113,7 +118,8 @@ export default function AdminDashboardPage() {
       const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
 
       if (isOverlapping) {
-        if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A') {
+        // Lecturer conflict
+        if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A' && !SPECIAL_TYPES.includes(newClass.type as SpecialClassType) && !SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) {
           const newLecturers = newClass.lecturer.split(',').map(l => l.trim());
           const existingLecturers = existingEntry.lecturer.split(',').map(l => l.trim());
           const conflictingLecturer = newLecturers.find(l => existingLecturers.includes(l));
@@ -127,6 +133,7 @@ export default function AdminDashboardPage() {
           }
         }
         
+        // Room/Lab conflict
         if (newClass.room && existingEntry.room && newClass.room !== 'N/A' && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
           toast({ 
               variant: "destructive", 
@@ -136,6 +143,7 @@ export default function AdminDashboardPage() {
           return true;
         }
 
+        // Batch conflict for practicals
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
            if (conflictingBatch) {
@@ -153,61 +161,43 @@ export default function AdminDashboardPage() {
   }, [toast]);
   
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
-    if (!activeTimetable || !selectedTimetableId) return;
+    if (!activeTimetable) return;
     if (checkForConflicts(newClass, activeTimetable.timetable)) return;
 
     const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
-    const updatedTimetable = [...activeTimetable.timetable, newEntry];
-
-    try {
-      mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
-      const timetableRef = doc(db, 'timetables', selectedTimetableId);
-      await updateDoc(timetableRef, { timetable: updatedTimetable });
-      toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
-    } catch(e) {
-      console.error("Failed to add class", e);
-      toast({ title: 'Error Adding Class', description: 'Could not save the new class.', variant: 'destructive' });
-      mutateTimetable();
-    }
-  }, [activeTimetable, selectedTimetableId, checkForConflicts, mutateTimetable, toast]);
+    const updatedTimetableData = {
+        ...activeTimetable,
+        timetable: [...activeTimetable.timetable, newEntry]
+    };
+    updateActiveTimetable(updatedTimetableData);
+    toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
+  }, [activeTimetable, checkForConflicts, updateActiveTimetable, toast]);
   
   const handleUpdateClass = useCallback(async (updatedClass: TimetableEntry) => {
-    if (!activeTimetable || !selectedTimetableId) return;
+    if (!activeTimetable) return;
     if (checkForConflicts(updatedClass, activeTimetable.timetable, updatedClass.id)) return;
     
-    const updatedTimetable = activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry);
-
-    try {
-      mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
-      const timetableRef = doc(db, 'timetables', selectedTimetableId);
-      await updateDoc(timetableRef, { timetable: updatedTimetable });
-      closeEditDialog();
-      toast({ title: "Class Updated!", description: `"${updatedClass.subject}" has been updated.` });
-    } catch(e) {
-      console.error("Failed to update class", e);
-      toast({ title: 'Error Updating Class', description: 'Could not save the changes.', variant: 'destructive' });
-      mutateTimetable();
-    }
-  }, [activeTimetable, selectedTimetableId, checkForConflicts, mutateTimetable, closeEditDialog, toast]);
+    const updatedTimetableData = {
+        ...activeTimetable,
+        timetable: activeTimetable.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry)
+    };
+    updateActiveTimetable(updatedTimetableData);
+    closeEditDialog();
+    toast({ title: "Class Updated!", description: `"${updatedClass.subject}" has been updated.` });
+  }, [activeTimetable, checkForConflicts, updateActiveTimetable, closeEditDialog, toast]);
   
   const handleDeleteClass = useCallback(async (classId: string) => {
-    if (!activeTimetable || !selectedTimetableId) return;
+    if (!activeTimetable) return;
 
     const classToDelete = activeTimetable.timetable.find(c => c.id === classId);
-    const updatedTimetable = activeTimetable.timetable.filter(entry => entry.id !== classId);
-    
-    try {
-      mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
-      const timetableRef = doc(db, 'timetables', selectedTimetableId);
-      await updateDoc(timetableRef, { timetable: updatedTimetable });
-      closeEditDialog();
-      toast({ title: "Class Deleted", description: `"${classToDelete?.subject}" has been removed.`, variant: "destructive" });
-    } catch(e) {
-      console.error("Failed to delete class", e);
-      toast({ title: 'Error Deleting Class', description: 'Could not remove the class.', variant: 'destructive' });
-      mutateTimetable();
-    }
-  }, [activeTimetable, selectedTimetableId, mutateTimetable, closeEditDialog, toast]);
+    const updatedTimetableData = {
+        ...activeTimetable,
+        timetable: activeTimetable.timetable.filter(entry => entry.id !== classId)
+    };
+    updateActiveTimetable(updatedTimetableData);
+    closeEditDialog();
+    toast({ title: "Class Deleted", description: `"${classToDelete?.subject}" has been removed.`, variant: "destructive" });
+  }, [activeTimetable, updateActiveTimetable, closeEditDialog, toast]);
 
   const toggleEditMode = useCallback(() => {
     setIsEditMode(prev => !prev);
@@ -320,5 +310,7 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
 
     

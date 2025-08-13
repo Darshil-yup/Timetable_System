@@ -113,7 +113,7 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'rec-tue-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'rec-wed-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'rec-thu-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'rec-fri-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'rec-fri-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 
     // Monday
     { id: 'm1-5', subject: 'DBMS/OS Lab', lecturer: 'Roshan S. Bhanuse, Hrushikesh Panchbudhe, Dr. Gendlal M. Vaidya, Radhika Tekade', room: 'IOT Lab 1,2/3,4', day: 'Monday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-1))' },
@@ -131,7 +131,7 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
     // Wednesday
     { id: 'w1-5', subject: 'OE:3 Arthashashtra', lecturer: 'P. V. Barekar', room: 'ET-316', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'w2-5', subject: 'DAA', lecturer: 'Dr. S. A. Shirsat', room: 'ET-316', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'w3-5', subject: 'DAA', lecturer: 'Dr. S. A. Shirsat', room: 'ET-316', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'w3-5', subject: 'TFCS', lecturer: 'Shubhangi S. Shambharkar', room: 'ET-316', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'w4-5', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'ET-316', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'w5-5', subject: 'LAB: OS/DAA', lecturer: 'Dr. Gendlal M. Vaidya, Hrushikesh Panchbudhe, Dr. S. A. Shirsat, Rina Parteki', room: 'IOT Lab 3,4/1,2', day: 'Wednesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
 
@@ -146,10 +146,10 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
     // Friday
     { id: 'f1-5', subject: 'OE:3 Arthashashtra', lecturer: 'P. V. Barekar', room: 'ET-316', day: 'Friday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'f2-5', subject: 'OS', lecturer: 'Dr. Gendlal M. Vaidya', room: 'ET-316', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'f3-5', subject: 'TFCS', lecturer: 'Shubhangi S. Shambharkar', room: 'ET-316', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'f4-5', subject: 'DBMS', lecturer: 'Roshan S. Bhanuse', room: 'ET-316', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'f5-5', subject: 'DAA', lecturer: 'Dr. S. A. Shirsat', room: 'ET-316', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'f6-5', subject: 'Library', lecturer: 'Radhika Tekade', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'f3-5', subject: 'DAA', lecturer: 'Dr. S. A. Shirsat', room: 'ET-316', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'f4-5', subject: 'DBMS', lecturer: 'Roshan S. Bhanuse', room: 'ET-316', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'f5-5', subject: 'DAA', lecturer: 'Dr. S. A. Shirsat', room: 'ET-316', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'f6-5', subject: 'Library', lecturer: 'Radhika Tekade', room: 'N/A', day: 'Friday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
 ];
 
 const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
@@ -411,3 +411,4 @@ export const MASTER_TIMETABLE: TimetableData[] = [
     }
 ];
 
+    
