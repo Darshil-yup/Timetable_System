@@ -11,19 +11,19 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 168 40% 54%;
+    --primary: 216 91% 55%;
     --primary-foreground: 0 0% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 60 93% 61%;
+    --accent: 52 94% 61%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 210 40% 93%;
     --input: 210 40% 93%;
-    --ring: 168 40% 54%;
+    --ring: 216 91% 55%;
     --chart-1: 206 90% 54%;
     --chart-2: 170 76% 40%;
     --chart-3: 350 89% 60%;
@@ -38,19 +38,19 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 168 40% 54%;
+    --primary: 216 91% 55%;
     --primary-foreground: 0 0% 98%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 60 93% 61%;
+    --accent: 52 94% 61%;
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 168 40% 54%;
+    --ring: 216 91% 55%;
   }
 }
 
@@ -63,16 +63,13 @@
     @apply text-foreground;
   }
   html:not(.dark) body {
-    background-color: #6bbfa9;
-    background-image: linear-gradient(to bottom right, #d9f1e6, #6bbfa9, #1f7a75);
+    background-color: #98e4f5;
+    background-image: linear-gradient(to bottom right, #a0a9f8, #98e4f5, #faffde);
     background-attachment: fixed;
   }
   .dark body {
-    background-image: url('/dark.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-color: #121212;
+    background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 50%), radial-gradient(at 98% 2%, hsla(205, 68%, 56%, 0.3) 0px, transparent 50%);
     background-attachment: fixed;
   }
 }
-
