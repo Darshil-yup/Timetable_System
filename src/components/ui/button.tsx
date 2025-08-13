@@ -44,9 +44,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
-    // Check if children contain an icon and text to apply specific padding.
-    const hasIcon = React.Children.toArray(children).some(child => React.isValidElement(child) && (child.type as any).displayName?.includes("Icon"));
-    const hasText = React.Children.toArray(children).some(child => typeof child === 'string' && child.trim().length > 0);
+    const childArray = React.Children.toArray(children);
+    const hasIcon = childArray.some(child => React.isValidElement(child) && child.props.className?.includes('lucide'));
+    const hasText = childArray.some(child => typeof child === 'string' && child.trim().length > 0);
 
     return (
       <Comp
@@ -56,12 +56,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {React.Children.map(children, child => {
           if (typeof child === 'string' && child.trim().length > 0) {
-            // Apply padding only if there is also an icon
-            return <span className={cn(hasIcon && "px-0.5")}>{child}</span>;
+            return <span className={cn(hasIcon && hasText && "px-0.5")}>{child}</span>;
           }
           if(React.isValidElement(child)) {
-             // Add size and shrink-0 to prevent icon from shrinking
-             return React.cloneElement(child as React.ReactElement, { className: 'size-4 shrink-0' });
+             return React.cloneElement(child as React.ReactElement, { className: cn(child.props.className, 'size-4 shrink-0') });
           }
           return child;
         })}

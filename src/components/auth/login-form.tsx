@@ -41,19 +41,16 @@ export function LoginForm() {
         <div className="grid gap-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Input id="password" type={showPassword ? 'text' : 'password'} required disabled={isFormDisabled}/>
+            <Input id="password" type={showPassword ? 'text' : 'password'} required disabled={isFormDisabled} className="pr-10" />
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="absolute inset-y-0 right-1 h-full px-2 hover:bg-transparent"
+              className="absolute inset-y-0 right-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={() => setShowPassword(!showPassword)}
               disabled={isFormDisabled}
             >
               {showPassword ? <EyeOff /> : <Eye />}
-              <span className="sr-only">
-                {showPassword ? '' : ''}
-              </span>
             </Button>
           </div>
         </div>
