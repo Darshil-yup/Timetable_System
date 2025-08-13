@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, Users, BookCopy } from 'lucide-react';
+import { LogOut, Users, BookCopy, MoreVertical } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -30,22 +29,18 @@ export default function Header() {
           className="flex items-center gap-3 font-bold text-2xl text-foreground mr-auto"
         >
           <BookCopy className="h-10 w-10 text-primary" />
-          <span className="hidden sm:inline-block">YCCE Timetable</span>
+          <span className="hidden sm:inline-block">TimeTableSync</span>
         </Link>
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
+                size="icon"
                 className="relative h-9 w-9 rounded-full"
               >
-                <Avatar className="h-9 w-9">
-                  <AvatarImage
-                    src="https://i.pravatar.cc/150"
-                    alt="User Avatar"
-                  />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
+                <MoreVertical />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -75,7 +70,6 @@ export default function Header() {
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-              <ThemeToggle />
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/">
