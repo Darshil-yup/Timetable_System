@@ -2,9 +2,7 @@
 "use client"
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,10 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { PlusCircle, Wand2 } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { PlusCircle } from "lucide-react";
 import React from "react";
-import { AIGeneratorDialog } from "./ai-generator-dialog";
 
 const DEPARTMENTS = [
     "Computer Engineering", 
@@ -42,13 +39,6 @@ const DEPARTMENTS = [
 ];
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
-const formSchema = z.object({
-  departmentName: z.string().min(1, "Department name is required"),
-  year: z.string().min(1, "Year is required"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 type AddTimetableDialogProps = {
   onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;
   children?: React.ReactNode;
@@ -56,24 +46,18 @@ type AddTimetableDialogProps = {
 
 export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetableDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-        departmentName: '',
-        year: ''
-    }
+      departmentName: "",
+      year: "",
+    },
   });
 
-  const handleSubmit = (values: FormValues) => {
-    onCreateTimetable(values.departmentName, values.year);
+  const onSubmit = (data: { departmentName: string; year: string }) => {
+    onCreateTimetable(data.departmentName, data.year);
     setIsOpen(false);
-    form.reset();
+    reset();
   };
-
-  const handleAiSuccess = (departmentName: string, year: string, entries: any[]) => {
-    onCreateTimetable(departmentName, year, entries);
-    setIsOpen(false);
-  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -85,79 +69,69 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
             </Button>
         }
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Timetable</DialogTitle>
           <DialogDescription>
-            Select the department and academic year for the new timetable. You can create it manually or use AI.
+            Select the department and academic year for the new timetable.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="departmentName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Department Name</FormLabel>
-                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a department" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {DEPARTMENTS.map((dept) => (
-                        <SelectItem key={dept} value={dept}>
-                          {dept}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Academic Year</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a year" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {YEARS.map((year) => (
-                        <SelectItem key={year} value={year}>
-                          {year}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter className="pt-4 sm:justify-between sm:flex-row-reverse">
-              <Button type="submit">Create Manually</Button>
-              <AIGeneratorDialog 
-                 formValues={form.getValues()}
-                 onGenerationSuccess={handleAiSuccess}
-              >
-                <Button type="button" variant="secondary">
-                  <Wand2 />
-                  Generate with AI
-                </Button>
-              </AIGeneratorDialog>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="departmentName" className="text-right">
+                Department
+                </Label>
+                 <Controller
+                    name="departmentName"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select a department" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {DEPARTMENTS.map((dept) => (
+                                    <SelectItem key={dept} value={dept}>
+                                    {dept}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="year" className="text-right">
+                Year
+                </Label>
+                <Controller
+                    name="year"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger className="col-span-3">
+                                <SelectValue placeholder="Select a year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {YEARS.map((year) => (
+                                    <SelectItem key={year} value={year}>
+                                    {year}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+            </div>
+            </div>
+            <DialogFooter>
+            <Button type="submit">Create Timetable</Button>
             </DialogFooter>
-          </form>
-        </Form>
+        </form>
       </DialogContent>
     </Dialog>
   );
 }
-
