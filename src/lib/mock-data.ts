@@ -3,9 +3,9 @@ import type { Lecturer, TimetableEntry, TimetableData } from './types';
 
 export const LECTURERS: Lecturer[] = [
     { id: 'lec1', name: 'Roshan S. Bhanuse' },
-    { id: 'lec2', name: 'Hrushikesh P' },
+    { id: 'lec2', name: 'Hrushikesh Panchbudhe' },
     { id: 'lec3', name: 'Dr. Gauri M. Dhopavkar' },
-    { id: 'lec4', name: 'Radhika' },
+    { id: 'lec4', name: 'Radhika Tekade' },
     { id: 'lec5', name: 'Charvi S. Suri' },
     { id: 'lec6', name: 'Sharayu Sangekar' },
     { id: 'lec7', name: 'Prachi Gawande' },
@@ -19,7 +19,7 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec15', name: 'Lata R. Tembhare' },
     { id: 'lec16', name: 'Harsha Tembhekar' },
     { id: 'lec17', name: 'Priya Kotewar' },
-    { id: 'lec18', name: 'Sadaf' },
+    { id: 'lec18', name: 'Sadaf Ansari' },
     { id: 'lec19', name: 'Dr. Rathkanthiwar' },
     { id: 'lec20', name: 'S. Khan' },
     { id: 'lec21', name: 'Kirti S.' },
@@ -30,8 +30,8 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec26', name: 'Dr. Ganesh Yenurkar' },
     { id: 'lec27', name: 'Dr. Sanjay P. Pande' },
     { id: 'lec28', name: 'S. Saba' },
-    { id: 'lec29', name: 'Dr. S. J. Kadarpachi' },
-    { id: 'lec30', name: 'Dr. G. M. Vidhale' },
+    { id: 'lec29', name: 'Dr. Shivkumar Karale' },
+    { id: 'lec30', name: 'Dr. Gendlal M. Vaidya' },
     { id: 'lec31', name: 'S. S. Bhadoria' },
     { id: 'lec32', name: 'NAB'},
     { id: 'lec33', name: 'Neha Ingole'},
@@ -53,11 +53,11 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec49', name: 'PI'},
     { id: 'lec50', name: 'RSK'},
     { id: 'lec51', name: 'SAS'},
-    { id: 'lec52', name: 'SSS'},
-    { id: 'lec53', name: 'GMV'},
-    { id: 'lec54', name: 'SRK'},
-    { id: 'lec55', name: 'SJK'},
-    { id: 'lec56', name: 'AJ'},
+    { id: 'lec52', name: 'Shubhangi S. Shambharkar'},
+    { id: 'lec53', name: 'Dr. Gendlal M. Vaidya'},
+    { id: 'lec54', name: 'Dr. Smita R. Kapse'},
+    { id: 'lec55', name: 'Dr. Shivkumar Karale'},
+    { id: 'lec56', name: 'Akhil Jajulwar'},
     { id: 'lec57', name: 'SPP'},
     { id: 'lec58', name: 'CSS'}
 ];
@@ -97,7 +97,7 @@ const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'th2', subject: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'th3', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'th4', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'th5', subject: 'DS/CWS', lecturer: 'Lata R. Tembhare, Charvi S. Suri, Harsha Tembhekar, Sadaf', room: 'IOT Lab 1,2,3,4', day: 'Thursday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-5))' },
+    { id: 'th5', subject: 'DS/CWS', lecturer: 'Lata R. Tembhare, Charvi S. Suri, Harsha Tembhekar, Sadaf Ansari', room: 'IOT Lab 1,2,3,4', day: 'Thursday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-5))' },
 
     // Friday
     { id: 'f1', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
@@ -116,24 +116,24 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'rec-fri-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 
     // Monday
-    { id: 'm1-5', subject: 'DBMS/OS Lab', lecturer: 'RSB, Hrushikesh P, GMD, Radhika', room: 'IOT Lab 1,2/3,4', day: 'Monday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-1))' },
+    { id: 'm1-5', subject: 'DBMS/OS Lab', lecturer: 'RSB, Hrushikesh Panchbudhe, GMD, Radhika Tekade', room: 'IOT Lab 1,2/3,4', day: 'Monday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-1))' },
     { id: 'm2-5', subject: 'PE-I:GIS/MFDA', lecturer: 'CSS, Sharayu S', room: 'ET 316/ET-308', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'm3-5', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'ET-316', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'm4-5', subject: 'TFCS', lecturer: 'SSS', room: 'ET-316', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'm4-5', subject: 'TFCS', lecturer: 'Shubhangi S. Shambharkar', room: 'ET-316', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
 
     // Tuesday
     { id: 't1-5', subject: 'DBMS', lecturer: 'RSB', room: 'ET-316', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 't2-5', subject: 'OS', lecturer: 'GMD', room: 'ET-316', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 't3-5', subject: 'PE-I:GIS/MFDA', lecturer: 'CSS, Sharayu S', room: 'ET 316/ET-308', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 't4-5', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'ET-316', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 't5-5', subject: 'PE I: LAB: GIS/MFDA', lecturer: 'CSS, Radhika, Sharayu S, AG', room: 'IOT Lab 3,4/1,2', day: 'Tuesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-2))' },
+    { id: 't5-5', subject: 'PE I: LAB: GIS/MFDA', lecturer: 'CSS, Radhika Tekade, Sharayu S, AG', room: 'IOT Lab 3,4/1,2', day: 'Tuesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-2))' },
 
     // Wednesday
     { id: 'w1-5', subject: 'OE:3 Arthashashtra', lecturer: 'PVB', room: 'ET-316', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'w2-5', subject: 'DAA', lecturer: 'SAS', room: 'ET-316', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'w3-5', subject: 'DAA', lecturer: 'SAS', room: 'ET-316', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'w4-5', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'ET-316', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'w5-5', subject: 'LAB: OS/DAA', lecturer: 'GMD, Hrushikesh P, SAS, RinaP', room: 'IOT Lab 3,4/1,2', day: 'Wednesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
+    { id: 'w5-5', subject: 'LAB: OS/DAA', lecturer: 'GMD, Hrushikesh Panchbudhe, SAS, RinaP', room: 'IOT Lab 3,4/1,2', day: 'Wednesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-5))' },
 
     // Thursday
     { id: 'th1-5', subject: 'OE:3 Arthashashtra', lecturer: 'PVB', room: 'ET-316', day: 'Thursday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -146,7 +146,7 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
     // Friday
     { id: 'f1-5', subject: 'OE:3 Arthashashtra', lecturer: 'PVB', room: 'ET-316', day: 'Friday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'f2-5', subject: 'OS', lecturer: 'GMD', room: 'ET-316', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'f3-5', subject: 'TFCS', lecturer: 'SSS', room: 'ET-316', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'f3-5', subject: 'TFCS', lecturer: 'Shubhangi S. Shambharkar', room: 'ET-316', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'f4-5', subject: 'DBMS', lecturer: 'RSB', room: 'ET-316', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'f5-5', subject: 'DAA', lecturer: 'SAS', room: 'ET-316', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'f6-5', subject: 'Library', lecturer: 'Radhika Tekade', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Library', duration: 1, color: '#E0E0E0' },
@@ -166,7 +166,7 @@ const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
     // Monday
     { id: 'm1-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'PAB / GA', room: 'EL-204 / EL 203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'm2-7', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 302', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'm3-7', subject: 'PE-IV: SPI / DAI', lecturer: 'Harsha Tembhekar / Dr. Prarthana Deshkar', room: 'EL 302 / EL 102', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'm3-7', subject: 'PE-IV: SPI / DAI', lecturer: 'Harsha Tembhekar / Dr. Prarthana Deshkar', room: 'EL 302 / EL 102', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'm4-7', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'ET 308', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'm5-7', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'ET 308', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
 
@@ -178,7 +178,7 @@ const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 't5-7', subject: 'IOT DP', lecturer: 'Dr. Sanjay P. Pande', room: 'EL 103', day: 'Tuesday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
 
     // Wednesday
-    { id: 'w1-7', subject: 'PE III: LAB: IOT / FEC', lecturer: 'S. Saba, Nirmik / Prachi Gawande, Dr. S. J. Kadarpachi', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Wednesday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-3))' },
+    { id: 'w1-7', subject: 'PE III: LAB: IOT / FEC', lecturer: 'S. Saba, Nirmik / Prachi Gawande, Dr. Shivkumar Karale', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Wednesday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-3))' },
     { id: 'w2-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / Prachi Gawande', room: 'EL-204 / EL102', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'w3-7', subject: 'Project', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '02:00-05:00', type: 'Practical', duration: 3, color: '#E0E0E0' },
 
@@ -189,7 +189,7 @@ const CSE_7_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'th4-7', subject: 'PE-V: Blockchain / OSC', lecturer: 'Prachi A. Bainalwar / Gousia Ahmed', room: 'AIDS Lab 2 / AIDS Lab 1', day: 'Thursday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-2))' },
 
     // Friday
-    { id: 'f1-7', subject: 'LAB: SE / CC', lecturer: 'Nilesh U. Sambhe, Dr. G. M. Vidhale / Dr. Ganesh Yenurkar, S. S. Bhadoria', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Friday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-5))' },
+    { id: 'f1-7', subject: 'LAB: SE / CC', lecturer: 'Nilesh U. Sambhe, Dr. Gendlal M. Vaidya / Dr. Ganesh Yenurkar, S. S. Bhadoria', room: 'IOT Lab 1,2 / IOT Lab 3,4', day: 'Friday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-5))' },
     { id: 'f2-7', subject: 'PE-III: IOT / FEC', lecturer: 'S. Saba / Prachi Gawande', room: 'ET 308 / ET 316', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'f3-7', subject: 'SE', lecturer: 'Nilesh U. Sambhe', room: 'EL 211', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'f4-7', subject: 'CC', lecturer: 'Dr. Ganesh Yenurkar', room: 'EL 102', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -231,7 +231,7 @@ const CSE_AIDS_3_SEM_A_TIMETABLE: TimetableEntry[] = [
   { id: 'aids-a-th6', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '03:00-04:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
 
   // Friday
-  { id: 'aids-a-f1', subject: 'LAB: SDS/DS', lecturer: 'SAG,NI/PAB,S. SABA', room: 'AIDS LAB2/AIDS LAB 1', day: 'Friday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-4))' },
+  { id: 'aids-a-f1', subject: 'LAB: SDS/DS', lecturer: 'SAG,Neha Ingole/PAB,S. SABA', room: 'AIDS LAB2/AIDS LAB 1', day: 'Friday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-4))' },
   { id: 'aids-a-f2', subject: 'SDS', lecturer: 'SAG', room: 'EL-302', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
   { id: 'aids-a-f3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
   { id: 'aids-a-f4', subject: 'MDM 1: BDS/MDM2:Front End', lecturer: 'AG/Nirmik', room: 'EL-302/EL-303', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -292,7 +292,7 @@ const CSE_5_SEM_A_TIMETABLE: TimetableEntry[] = [
     // Monday
     { id: 'cse-5a-m1', subject: 'PE I: LAB: CN/HPC', lecturer: 'ABP, Reena Parteki Sharayu K, K Khandare', room: 'AIDS LAB 2/ AIDS LAB 5,6', day: 'Monday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-1))' },
     { id: 'cse-5a-m2', subject: 'PE-I:CN/HPC', lecturer: 'ABP/Sharayu K', room: 'EL-204/EL-303', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'cse-5a-m3', subject: 'MDM:MS', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'cse-5a-m3', subject: 'MDM:MS', lecturer: 'Hrushikesh Panchbudhe', room: 'EL-204', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'cse-5a-m4', subject: 'AI', lecturer: 'PI', room: 'EL-204', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'cse-5a-m5', subject: 'FML', lecturer: 'KRS', room: 'EL-102', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
 
@@ -300,7 +300,7 @@ const CSE_5_SEM_A_TIMETABLE: TimetableEntry[] = [
     { id: 'cse-5a-t1', subject: 'FML', lecturer: 'KRS', room: 'EL-102', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'cse-5a-t2', subject: 'PE-I:CN/HPC', lecturer: 'ABP/Sharayu K', room: 'EL-204/EL-303', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'cse-5a-t3', subject: 'DAA', lecturer: 'RSK', room: 'EL-204', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'cse-5a-t4', subject: 'MDM:MS', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'cse-5a-t4', subject: 'MDM:MS', lecturer: 'Hrushikesh Panchbudhe', room: 'EL-204', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'cse-5a-t5', subject: 'TFCS', lecturer: 'SAS', room: 'EL-204', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'cse-5a-t6', subject: 'AI', lecturer: 'PI', room: 'EL-204', day: 'Tuesday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
 
@@ -308,7 +308,7 @@ const CSE_5_SEM_A_TIMETABLE: TimetableEntry[] = [
     { id: 'cse-5a-w1', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '09:00-10:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
     { id: 'cse-5a-w2', subject: 'OE:3 IBP', lecturer: 'S. Khalatkar', room: 'EL-204', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'cse-5a-w3', subject: 'LAB: AI/DAA', lecturer: 'PI, K. Khandare/RSK, Harsha Tembhekar', room: 'AIDS LAB 5,6/AIDS LAB 1', day: 'Wednesday', time: '11:00-01:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-3))' },
-    { id: 'cse-5a-w4', subject: 'MDM:MS', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'cse-5a-w4', subject: 'MDM:MS', lecturer: 'Hrushikesh Panchbudhe', room: 'EL-204', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'cse-5a-w5', subject: 'DAA', lecturer: 'RSK', room: 'EL-204', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'cse-5a-w6', subject: 'Library', lecturer: 'Harsha Tembhekar', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Library', duration: 1, color: '#E0E0E0' },
     
@@ -339,39 +339,39 @@ const CSE_7_SEM_A_TIMETABLE: TimetableEntry[] = [
     { id: 'cse-7a-rec-fri', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
 
     // Monday
-    { id: 'cse-7a-m1', subject: 'DL', lecturer: 'SSS', room: 'EL-203', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'cse-7a-m2', subject: 'BDH', lecturer: 'GMV', room: 'EL-203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'cse-7a-m3', subject: 'PE-III: SNDA/DW', lecturer: 'NI/Sadaf', room: 'EL-211/EL-204', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'cse-7a-m4', subject: 'PE-V: D.SEC/OT', lecturer: 'SRK/Radhika', room: 'EL-103/ET-308', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'cse-7a-m5', subject: 'PE-IV: Dis Sy/CC', lecturer: 'SJK/AJ', room: 'EL-102/EL-303', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'cse-7a-m1', subject: 'DL', lecturer: 'Shubhangi S. Shambharkar', room: 'EL-203', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'cse-7a-m2', subject: 'BDH', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'cse-7a-m3', subject: 'PE-III: SNDA/DW', lecturer: 'Neha Ingole/Sadaf Ansari', room: 'EL-211/EL-204', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'cse-7a-m4', subject: 'PE-V: D.SEC/OT', lecturer: 'Dr. Smita R. Kapse/Radhika Tekade', room: 'EL-103/ET-308', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'cse-7a-m5', subject: 'PE-IV: Dis Sy/CC', lecturer: 'Dr. Shivkumar Karale/Akhil Jajulwar', room: 'EL-102/EL-303', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'cse-7a-m6', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
 
     // Tuesday
-    { id: 'cse-7a-t1', subject: 'LAB: HPC', lecturer: 'SSS, K. Khandare/SPP, SAG', room: 'AIDS LAB 1/AIDS LAB 5,6', day: 'Tuesday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
-    { id: 'cse-7a-t2', subject: 'PE-III: SNDA/DW', lecturer: 'NI/Sadaf', room: 'EL-211/EL-204', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'cse-7a-t3', subject: 'BDH', lecturer: 'GMV', room: 'EL-211', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'cse-7a-t1', subject: 'LAB: HPC', lecturer: 'Shubhangi S. Shambharkar, K. Khandare/SPP, SAG', room: 'AIDS LAB 1/AIDS LAB 5,6', day: 'Tuesday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+    { id: 'cse-7a-t2', subject: 'PE-III: SNDA/DW', lecturer: 'Neha Ingole/Sadaf Ansari', room: 'EL-211/EL-204', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'cse-7a-t3', subject: 'BDH', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-211', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'cse-7a-t4', subject: 'Project', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '03:00-05:00', type: 'Practical', duration: 2, color: '#E0E0E0' },
     
     // Wednesday
-    { id: 'cse-7a-w1', subject: 'CT', lecturer: 'Hrushikesh P', room: 'ARCH AG 02B', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'cse-7a-w2', subject: 'PE-V: D.SEC/OT', lecturer: 'SRK/Radhika', room: 'ARCH AG 02B/FL. 211', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'cse-7a-w3', subject: 'PE-III: SNDA/DW', lecturer: 'NI/Sadaf', room: 'EL-211/ET-204', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'cse-7a-w4', subject: 'DL', lecturer: 'SSS', room: 'ET-211', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'cse-7a-w5', subject: 'LAB: DL/BDH', lecturer: 'SSS, CSS/GMV, SPP', room: 'AIDS LAB 1/AIDS LAB 2', day: 'Wednesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+    { id: 'cse-7a-w1', subject: 'CT', lecturer: 'Hrushikesh Panchbudhe', room: 'ARCH AG 02B', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'cse-7a-w2', subject: 'PE-V: D.SEC/OT', lecturer: 'Dr. Smita R. Kapse/Radhika Tekade', room: 'ARCH AG 02B/FL. 211', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'cse-7a-w3', subject: 'PE-III: SNDA/DW', lecturer: 'Neha Ingole/Sadaf Ansari', room: 'EL-211/ET-204', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'cse-7a-w4', subject: 'DL', lecturer: 'Shubhangi S. Shambharkar', room: 'ET-211', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'cse-7a-w5', subject: 'LAB: DL/BDH', lecturer: 'Shubhangi S. Shambharkar, CSS/Dr. Gendlal M. Vaidya, SPP', room: 'AIDS LAB 1/AIDS LAB 2', day: 'Wednesday', time: '03:00-05:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
 
     // Thursday
-    { id: 'cse-7a-th1', subject: 'LAB: DL/BDH', lecturer: 'SSS, Sadaf/GMV, SPP', room: 'AIDS LAB 1/AIDS LAB 2', day: 'Thursday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-2))' },
-    { id: 'cse-7a-th2', subject: 'PE-IV: DS/CC', lecturer: 'SJK/AJ', room: 'EL 211/ARCH AG 02B', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'cse-7a-th3', subject: 'CL', lecturer: 'Hrushikesh P', room: 'EL-203', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'cse-7a-th4', subject: 'BDH', lecturer: 'GMV', room: 'EL-302', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'cse-7a-th1', subject: 'LAB: DL/BDH', lecturer: 'Shubhangi S. Shambharkar, Sadaf Ansari/Dr. Gendlal M. Vaidya, SPP', room: 'AIDS LAB 1/AIDS LAB 2', day: 'Thursday', time: '10:00-12:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-2))' },
+    { id: 'cse-7a-th2', subject: 'PE-IV: DS/CC', lecturer: 'Dr. Shivkumar Karale/Akhil Jajulwar', room: 'EL 211/ARCH AG 02B', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'cse-7a-th3', subject: 'CL', lecturer: 'Hrushikesh Panchbudhe', room: 'EL-203', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'cse-7a-th4', subject: 'BDH', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-302', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'cse-7a-th5', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
 
     // Friday
-    { id: 'cse-7a-f1', subject: 'PE-IV: DS/CC', lecturer: 'SJK/AJ', room: 'EL-211/ARCH AG 02B', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'cse-7a-f2', subject: 'PE-V: D.SEC/OT', lecturer: 'SRK/Radhika', room: 'ARCH AG 02B/EL-211', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'cse-7a-f3', subject: 'CL', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'cse-7a-f4', subject: 'DL', lecturer: 'SSS', room: 'EL-211', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'cse-7a-f5', subject: 'Library', lecturer: 'Sadaf', room: 'N/A', day: 'Friday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'cse-7a-f1', subject: 'PE-IV: DS/CC', lecturer: 'Dr. Shivkumar Karale/Akhil Jajulwar', room: 'EL-211/ARCH AG 02B', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'cse-7a-f2', subject: 'PE-V: D.SEC/OT', lecturer: 'Dr. Smita R. Kapse/Radhika Tekade', room: 'ARCH AG 02B/EL-211', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'cse-7a-f3', subject: 'CL', lecturer: 'Hrushikesh Panchbudhe', room: 'EL-204', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'cse-7a-f4', subject: 'DL', lecturer: 'Shubhangi S. Shambharkar', room: 'EL-211', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'cse-7a-f5', subject: 'Library', lecturer: 'Sadaf Ansari', room: 'N/A', day: 'Friday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
     { id: 'cse-7a-f6', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
 ];
 
@@ -389,8 +389,8 @@ export const MASTER_TIMETABLE: TimetableData[] = [
     },
     {
         id: 'tt-sem7-cse-a',
-        name: 'CSE 7th Sem - Section A',
-        timetable: CSE_7_SEM_A_TIMETABLE,
+        name: 'CSE 7th Sem',
+        timetable: CSE_7_SEM_TIMETABLE,
     },
     {
         id: 'tt-sem3-aids-a',
