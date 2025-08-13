@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 interface TimetableContextType {
   timetables: TimetableData[];
   loading: boolean;
-  addTimetable: (name: string, year: string) => Promise<string | null>;
+  addTimetable: (name: string, year: string, entries?: TimetableEntry[]) => Promise<string | null>;
   deleteTimetable: (id: string) => Promise<void>;
   updateTimetableEntries: (timetableId: string, entries: TimetableEntry[]) => Promise<void>;
 }
@@ -58,13 +58,13 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
   }, [toast]);
 
   // Function to add a new timetable document to Firestore.
-  const addTimetable = useCallback(async (name: string, year: string): Promise<string | null> => {
+  const addTimetable = useCallback(async (name: string, year: string, entries: TimetableEntry[] = []): Promise<string | null> => {
     try {
       // This is the structure of a new timetable document. It has a name and an
       // empty 'timetable' array to hold class entries.
       const newTimetable = {
         name: `${name} (${year})`,
-        timetable: [] // Starts with an empty array for classes.
+        timetable: entries // Starts with an empty array for classes.
       };
       // addDoc creates a new document within the "timetables" collection in Firestore.
       const docRef = await addDoc(collection(db, "timetables"), newTimetable);

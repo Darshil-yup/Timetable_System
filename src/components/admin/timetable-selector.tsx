@@ -29,7 +29,7 @@ interface TimetableSelectorProps {
   timetables: TimetableData[];
   selectedTimetableId: string;
   onSelectTimetable: (id: string) => void;
-  onCreateTimetable: (name: string, year: string) => Promise<string | null>;
+  onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;
   onDeleteTimetable: (id: string) => Promise<void>;
 }
 
@@ -110,5 +110,3 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
 });
 
 TimetableSelector.displayName = 'TimetableSelector';
-
-    

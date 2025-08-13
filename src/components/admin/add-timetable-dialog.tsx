@@ -23,8 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Wand2 } from "lucide-react";
 import React from "react";
+import { AIGeneratorDialog } from "./ai-generator-dialog";
 
 const DEPARTMENTS = [
     "Computer Engineering", 
@@ -49,7 +50,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 type AddTimetableDialogProps = {
-  onCreateTimetable: (name: string, year: string) => void;
+  onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;
   children?: React.ReactNode;
 };
 
@@ -69,6 +70,11 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
     form.reset();
   };
 
+  const handleAiSuccess = (departmentName: string, year: string, entries: any[]) => {
+    onCreateTimetable(departmentName, year, entries);
+    setIsOpen(false);
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -83,7 +89,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
         <DialogHeader>
           <DialogTitle>Create New Timetable</DialogTitle>
           <DialogDescription>
-            Select the department and academic year for the new timetable.
+            Select the department and academic year for the new timetable. You can create it manually or use AI.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -136,8 +142,17 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
                 </FormItem>
               )}
             />
-            <DialogFooter className="pt-4">
-              <Button type="submit">Create Timetable</Button>
+            <DialogFooter className="pt-4 sm:justify-between sm:flex-row-reverse">
+              <Button type="submit">Create Manually</Button>
+              <AIGeneratorDialog 
+                 formValues={form.getValues()}
+                 onGenerationSuccess={handleAiSuccess}
+              >
+                <Button type="button" variant="secondary">
+                  <Wand2 />
+                  Generate with AI
+                </Button>
+              </AIGeneratorDialog>
             </DialogFooter>
           </form>
         </Form>
@@ -145,3 +160,4 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
     </Dialog>
   );
 }
+
