@@ -62,6 +62,13 @@
     background-color: hsl(var(--background));
     @apply text-foreground;
   }
+  html:not(.dark) body {
+    background-image: url('/light.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
   .dark body {
     background-color: #121212;
     background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 50%), 
