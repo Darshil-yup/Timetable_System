@@ -187,7 +187,7 @@ export function RegisterDialog({ children }: { children?: React.ReactNode }) {
             <DialogFooter className="pt-4 sm:justify-center">
               <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading && <Loader2 className="animate-spin" />}
-                <span className="px-0.5">{isLoading ? 'Creating Account...' : 'Create Account'}</span>
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </Button>
             </DialogFooter>
           </form>
