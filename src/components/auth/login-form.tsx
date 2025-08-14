@@ -64,7 +64,7 @@ export function LoginForm() {
         <Button className="w-full" onClick={() => handleLogin('admin')} disabled={isFormDisabled}>
           {isLoading === 'admin' ? <Loader2 className="animate-spin" /> : 'Login as Admin'}
         </Button>
-        <div className="text-sm text-muted-foreground pt-2">
+        <div className="text-sm text-muted-foreground pt-2 text-center">
           {"Haven't signed up yet? "}
           <RegisterDialog>
              <span className="underline cursor-pointer font-semibold text-primary/90">
