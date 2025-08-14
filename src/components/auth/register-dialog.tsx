@@ -185,7 +185,7 @@ export function RegisterDialog({ children }: { children?: React.ReactNode }) {
             <PasswordStrengthIndicator strength={passwordStrength} />
 
             <DialogFooter className="pt-4 sm:justify-center">
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading && <Loader2 className="animate-spin" />}
                 <span className="px-0.5">{isLoading ? 'Creating Account...' : 'Create Account'}</span>
               </Button>
