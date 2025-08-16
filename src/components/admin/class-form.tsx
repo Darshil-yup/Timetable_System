@@ -27,7 +27,7 @@ export const ALL_CLASSROOMS = [
 export const ALL_LABS = [
     'CT-LAB-01', 'CT-LAB-02', 'CT-LAB-03', 'CT-LAB-04', 'CT-LAB-05', 'CT-LAB-06', 'CT-LAB-07', 'CT-LAB-08',
     'AIDS-LAB-01', 'AIDS-LAB-02', 'AIDS-LAB-03', 'AIDS-LAB-04', 'AIDS-LAB-05', 'AIDS-LAB-06',
-    'CSE(IoT)-ET-304', 'CSE(IoT)-ET-304A', 'CSE(IoT)-ET-304B', 'CSE(IoT)-ET-301'
+    'CSE(IoT)-Lab-01', 'CSE(IoT)-Lab-02', 'CSE(IoT)-Lab-03', 'CSE(IoT)-Lab-04'
 ];
 
 
