@@ -13,7 +13,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Timetable } from '@/components/shared/timetable';
 import { ALL_LABS } from './class-form';
-import type { TimetableData } from '@/lib/types';
+import type { TimetableData, TimetableEntry } from '@/lib/types';
 import { FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
@@ -23,18 +23,30 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 interface LabViewProps {
-  activeTimetable: TimetableData | undefined | null;
-  isLoading: boolean;
+  allTimetables: TimetableData[];
 }
 
-export const LabView: React.FC<LabViewProps> = ({ activeTimetable, isLoading }) => {
+export const LabView: React.FC<LabViewProps> = ({ allTimetables }) => {
   const { toast } = useToast();
-  const [selectedLab, setSelectedLab] = useState('all');
+  const [selectedLab, setSelectedLab] = useState(ALL_LABS[0]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const practicalTimetable = useMemo(() =>
-    activeTimetable?.timetable ? activeTimetable.timetable.filter(e => e.type === 'Practical') : [],
-    [activeTimetable]
-  );
+  React.useEffect(() => {
+    // Simulate loading
+    const timer = setTimeout(() => setIsLoading(false), 300);
+    return () => clearTimeout(timer);
+  }, [selectedLab]);
+
+  const practicalTimetable = useMemo(() => {
+    const allClasses: TimetableEntry[] = [];
+    allTimetables.forEach(timetable => {
+        const labClasses = timetable.timetable.filter(entry => 
+            entry.type === 'Practical'
+        );
+        allClasses.push(...labClasses);
+    });
+    return allClasses;
+  }, [allTimetables]);
   
   const filteredPracticalTimetable = useMemo(() => {
     if (selectedLab === 'all') return practicalTimetable;
@@ -42,7 +54,10 @@ export const LabView: React.FC<LabViewProps> = ({ activeTimetable, isLoading }) 
   }, [practicalTimetable, selectedLab]);
 
   const handleExportSheet = useCallback(() => {
-    if (!activeTimetable) return toast({ title: "Export Failed", variant: "destructive" });
+    if (!filteredPracticalTimetable || filteredPracticalTimetable.length === 0) {
+        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
+        return;
+    }
 
     const grid = [
       ["Day/Time", ...TIME_SLOTS],
@@ -75,14 +90,14 @@ export const LabView: React.FC<LabViewProps> = ({ activeTimetable, isLoading }) 
     const workbook = XLSX.utils.book_new();
     const sheetName = selectedLab === 'all' ? 'All Labs' : selectedLab;
     XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-    XLSX.writeFile(workbook, `${activeTimetable.name}-${sheetName}.xlsx`);
+    XLSX.writeFile(workbook, `Consolidated-${sheetName}.xlsx`);
     toast({ title: "Export Successful" });
-  }, [activeTimetable, filteredPracticalTimetable, selectedLab, toast]);
+  }, [filteredPracticalTimetable, selectedLab, toast]);
 
-  if (!activeTimetable && !isLoading) {
+  if (!allTimetables) {
     return (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
-            <p className="text-muted-foreground">Please select a timetable to view lab schedules.</p>
+            <p className="text-muted-foreground">No timetable data available.</p>
         </div>
     );
   }
@@ -91,8 +106,8 @@ export const LabView: React.FC<LabViewProps> = ({ activeTimetable, isLoading }) 
     <Card>
       <CardHeader className="flex-row items-center justify-between gap-4">
         <div>
-          <CardTitle>Lab Timetable</CardTitle>
-          <CardDescription>Read-only view for practicals. Filter by specific lab.</CardDescription>
+          <CardTitle>Consolidated Lab Timetable</CardTitle>
+          <CardDescription>View of all practicals scheduled in a lab across all timetables.</CardDescription>
         </div>
         <div className="flex items-center gap-2">
           <Select value={selectedLab} onValueChange={setSelectedLab}>
@@ -102,7 +117,7 @@ export const LabView: React.FC<LabViewProps> = ({ activeTimetable, isLoading }) 
               {ALL_LABS.map(lab => <SelectItem key={lab} value={lab}>{lab}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={handleExportSheet} disabled={isLoading || !activeTimetable}>
+          <Button variant="outline" onClick={handleExportSheet}>
             <FileSpreadsheet />
             Export as Sheet
           </Button>
