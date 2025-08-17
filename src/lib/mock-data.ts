@@ -507,6 +507,50 @@ const AIDS_5_SEM_A_TIMETABLE: TimetableEntry[] = [
     { id: 'aids5a-fri-5', subject: 'LAB: AI/DAA', lecturer: 'PI, PVB/RSK, Harsha', room: 'AIDS LAB 5,6/AIDS LAB 1', day: 'Friday', time: '02:00-03:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-3))' },
 ];
 
+const AIDS_7_SEM_A_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'aids7a-mon-1', subject: 'DL', lecturer: 'SSS', room: 'EL-203', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids7a-mon-2', subject: 'BDH', lecturer: 'GMV', room: 'EL-203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids7a-mon-3', subject: 'PE-III: SNDA/DW', lecturer: 'NI/Sadaf', room: 'EL-211/EL-204', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids7a-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids7a-mon-5', subject: 'PE-V: D.SEC/OT', lecturer: 'SRK/Radhika', room: 'EL 103/ET 308', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids7a-mon-6', subject: 'PE-IV: Dis Sy/CC', lecturer: 'SJK/AJ', room: 'EL 102, EL 303', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids7a-mon-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+
+    // Tuesday
+    { id: 'aids7a-tue-1', subject: 'LAB: HPC', lecturer: 'SSS, K. Khandare/SPP, SAG', room: 'AIDS LAB 1/AIDS LAB 5,6', day: 'Tuesday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+    { id: 'aids7a-tue-2', subject: 'PE III: SNDA/DW', lecturer: 'NI/Sadaf', room: 'EL.211/EL.204', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids7a-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids7a-tue-4', subject: 'BDH', lecturer: 'GMV', room: 'EL-211', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids7a-tue-5', subject: 'Project', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, color: '#E0E0E0' },
+
+    // Wednesday
+    { id: 'aids7a-wed-1', subject: 'C.T.', lecturer: 'Hrushikesh P', room: 'ARCH AG 02B', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids7a-wed-2', subject: 'PE V: D.SEC/OT', lecturer: 'SRK/Radhika', room: 'ARCH AG 02B/EL. 211', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids7a-wed-3', subject: 'PE III: SNDA/DW', lecturer: 'NI/Sadaf', room: 'EL. 211/ET. 204', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids7a-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids7a-wed-5', subject: 'DI.', lecturer: 'SSS', room: 'EL. 211', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids7a-wed-6', subject: 'LAB: DL/BDH', lecturer: 'SSS, CSS/GMV, SPP', room: 'AIDS LAB 1/AIDS LAB 2', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-2))' },
+
+    // Thursday
+    { id: 'aids7a-thu-1', subject: 'LAB: DL/BDH', lecturer: 'SSS, Sadaf/GMV, SPP', room: 'AIDS LAB 1/AIDS LAB 2', day: 'Thursday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-2))' },
+    { id: 'aids7a-thu-2', subject: 'PE-IV: DS/CC', lecturer: 'SJK/AJ', room: 'EL 211/ARCH AG 02B', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids7a-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids7a-thu-4', subject: 'CL', lecturer: 'Hrushikesh P', room: 'EL 203', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids7a-thu-5', subject: 'BDH', lecturer: 'GMV', room: 'EL-302', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids7a-thu-6', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+
+    // Friday
+    { id: 'aids7a-fri-1', subject: 'PE-IV: DS/CC', lecturer: 'SJK/AJ', room: 'EL211/ARCH AG 02B', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids7a-fri-2', subject: 'PE-V: D.SEC/OT', lecturer: 'SRK/Radhika', room: 'ARCH AG 02B/EL-211', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids7a-fri-3', subject: 'CL', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids7a-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids7a-fri-5', subject: 'DL', lecturer: 'SSS', room: 'EL-211', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids7a-fri-6', subject: 'Library', lecturer: 'PROF. SADAF', room: 'N/A', day: 'Friday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'aids7a-fri-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+];
+
+
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
         id: 'tt-cse-iot-3',
@@ -562,5 +606,10 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         id: 'tt-aids-5-a',
         name: 'Department of AIDS (5th Sem Sec A)',
         timetable: AIDS_5_SEM_A_TIMETABLE,
+    },
+    {
+        id: 'tt-aids-7-a',
+        name: 'Department of AIDS (7th Sem Sec A)',
+        timetable: AIDS_7_SEM_A_TIMETABLE,
     }
 ];
