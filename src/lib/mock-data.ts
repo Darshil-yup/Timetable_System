@@ -278,6 +278,49 @@ const CT_3_SEM_B_TIMETABLE: TimetableEntry[] = [
     { id: 'ct3b-fri-6', subject: 'CL', lecturer: 'RADHIKA', room: 'EL-103', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
 ];
 
+const CT_5_SEM_A_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'ct5a-mon-1', subject: 'LAB: DBMS/JAVA', lecturer: 'SST,AJ,S.KHALATKAR,PD', room: 'CT-LAB-4/CT-LAB-1', day: 'Monday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+    { id: 'ct5a-mon-2', subject: 'PE-I:CV/ISF', lecturer: 'Priya K/SAG', room: 'EL-203/CT Lab 1', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 2, color: 'hsl(var(--chart-2))' },
+    { id: 'ct5a-mon-3', subject: 'MDM:FPP', lecturer: 'S. Saba', room: 'EL-203', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct5a-mon-4', subject: 'TFCS', lecturer: 'RSB', room: 'EL-203', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct5a-mon-5', subject: 'LAB: DBMS/JAVA', lecturer: 'SST,AJ,S.KHALATKAR,PD', room: 'CT-LAB-4/CT-LAB-1', day: 'Monday', time: '04:00-05:00', type: 'Practical', duration: 1, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-1))' },
+
+    // Tuesday
+    { id: 'ct5a-tue-1', subject: 'DBMS', lecturer: 'SS1', room: 'EL-203', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct5a-tue-2', subject: 'MFDA', lecturer: 'PD', room: 'EL-203', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct5a-tue-3', subject: 'PE-I:CV/ISF', lecturer: 'Priya K/SAG', room: 'EL-203/CT Lab 1', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 2, color: 'hsl(var(--chart-2))' },
+    { id: 'ct5a-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct5a-tue-5', subject: 'MDM:FPP', lecturer: 'S. Saba', room: 'EL-203', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct5a-tue-6', subject: 'LAB: DBMS/JAVA', lecturer: 'SST,AJ,S.KHALATKAR,PD', room: 'CT-LAB-4/CT-LAB-1', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-1))' },
+
+    // Wednesday
+    { id: 'ct5a-wed-1', subject: 'OE:3 ICP', lecturer: 'GC', room: 'EL-203', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct5a-wed-2', subject: 'MFDA', lecturer: 'PD', room: 'EL-203', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct5a-wed-3', subject: 'TFCS', lecturer: 'RSB', room: 'EL-203', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct5a-wed-4', subject: 'MDM:FPP', lecturer: 'S. Saba', room: 'EL-203', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct5a-wed-5', subject: 'DBMS', lecturer: 'SS1', room: 'EL-203', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct5a-wed-6', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+
+    // Thursday
+    { id: 'ct5a-thu-1', subject: 'OE:3 ICP', lecturer: 'GC', room: 'EL-203', day: 'Thursday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct5a-thu-2', subject: 'DBMS', lecturer: 'SS1', room: 'EL-203', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct5a-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '11:00-12:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct5a-thu-4', subject: 'LAB PE:1: CV/ISF', lecturer: 'Priya K,S.BADHE,SAG,RADHIKA', room: 'CT-LAB-7/CT-LAB-4', day: 'Thursday', time: '12:00-01:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-2))' },
+    { id: 'ct5a-thu-5', subject: 'LIBRARY', lecturer: 'Rina P', room: 'N/A', day: 'Thursday', time: '02:00-03:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'ct5a-thu-6', subject: 'MFDA', lecturer: 'PD', room: 'EL-203', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct5a-thu-7', subject: 'TFCS', lecturer: 'RSB', room: 'EL-203', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+
+    // Friday
+    { id: 'ct5a-fri-1', subject: 'OE:3 ICP', lecturer: 'GC', room: 'EL-203', day: 'Friday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct5a-fri-2', subject: 'DBMS', lecturer: 'SS1', room: 'EL-203', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct5a-fri-3', subject: 'TFCS', lecturer: 'RSB', room: 'EL-203', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct5a-fri-4', subject: 'SPORTS', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+    { id: 'ct5a-fri-5', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct5a-fri-6', subject: 'MFDA', lecturer: 'PD', room: 'EL-203', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct5a-fri-7', subject: 'LAB: MFDA', lecturer: 'PD,Rina P,KPK,SHARAYU S.', room: 'CT-LAB-2/CT-LAB-3', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-1))' },
+];
+
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
@@ -304,5 +347,10 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         id: 'tt-ct-3-b',
         name: 'Computer Technology (3rd Sem Sec B)',
         timetable: CT_3_SEM_B_TIMETABLE,
+    },
+    {
+        id: 'tt-ct-5-a',
+        name: 'Computer Technology (5th Sem Sec A)',
+        timetable: CT_5_SEM_A_TIMETABLE,
     }
 ];
