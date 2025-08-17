@@ -62,12 +62,53 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec58', name: 'Charvi S. Suri' }
 ];
 
-const CE_3_SEM_TIMETABLE: TimetableEntry[] = [];
+const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'ciot3-mon-1', subject: 'OE:1', lecturer: 'Harsha', room: 'ET-308', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-mon-2', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot3-mon-4', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-mon-5', subject: 'Library', lecturer: 'LRT', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot3-mon-6', subject: 'DS/CWS', lecturer: 'LRT, RinaP, Harsha, Sharayu S', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-4))' },
+    
+    // Tuesday
+    { id: 'ciot3-tue-1', subject: 'OE:1', lecturer: 'N/A', room: 'ET-308', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-tue-2', subject: 'BPP', lecturer: 'RinaP', room: 'ET-308', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot3-tue-4', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-tue-5', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-tue-6', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '03:00-04:00', type: 'Sports', duration: 2, color: '#E0E0E0' },
 
-const IT_5_SEM_TIMETABLE: TimetableEntry[] = [];
+    // Wednesday
+    { id: 'ciot3-wed-1', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-wed-2', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-wed-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot3-wed-4', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-wed-5', subject: 'BPP', lecturer: 'RinaP', room: 'ET-308', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-wed-6', subject: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-wed-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
 
-const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [];
+    // Thursday
+    { id: 'ciot3-thu-1', subject: 'BPP', lecturer: 'RinaP', room: 'ET-308', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-thu-2', subject: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot3-thu-4', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-thu-5', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-thu-6', subject: 'DS/CWS', lecturer: 'LRT, CSS, Harsha, Sadaf', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-4))' },
+    
+    // Friday
+    { id: 'ciot3-fri-1', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-fri-2', subject: 'CAO', lecturer: 'Harsha', room: 'ET-308', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-fri-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot3-fri-4', subject: 'DS', lecturer: 'LRT', room: 'ET-308', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-fri-5', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-fri-6', subject: 'MI', lecturer: 'Rath., SN,, Kirti S., ABT', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-5))' },
+];
 
-const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [];
-
-export const MASTER_TIMETABLE: TimetableData[] = [];
+export const MASTER_TIMETABLE: TimetableData[] = [
+    {
+        id: 'tt-cse-iot-3',
+        name: 'Computer Science and Engineering (IoT) (3rd Sem)',
+        timetable: CSE_IOT_3_SEM_TIMETABLE,
+    },
+];
