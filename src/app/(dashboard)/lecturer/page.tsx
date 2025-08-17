@@ -4,7 +4,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
-import { LECTURERS, MASTER_TIMETABLE } from '@/lib/mock-data';
+import { LECTURERS } from '@/lib/mock-data';
+import { useTimetableData } from '@/hooks/use-timetable-data';
 import { Button } from '@/components/ui/button';
 import { FileSpreadsheet, User } from 'lucide-react';
 import {
@@ -24,31 +25,28 @@ const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", 
 
 export default function LecturerDashboardPage() {
   const { toast } = useToast();
+  const { timetables: allTimetables, loading: timetablesLoading } = useTimetableData();
   
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
-
+  
   useEffect(() => {
     if (LECTURERS.length > 0 && !selectedLecturer) {
         setSelectedLecturer(LECTURERS[0].name);
     }
-    // Simulate initial data loading
-    const timer = setTimeout(() => setIsLoading(false), 500);
-    return () => clearTimeout(timer);
   }, [selectedLecturer]);
 
   const lecturerTimetable = useMemo(() => {
-    if (!selectedLecturer) return [];
+    if (!selectedLecturer || !allTimetables) return [];
     
     const allClasses: TimetableEntry[] = [];
-    MASTER_TIMETABLE.forEach(timetable => {
+    allTimetables.forEach(timetable => {
         const lecturerClasses = timetable.timetable.filter(entry => 
             entry.lecturer && entry.lecturer.includes(selectedLecturer)
         );
         allClasses.push(...lecturerClasses);
     });
     return allClasses;
-  }, [selectedLecturer]);
+  }, [selectedLecturer, allTimetables]);
 
   const handleExportSheet = useCallback(() => {
     if (!selectedLecturer || lecturerTimetable.length === 0) {
@@ -105,7 +103,7 @@ export default function LecturerDashboardPage() {
     toast({ title: "Export Successful", description: `Timetable for ${selectedLecturer} has been exported.` });
 }, [selectedLecturer, lecturerTimetable, toast]);
 
-if (isLoading) {
+if (timetablesLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
             <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
@@ -163,5 +161,3 @@ if (isLoading) {
     </div>
   );
 }
-
-    
