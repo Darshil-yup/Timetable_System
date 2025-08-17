@@ -380,6 +380,48 @@ const CT_7_SEM_A_TIMETABLE: TimetableEntry[] = [
     { id: 'ct7a-thu-1', subject: 'SPORTS', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '10:00-11:00', type: 'Sports', duration: 2, color: '#E0E0E0' },
 ];
 
+const AIDS_3_SEM_A_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'aids3a-mon-1', subject: 'OE:1', lecturer: '', room: 'EL-302', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids3a-mon-2', subject: 'LA', lecturer: 'NAB', room: 'EL-302', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids3a-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids3a-mon-4', subject: 'Library', lecturer: 'NEHA INGOLE', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'aids3a-mon-5', subject: 'DS', lecturer: 'PAB', room: 'EL-302', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-mon-6', subject: 'SDS', lecturer: 'SAG', room: 'EL-302', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-mon-7', subject: 'FOME', lecturer: 'SSN', room: 'EL-302', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+
+    // Tuesday
+    { id: 'aids3a-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-302', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids3a-tue-2', subject: 'DS', lecturer: 'PAB', room: 'EL-302', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-tue-3', subject: 'LA', lecturer: 'NAB', room: 'EL-302', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids3a-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids3a-tue-5', subject: 'ESPM', lecturer: 'PVG', room: 'EL-302', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids3a-tue-6', subject: 'LAB: SDS/DS', lecturer: 'SAG,HARSHA/PAB,S. SABA', room: 'AIDS LAB2/AIDS LAB 1', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-4))' },
+
+    // Wednesday
+    { id: 'aids3a-wed-1', subject: 'SDS', lecturer: 'SAG', room: 'EL-302', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-wed-2', subject: 'DS', lecturer: 'PAB', room: 'EL-302', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-wed-3', subject: 'FOME', lecturer: 'SSN', room: 'EL-302', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids3a-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids3a-wed-5', subject: 'ESPM', lecturer: 'PVG', room: 'EL-302', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids3a-wed-6', subject: 'LA', lecturer: 'NAB', room: 'EL-302', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+
+    // Thursday
+    { id: 'aids3a-thu-1', subject: 'SDS', lecturer: 'SAG', room: 'EL-302', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-thu-2', subject: 'DS', lecturer: 'PAB', room: 'EL-302', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids3a-thu-4', subject: 'LA', lecturer: 'NAB', room: 'EL-302', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids3a-thu-5', subject: 'MDM 1: BDS /MDM2:Front End', lecturer: 'AG/Nirmik', room: 'EL-302/EL-303', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids3a-thu-6', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '03:00-04:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+
+    // Friday
+    { id: 'aids3a-fri-1', subject: 'LAB: SDS/DS', lecturer: 'SAG,NI/PAB,S. SABA', room: 'AIDS LAB2/AIDS LAB 1', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-fri-2', subject: 'SDS', lecturer: 'SAG', room: 'EL-302', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-fri-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids3a-fri-4', subject: 'MDM 1: BDS /MDM2:Front End', lecturer: 'AG/Nirmik', room: 'EL-302/EL-303', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids3a-fri-5', subject: 'SPORTS', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '02:00-03:00', type: 'Sports', duration: 2, color: '#E0E0E0' },
+];
+
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
@@ -421,5 +463,10 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         id: 'tt-ct-7-a',
         name: 'Computer Technology (7th Sem Sec A)',
         timetable: CT_7_SEM_A_TIMETABLE,
+    },
+    {
+        id: 'tt-aids-3-a',
+        name: 'Department of AIDS (3rd Sem Sec A)',
+        timetable: AIDS_3_SEM_A_TIMETABLE,
     }
 ];
