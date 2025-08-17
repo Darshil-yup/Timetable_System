@@ -10,8 +10,11 @@ export default function Home() {
           <Image src="/logo.png" alt="YCCE TTMS Logo" width={120} height={120} className="h-30 w-30 rounded-full" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-          Welcome to YCCE TTMS
+          Timetable Management System
         </h1>
+        <p className="text-muted-foreground mt-3 max-w-md">
+            Streamlining academic scheduling for Y.C.C.E. faculty and administration.
+        </p>
       </div>
       <LoginForm />
     </main>
