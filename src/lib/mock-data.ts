@@ -463,6 +463,49 @@ const AIDS_3_SEM_B_TIMETABLE: TimetableEntry[] = [
     { id: 'aids3b-fri-6', subject: 'SPORTS', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '03:00-04:00', type: 'Sports', duration: 2, color: '#E0E0E0' },
 ];
 
+const AIDS_5_SEM_A_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'aids5a-mon-1', subject: 'PE I: LAB: CN/HPC', lecturer: 'ABP, Reena Parteki, Sharayu K, K Khandare', room: 'AIDS LAB 2/AIDS LAB 5,6', day: 'Monday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-mon-2', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids5a-mon-3', subject: 'PE-I:CN/HPC', lecturer: 'ABP/Sharayu K', room: 'EL-204/EL-303', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-mon-4', subject: 'MDM:MS', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids5a-mon-5', subject: 'AI', lecturer: 'PI', room: 'EL-204', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids5a-mon-6', subject: 'FML', lecturer: 'KRS', room: 'EL-102', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+
+    // Tuesday
+    { id: 'aids5a-tue-1', subject: 'FML', lecturer: 'KRS', room: 'EL-102', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'aids5a-tue-2', subject: 'PE-I:CN/HPC', lecturer: 'ABP/Sharayu K', room: 'EL-204/EL-303', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids5a-tue-4', subject: 'DAA', lecturer: 'RSK', room: 'EL-204', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids5a-tue-5', subject: 'MDM:MS', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids5a-tue-6', subject: 'TFCS', lecturer: 'SAS', room: 'EL-204', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-tue-7', subject: 'AI', lecturer: 'PI', room: 'EL-204', day: 'Tuesday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+
+    // Wednesday
+    { id: 'aids5a-wed-1', subject: 'HELP DESK', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '09:00-10:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    { id: 'aids5a-wed-2', subject: 'OE:3 IBP', lecturer: 'S. Khalatkar', room: 'EL-204', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids5a-wed-3', subject: 'LAB: AI/DAA', lecturer: 'PI, K. Khandare/RSK, Harsha', room: 'AIDS LAB 5,6/AIDS LAB 1', day: 'Wednesday', time: '11:00-12:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-3))' },
+    { id: 'aids5a-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids5a-wed-5', subject: 'MDM:MS', lecturer: 'Hrushikesh P', room: 'EL-204', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids5a-wed-6', subject: 'DAA', lecturer: 'RSK', room: 'EL-204', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids5a-wed-7', subject: 'LIBRARY', lecturer: 'HARSHA TEMBHEKAR', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+
+    // Thursday
+    { id: 'aids5a-thu-1', subject: 'OE:3 IBP', lecturer: 'S. Khalatkar', room: 'EL-204', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids5a-thu-2', subject: 'TFCS', lecturer: 'SAS', room: 'EL-204', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-thu-3', subject: 'PE-I:CN/HPC', lecturer: 'ABP/Sharayu K', room: 'EL-204/CT LAB 4', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-thu-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids5a-thu-5', subject: 'AI', lecturer: 'PI', room: 'EL-204', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids5a-thu-6', subject: 'DAA', lecturer: 'RSK', room: 'EL-204', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids5a-thu-7', subject: 'TFCS', lecturer: 'SAS', room: 'EL-204', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+
+    // Friday
+    { id: 'aids5a-fri-1', subject: 'OE:3 IBP', lecturer: 'S. Khalatkar', room: 'EL-204', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'aids5a-fri-2', subject: 'AI', lecturer: 'PI', room: 'EL-204', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids5a-fri-3', subject: 'TFCS', lecturer: 'SAS', room: 'EL-204', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'aids5a-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'aids5a-fri-5', subject: 'LAB: AI/DAA', lecturer: 'PI, PVB/RSK, Harsha', room: 'AIDS LAB 5,6/AIDS LAB 1', day: 'Friday', time: '02:00-03:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-3))' },
+];
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
@@ -514,5 +557,10 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         id: 'tt-aids-3-b',
         name: 'Department of AIDS (3rd Sem Sec B)',
         timetable: AIDS_3_SEM_B_TIMETABLE,
+    },
+    {
+        id: 'tt-aids-5-a',
+        name: 'Department of AIDS (5th Sem Sec A)',
+        timetable: AIDS_5_SEM_A_TIMETABLE,
     }
 ];
