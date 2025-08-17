@@ -67,6 +67,7 @@ export default function AdminDashboardPage() {
         timetable: []
       });
       await mutateMetadatas();
+      setSelectedTimetableId(newTimetableRef.id);
       toast({ title: "Timetable Created!", description: `The timetable for "${timetableName}" has been created.` });
       return newTimetableRef.id;
     } catch (error) {

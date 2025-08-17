@@ -40,7 +40,7 @@ const DEPARTMENTS = [
 const YEARS = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
 type AddTimetableDialogProps = {
-  onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;
+  onCreateTimetable: (name: string, year: string) => Promise<string | null>;
   children?: React.ReactNode;
 };
 
@@ -53,10 +53,12 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
     },
   });
 
-  const onSubmit = (data: { departmentName: string; year: string }) => {
-    onCreateTimetable(data.departmentName, data.year);
-    setIsOpen(false);
-    reset();
+  const onSubmit = async (data: { departmentName: string; year: string }) => {
+    const newId = await onCreateTimetable(data.departmentName, data.year);
+    if (newId) {
+        setIsOpen(false);
+        reset();
+    }
   };
 
   return (
