@@ -25,7 +25,7 @@ const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", 
 
 export default function LecturerDashboardPage() {
   const { toast } = useToast();
-  const { allTimetables, loading: timetablesLoading } = useTimetableData(undefined, true);
+  const { allTimetables, loading: timetablesLoading } = useTimetableData();
   
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
   

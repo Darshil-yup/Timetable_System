@@ -4,11 +4,10 @@
 import React from 'react';
 import { LabView } from '@/components/admin/lab-view';
 import { useTimetableData } from '@/hooks/use-timetable-data';
-import type { TimetableData } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LabsPage() {
-    const { allTimetables, loading } = useTimetableData(undefined, true);
+    const { allTimetables, loading } = useTimetableData();
 
     if (loading) {
         return (

@@ -4,11 +4,10 @@
 import React from 'react';
 import { ClassroomView } from '@/components/admin/classroom-view';
 import { useTimetableData } from '@/hooks/use-timetable-data';
-import { TimetableData } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ClassroomsPage() {
-    const { allTimetables, loading } = useTimetableData(undefined, true);
+    const { allTimetables, loading } = useTimetableData();
 
     if (loading) {
         return (

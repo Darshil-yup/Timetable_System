@@ -1,75 +1,38 @@
 
 "use client";
 
-import useSWR from 'swr';
-import type { TimetableData, TimetableMetadata } from '@/lib/types';
-import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, getDocs, collectionGroup, query } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import type { TimetableData } from '@/lib/types';
+import { MASTER_TIMETABLE } from '@/lib/mock-data';
 
-const fetcher = async (url: string) => {
-  // Key for fetching all timetable metadata
-  if (url === 'timetables/metadata') {
-    const querySnapshot = await getDocs(collection(db, "timetables"));
-    const metadatas: TimetableMetadata[] = [];
-    querySnapshot.forEach((doc) => {
-        metadatas.push({ id: doc.id, name: doc.data().name });
-    });
-    return metadatas;
-  }
-  
-  // Key for fetching all full timetable documents
-  if (url === 'timetables/all') {
-    const querySnapshot = await getDocs(collection(db, "timetables"));
-    const timetables: TimetableData[] = [];
-    querySnapshot.forEach((doc) => {
-        timetables.push({ id: doc.id, ...doc.data() } as TimetableData);
-    });
-    return timetables;
-  }
+// This hook now simulates an async data fetch from the mock data file.
+export function useTimetableData() {
+  const [allTimetables, setAllTimetables] = useState<TimetableData[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  // Key for fetching a single timetable document
-  if (url.startsWith('timetables/')) {
-    const id = url.split('/')[1];
-    if (!id) return null;
-    const docRef = doc(db, "timetables", id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() } as TimetableData;
-    }
-    return null;
-  }
-  
-  return null;
-};
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        try {
+            // In a real app, this would be an API call.
+            // Here, we're just using the imported mock data.
+            setAllTimetables(MASTER_TIMETABLE);
+        } catch (e) {
+            setError(e instanceof Error ? e : new Error('Failed to load timetable data'));
+        } finally {
+            setLoading(false);
+        }
+    }, 500); // Simulate network delay
 
-export function useTimetableData(id?: string, fetchAllFull?: boolean) {
-  let key: string | null = null;
-  
-  if (id) {
-    // Fetch a single full timetable
-    key = `timetables/${id}`;
-  } else if (fetchAllFull) {
-    // Fetch all full timetables (for consolidated views)
-    key = 'timetables/all';
-  } else {
-    // Fetch just the metadata (for selectors)
-    key = 'timetables/metadata';
-  }
+    return () => clearTimeout(timer);
+  }, []);
 
-  const { data, error, isLoading, mutate } = useSWR(key, fetcher, {
-    revalidateOnFocus: false,
-  });
-
+  // The hook's return value is simplified as it always returns all timetables.
+  // Individual components can filter this data as needed.
   return {
-    // A single full timetable
-    timetable: id ? (data as TimetableData | null | undefined) : undefined,
-    // Metadata for all timetables
-    timetables: !id && !fetchAllFull ? (data as TimetableMetadata[] | null | undefined) : undefined,
-    // All full timetables for consolidated views
-    allTimetables: fetchAllFull ? (data as TimetableData[] | null | undefined) : undefined,
-    loading: isLoading,
+    allTimetables,
+    loading,
     error,
-    mutate
   };
 }
 
