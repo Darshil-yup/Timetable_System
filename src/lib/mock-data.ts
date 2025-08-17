@@ -151,7 +151,7 @@ const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
 
 const CSE_IOT_7_SEM_TIMETABLE: TimetableEntry[] = [
     // Monday
-    { id: 'ciot7-mon-1', subject: 'PE-V: Blockchain/OSC', lecturer: 'PAB, GA', room: 'EL-204/EL 203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot7-mon-1', subject: 'PE-III: NNFL/AWN/DM', lecturer: 'PAB, GA', room: 'EL-204/EL 203', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ciot7-mon-2', subject: 'SE', lecturer: 'NUS', room: 'EL 302', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ciot7-mon-3', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha, PD', room: 'EL 302/EL 102', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ciot7-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
@@ -349,6 +349,37 @@ const CT_7_SEM_B_TIMETABLE: TimetableEntry[] = [
     { id: 'ct7b-wed-6', subject: 'ORO', lecturer: 'NIRMIK', room: 'ARCH AG 02B', day: 'Wednesday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
 ];
 
+const CT_7_SEM_A_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'ct7a-mon-1', subject: 'PE-III: NNFL/AWN/DM', lecturer: 'PG/NUS/PI', room: 'ARCH AG 02B/EL-211/EL-203', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct7a-mon-2', subject: 'ORO', lecturer: 'SJK', room: 'EL-211', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct7a-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct7a-mon-4', subject: 'PE-IV: CF/ML/CRM', lecturer: 'POOJA B./SST/GKY', room: 'ARCH AG 02B/EL-203/EL-211', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct7a-mon-5', subject: 'PE-V: INLP/ES/CV', lecturer: 'GMD/SPP/SB', room: 'AIDS LAB-2/ARCH AG 02B/EL-211', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct7a-mon-6', subject: 'PROJECT', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 1, color: '#E0E0E0' },
+    { id: 'ct7a-mon-7', subject: 'LIBRARAY', lecturer: 'AJ', room: 'N/A', day: 'Monday', time: '04:00-05:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+
+    // Tuesday
+    { id: 'ct7a-tue-1', subject: 'HELP DESK', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '10:00-11:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    { id: 'ct7a-tue-2', subject: 'ORO', lecturer: 'SJK', room: 'EL-211', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct7a-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct7a-tue-4', subject: 'PE-IV: CF/ML/CRM', lecturer: 'POOJA B./SST/GKY', room: 'ARCH AG 02B/EL-203/EL-211', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct7a-tue-5', subject: 'PE-V: INLP/ES/CV', lecturer: 'GMD/SPP/SB', room: 'AIDS LAB-2/ARCH AG 02B/AIDS Lab 1', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct7a-tue-6', subject: 'PE-III: NNFL/AWN/DM', lecturer: 'PG/NUS/PI', room: 'ARCH AG 02B/EL-211/EL-203', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct7a-tue-7', subject: 'PROJECT', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '04:00-05:00', type: 'Practical', duration: 1, color: '#E0E0E0' },
+
+    // Wednesday
+    { id: 'ct7a-wed-1', subject: 'PE: IV LAB:CF/ML/CRM', lecturer: 'POOJA B,AJ/SST,Priya K/GKY,Rina P', room: 'CT LAB-4/CT LAB-3/CT LAB-2', day: 'Wednesday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-5))' },
+    { id: 'ct7a-wed-2', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct7a-wed-3', subject: 'PE-IV: CF/ML/CRM', lecturer: 'POOJA B./SST/GKY', room: 'ARCH AG 02B/EL-203/EL-211', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct7a-wed-4', subject: 'PE-V: INLP/ES/CV', lecturer: 'GMD/SPP/SB', room: 'AIDS LAB-2/ARCH AG 02B/CT Lab 3', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct7a-wed-5', subject: 'PE-III: NNFL/AWN/DM', lecturer: 'PG/NUS/PI', room: 'ARCH AG 02B/EL-211/CT-LAB 4', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct7a-wed-6', subject: 'ORO', lecturer: 'SJK', room: 'EL-211', day: 'Wednesday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+
+    // Thursday
+    { id: 'ct7a-thu-1', subject: 'SPORTS', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '10:00-11:00', type: 'Sports', duration: 2, color: '#E0E0E0' },
+];
+
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
@@ -385,5 +416,10 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         id: 'tt-ct-7-b',
         name: 'Computer Technology (7th Sem Sec B)',
         timetable: CT_7_SEM_B_TIMETABLE,
+    },
+    {
+        id: 'tt-ct-7-a',
+        name: 'Computer Technology (7th Sem Sec A)',
+        timetable: CT_7_SEM_A_TIMETABLE,
     }
 ];
