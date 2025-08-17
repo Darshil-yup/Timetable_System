@@ -15,7 +15,6 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec11', name: 'Dr. S. A. Shirsat' },
     { id: 'lec12', name: 'Rina Parteki' },
     { id: 'lec13', name: 'Nirmik' },
-    { id: 'lec14', name: 'Radhika Tekade' },
     { id: 'lec15', name: 'Lata R. Tembhare' },
     { id: 'lec16', name: 'Harsha Tembhekar' },
     { id: 'lec17', name: 'Priya Kotewar' },
@@ -35,7 +34,6 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec31', name: 'S. S. Bhadoria' },
     { id: 'lec32', name: 'Neha A. Bele' },
     { id: 'lec33', name: 'Neha Ingole' },
-    { id: 'lec34', name: 'Prachi A. Bainalwar' },
     { id: 'lec35', name: 'S. A. Ghurde' },
     { id: 'lec36', name: 'S. S. Narkhede' },
     { id: 'lec37', name: 'P. V. Gulhane' },
@@ -44,7 +42,6 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec40', name: 'K. R. Satpute' },
     { id: 'lec41', name: 'P. V. Barekar' },
     { id: 'lec42', name: 'K. P. Khandait' },
-    { id: 'lec43', name: 'Prachi Gawande' },
     { id: 'lec44', name: 'Snehal Khalatkar' },
     { id: 'lec45', name: 'Amruta B. Pethe' },
     { id: 'lec46', name: 'Reena Parteki' },
@@ -52,14 +49,9 @@ export const LECTURERS: Lecturer[] = [
     { id: 'lec48', name: 'Komal Khandare' },
     { id: 'lec49', name: 'Prajakta Ingale' },
     { id: 'lec50', name: 'R. S. Khangan' },
-    { id: 'lec51', name: 'Dr. S. A. Shirsat' },
     { id: 'lec52', name: 'Shubhangi S. Shambharkar' },
-    { id: 'lec53', name: 'Dr. Gendlal M. Vaidya' },
     { id: 'lec54', name: 'Dr. Smita R. Kapse' },
-    { id: 'lec55', name: 'Dr. Shivkumar Karale' },
-    { id: 'lec56', name: 'Akhil Jajulwar' },
-    { id: 'lec57', name: 'Dr. Sanjay P. Pande' },
-    { id: 'lec58', name: 'Charvi S. Suri' }
+    { id: 'lec56', name: 'Akhil Jajulwar' }
 ];
 
 const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
@@ -613,3 +605,5 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         timetable: AIDS_7_SEM_A_TIMETABLE,
     }
 ];
+
+    
