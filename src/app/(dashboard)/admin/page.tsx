@@ -101,53 +101,116 @@ export default function AdminDashboardPage() {
     toast({ title: "Timetable Deleted", description: `The timetable for "${timetableToDelete.name}" has been deleted.`, variant: "destructive" });
   }, [allTimetables, toast]);
   
-  const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
-    const newClassStartHour = parseInt(newClass.time.split(':')[0]);
+  const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, updatingClassId?: string): boolean => {
+    const newClassStartHour = parseInt(newClass.time.split('-')[0].split(':')[0]);
     const newClassEndHour = newClassStartHour + (newClass.duration || 1);
 
-    const isNewClassSpecial = SPECIAL_TYPES.includes(newClass.type as SpecialClassType);
-  
-    for (const timetable of allTimetables) {
-        const timetableToCheck = (timetable.id === selectedTimetableId)
-            ? existingTimetable.filter(entry => entry.id !== updatingClassId)
-            : timetable.timetable;
+    if (SPECIAL_TYPES.includes(newClass.type as SpecialClassType)) return false;
 
-        for (const existingEntry of timetableToCheck) {
-            if (isNewClassSpecial) continue;
+    const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+
+    for (const timetable of allTimetables) {
+        const entriesToCheck = timetable.timetable.filter(entry => entry.id !== updatingClassId);
+
+        for (const existingEntry of entriesToCheck) {
             if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
 
             if (existingEntry.day !== newClass.day) continue;
-            
-            const existingStartHour = parseInt(existingEntry.time.split(':')[0]);
+
+            const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
             const existingEndHour = existingStartHour + (existingEntry.duration || 1);
 
             const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
 
             if (isOverlapping) {
-                if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A' && newClass.lecturer === existingEntry.lecturer) {
-                    toast({ variant: "destructive", title: "Lecturer Conflict", description: `${newClass.lecturer} is already scheduled at this time in the "${timetable.name}" timetable.` });
+                // Room conflict
+                if (newClass.room && newClass.room !== 'N/A' && existingEntry.room && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
+                    toast({
+                        variant: "destructive",
+                        title: "Room Conflict",
+                        description: `Room ${newClass.room} is already booked at this time in the "${timetable.name}" timetable.`
+                    });
                     return true;
                 }
-                if (newClass.room && existingEntry.room && newClass.room !== 'N/A' && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
-                    toast({ variant: "destructive", title: "Room Conflict", description: `Room ${newClass.room} is already booked at this time in the "${timetable.name}" timetable.` });
-                    return true;
+
+                // Lecturer conflict
+                const existingLecturers = (existingEntry.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+                const lecturerConflict = newClassLecturers.some(lecturer => existingLecturers.includes(lecturer));
+                if (lecturerConflict) {
+                     const conflictingLecturer = newClassLecturers.find(lecturer => existingLecturers.includes(lecturer));
+                     toast({
+                         variant: "destructive",
+                         title: "Lecturer Conflict",
+                         description: `${conflictingLecturer} is already scheduled at this time in the "${timetable.name}" timetable.`
+                     });
+                     return true;
                 }
+
+                // Batch conflict (Practical vs Practical in any timetable)
                 if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
                     const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
                     if (conflictingBatch) {
-                        toast({ variant: "destructive", title: "Batch Conflict", description: `Batch ${conflictingBatch} is already scheduled at this time in the "${timetable.name}" timetable.` });
+                        toast({
+                            variant: "destructive",
+                            title: "Batch Conflict",
+                            description: `Batch ${conflictingBatch} is already scheduled for a practical at this time in the "${timetable.name}" timetable.`
+                        });
                         return true;
+                    }
+                }
+                
+                // Batch conflict (Lecture vs Practical for the same timetable)
+                if (timetable.id === selectedTimetableId) {
+                    const currentTimetableBatches = newClass.type === 'Lecture' 
+                        ? (activeTimetable?.timetable.find(e => e.id === updatingClassId)?.batches || newClass.batches || [])
+                        : (newClass.batches || []);
+                    
+                    const otherEntryBatches = existingEntry.batches || [];
+                    
+                    let conflictFound = false;
+
+                    if (newClass.type === 'Lecture' && existingEntry.type === 'Practical') {
+                        // All batches of the current timetable are implicitly in the lecture.
+                        // Check if any of those batches has a practical at the same time.
+                        const allBatchesInTimetable = [...new Set(activeTimetable?.timetable.flatMap(e => e.batches || []))];
+                        const conflictingBatch = allBatchesInTimetable.find(b => existingEntry.batches?.includes(b));
+                        if(conflictingBatch){
+                             toast({
+                                variant: "destructive",
+                                title: "Scheduling Conflict",
+                                description: `Batch ${conflictingBatch} has a practical at the same time as this lecture.`
+                            });
+                            return true;
+                        }
+
+                    } else if (newClass.type === 'Practical' && existingEntry.type === 'Lecture') {
+                         const conflictingBatch = newClass.batches?.find(b => {
+                            // Since it's a lecture, it applies to all batches of its timetable.
+                            // We just need to check if the new practical's batch belongs to this timetable.
+                            const allBatchesInTimetable = [...new Set(allTimetables.find(t=>t.name === timetable.name)?.timetable.flatMap(e => e.batches || []))];
+                            return allBatchesInTimetable.includes(b);
+                         });
+
+                         if(conflictingBatch){
+                             toast({
+                                variant: "destructive",
+                                title: "Scheduling Conflict",
+                                description: `Batch ${conflictingBatch} has a lecture at the same time as this practical.`
+                            });
+                             return true;
+                         }
                     }
                 }
             }
         }
     }
+
     return false;
-  }, [toast, allTimetables, selectedTimetableId]);
-  
+  }, [toast, allTimetables, selectedTimetableId, activeTimetable]);
+
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
-    if (checkForConflicts(newClass, activeTimetable.timetable)) return;
+    if (checkForConflicts(newClass)) return;
 
     const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
     
@@ -160,7 +223,7 @@ export default function AdminDashboardPage() {
   
   const handleUpdateClass = useCallback(async (updatedClass: TimetableEntry) => {
     if (!activeTimetable) return;
-    if (checkForConflicts(updatedClass, activeTimetable.timetable, updatedClass.id)) return;
+    if (checkForConflicts(updatedClass, updatedClass.id)) return;
     
     setAllTimetables(prev => prev.map(t => 
         t.id === selectedTimetableId 
