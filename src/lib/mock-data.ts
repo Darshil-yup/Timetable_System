@@ -105,10 +105,62 @@ const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'ciot3-fri-6', subject: 'MI', lecturer: 'Rath., SN,, Kirti S., ABT', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-5))' },
 ];
 
+const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'ciot5-mon-1', subject: 'DBMS/OS', lecturer: 'RSB, Hrushikesh P, GMD, Radhika', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Monday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-mon-2', subject: 'PE-I:GIS/MFDA', lecturer: 'CSS, Sharayu S', room: 'ET-316/ET-308', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot5-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-mon-4', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'ET-316', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot5-mon-5', subject: 'TFCS', lecturer: 'SSS', room: 'ET-316', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+
+    // Tuesday
+    { id: 'ciot5-tue-1', subject: 'DBMS', lecturer: 'RSB', room: 'ET-316', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-tue-2', subject: 'OS', lecturer: 'GMD', room: 'ET-316', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot5-tue-3', subject: 'PE-I:GIS/MFDA', lecturer: 'CSS, Sharayu S', room: 'ET-316/ET-308', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot5-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-tue-5', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'ET-316', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot5-tue-6', subject: 'PE I: LAB: GIS/MFDA', lecturer: 'CSS, Radhika, Sharayu S, AG', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-2))' },
+
+    // Wednesday
+    { id: 'ciot5-wed-1', subject: 'OE:3 Arthashashtra', lecturer: 'PVB', room: 'ET-316', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-wed-2', subject: 'DAA', lecturer: 'SAS', room: 'E1-316', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot5-wed-3', subject: 'DAA', lecturer: 'SAS', room: 'E1-316', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot5-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-wed-5', subject: 'MDM:FOG', lecturer: 'Prachi Gawande', room: 'E1-316', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot5-wed-6', subject: 'LAB: OS/DAA', lecturer: 'GMD, Hrushikesh P, SAS, RinaP', room: 'IOT Lab 3,4/IOT Lab 1,2', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2', 'A3', 'A4'], color: 'hsl(var(--chart-5))' },
+
+    // Thursday
+    { id: 'ciot5-thu-1', subject: 'OF:3 Arthashashtra', lecturer: 'PVB', room: 'ET-316', day: 'Thursday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-thu-2', subject: 'DBMS', lecturer: 'RSB', room: 'ET-316', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-thu-3', subject: 'LAB: DBMS/DAA', lecturer: 'RSB, RinaP, SAS, Nirmik', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Thursday', time: '11:00-12:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-thu-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-thu-5', subject: 'OS', lecturer: 'GMD', room: 'ET-316', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot5-thu-6', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '03:00-04:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-thu-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+
+    // Friday
+    { id: 'ciot5-fri-1', subject: 'OE:3 Arthashashtra', lecturer: 'PVB', room: 'ET-316', day: 'Friday', time: '09:00-10:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-fri-2', subject: 'OS', lecturer: 'GMD', room: 'ET-316', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot5-fri-3', subject: 'TFCS', lecturer: 'SSS', room: 'ET-316', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ciot5-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-fri-5', subject: 'DBMS', lecturer: 'RSB', room: 'ET-316', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot5-fri-6', subject: 'DAA', lecturer: 'SAS', room: 'ET-316', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot5-fri-7', subject: 'Library', lecturer: 'RADHIKA Tekade', room: 'N/A', day: 'Friday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot5-fri-8', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+];
+
+
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
         id: 'tt-cse-iot-3',
         name: 'Computer Science and Engineering (IoT) (3rd Sem)',
         timetable: CSE_IOT_3_SEM_TIMETABLE,
     },
+    {
+        id: 'tt-cse-iot-5',
+        name: 'Computer Science and Engineering (IoT) (5th Sem)',
+        timetable: CSE_IOT_5_SEM_TIMETABLE,
+    },
 ];
+
+    
