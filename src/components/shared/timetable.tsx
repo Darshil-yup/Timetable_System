@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { TimetableEntry, SpecialClassType } from "@/lib/types";
@@ -110,7 +109,7 @@ interface TimetableProps {
     highlightedLecturer?: string;
 }
 
-export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
+export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
    if (!entries || entries.length === 0) {
     return (
        <div ref={ref} className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
@@ -187,7 +186,5 @@ export const Timetable = React.forwardRef<HTMLDivElement, TimetableProps>(({ ent
       </div>
     </div>
   )
-});
+}));
 Timetable.displayName = 'Timetable';
-
-    

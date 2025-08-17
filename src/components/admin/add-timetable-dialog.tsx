@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { PlusCircle } from "lucide-react";
-import React from "react";
 
 const DEPARTMENTS = [
     "Computer Engineering", 
@@ -137,3 +136,4 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
     </Dialog>
   );
 }
+AddTimetableDialog.displayName = "AddTimetableDialog";
