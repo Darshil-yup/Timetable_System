@@ -32,7 +32,7 @@ export const LabView: React.FC<LabViewProps> = ({ allTimetables }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   React.useEffect(() => {
-    // Simulate loading
+    setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 300);
     return () => clearTimeout(timer);
   }, [selectedLab]);

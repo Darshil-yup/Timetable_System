@@ -2,7 +2,7 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react';
-import type { TimetableEntry, TimetableData } from '@/lib/types';
+import type { TimetableEntry, TimetableData, SpecialClassType } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -21,6 +21,7 @@ import { doc, getDoc, setDoc, addDoc, deleteDoc, collection, updateDoc, arrayUni
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
+const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
 export default function AdminDashboardPage() {
   const { timetables: timetableMetadatas, loading: metadataLoading, mutate: mutateMetadatas } = useTimetableData();
@@ -102,28 +103,43 @@ export default function AdminDashboardPage() {
   }, [timetableMetadatas, mutateMetadatas, toast]);
 
   const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, existingTimetable: TimetableEntry[], updatingClassId?: string): boolean => {
-    const newClassStartTime = parseInt(newClass.time.split(':')[0]);
-    const newClassEndTime = newClassStartTime + (newClass.duration || 1);
+    const newClassStartHour = parseInt(newClass.time.split(':')[0]);
+    const newClassEndHour = newClassStartHour + (newClass.duration || 1);
   
     const timetableToCheck = existingTimetable.filter(entry => entry.id !== updatingClassId);
+
+    const isNewClassSpecial = SPECIAL_TYPES.includes(newClass.type as SpecialClassType);
 
     for (const existingEntry of timetableToCheck) {
       if (existingEntry.day !== newClass.day) continue;
       
-      const existingStartTime = parseInt(existingEntry.time.split(':')[0]);
-      const existingEndTime = existingStartTime + (existingEntry.duration || 1);
+      const existingStartHour = parseInt(existingEntry.time.split(':')[0]);
+      const existingEndHour = existingStartHour + (existingEntry.duration || 1);
 
-      const isOverlapping = newClassStartTime < existingEndTime && newClassEndTime > existingStartTime;
+      const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
 
       if (isOverlapping) {
+        const isExistingClassSpecial = SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType);
+        if(isNewClassSpecial || isExistingClassSpecial) {
+          // Allow special classes to overlap with anything, or vice-versa, but not each other if it's a room conflict
+          // For now, we assume special classes don't conflict unless explicitly defined.
+          // This part can be expanded with more specific rules if needed.
+           continue;
+        }
+
+        // Lecturer Conflict
         if (newClass.lecturer && existingEntry.lecturer && newClass.lecturer !== 'N/A' && existingEntry.lecturer !== 'N/A' && newClass.lecturer === existingEntry.lecturer) {
             toast({ variant: "destructive", title: "Lecturer Conflict", description: `${newClass.lecturer} is already scheduled at this time.` });
             return true;
         }
+
+        // Room Conflict
         if (newClass.room && existingEntry.room && newClass.room !== 'N/A' && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
             toast({ variant: "destructive", title: "Room Conflict", description: `Room ${newClass.room} is already booked at this time.` });
             return true;
         }
+
+        // Batch Conflict for Practicals
         if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
            const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
            if (conflictingBatch) {
@@ -167,6 +183,7 @@ export default function AdminDashboardPage() {
 
     try {
       const docRef = doc(db, "timetables", selectedTimetableId);
+      // Using setDoc to replace the entire timetable array
       await setDoc(docRef, { ...activeTimetable, timetable: updatedTimetable });
 
       mutateTimetable({ ...activeTimetable, timetable: updatedTimetable }, false);
@@ -187,6 +204,7 @@ export default function AdminDashboardPage() {
 
     try {
         const docRef = doc(db, "timetables", selectedTimetableId);
+        // Firestore's arrayRemove is the correct way to remove an element from an array field
         await updateDoc(docRef, {
             timetable: arrayRemove(classToDelete)
         });
@@ -313,5 +331,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    

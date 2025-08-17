@@ -32,7 +32,7 @@ export const ClassroomView: React.FC<ClassroomViewProps> = ({ allTimetables }) =
   const [isLoading, setIsLoading] = useState(true);
 
   React.useEffect(() => {
-    // Simulate loading
+    setIsLoading(true);
     const timer = setTimeout(() => setIsLoading(false), 300);
     return () => clearTimeout(timer);
   }, [selectedRoom]);
