@@ -176,7 +176,7 @@ const CSE_IOT_7_SEM_TIMETABLE: TimetableEntry[] = [
     { id: 'ciot7-thu-1', subject: 'SE', lecturer: 'NUS', room: 'EL 211', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ciot7-thu-2', subject: 'PE-IV: SPI/DAI', lecturer: 'Harsha, PD', room: 'ET316/EL 211', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ciot7-thu-3', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba, PG', room: 'ET 308/ET 316', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ciot7-thu-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '02:00-03:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot7-thu-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ciot7-thu-5', subject: 'PE-V: Blockchain/OSC', lecturer: 'PAB, GA', room: 'AIDS Lab 2/AIDS Lab 1', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ciot7-thu-6', subject: 'IOT DP', lecturer: 'SPP', room: 'EL 211', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'ciot7-thu-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
@@ -184,55 +184,100 @@ const CSE_IOT_7_SEM_TIMETABLE: TimetableEntry[] = [
     // Friday
     { id: 'ciot7-fri-1', subject: 'LAB: SE/CC', lecturer: 'NUS, GMV, GKY, SSB', room: 'IOT Lab 1,2/IOT Lab 3,4', day: 'Friday', time: '10:00-11:00', type: 'Practical', duration: 2, batches: ['A3', 'A4', 'A1', 'A2'], color: 'hsl(var(--chart-1))' },
     { id: 'ciot7-fri-2', subject: 'PE-III: IOT/FEC', lecturer: 'S. Saba, PG', room: 'ET 308/ET 316', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ciot7-fri-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '02:00-03:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ciot7-fri-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ciot7-fri-4', subject: 'PE-V: Blockchain/OSC', lecturer: 'PAB, GA', room: 'AIDS Lab 2/EL-204', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ciot7-fri-5', subject: 'SE', lecturer: 'NUS', room: 'EL 211', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ciot7-fri-6', subject: 'CC', lecturer: 'GKY', room: 'EL 102', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
 ];
 
-const CT_3_SEM_TIMETABLE: TimetableEntry[] = [
+const CT_3_SEM_A_TIMETABLE: TimetableEntry[] = [
     // Monday
-    { id: 'ct3-mon-1', subject: 'OE:1', lecturer: '', room: 'EL-102', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3-mon-2', subject: 'FOME', lecturer: 'SSN', room: 'EL-102', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3-mon-3', subject: 'Library', lecturer: 'ASHWINI GOTE', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Library', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-mon-5', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3-mon-6', subject: 'DS/WT', lecturer: 'GA,AG,SADAF,RADHIKA', room: 'CT-LAB-2/CT-LAB-3', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3a-mon-1', subject: 'OE:1', lecturer: '', room: 'EL-102', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3a-mon-2', subject: 'FOME', lecturer: 'SSN', room: 'EL-102', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-mon-3', subject: 'Library', lecturer: 'ASHWINI GOTE', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-mon-5', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3a-mon-6', subject: 'DS/WT', lecturer: 'GA,AG,SADAF,RADHIKA', room: 'CT-LAB-2/CT-LAB-3', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2','A3','A4'], color: 'hsl(var(--chart-4))' },
     
     // Tuesday
-    { id: 'ct3-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-204', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3-tue-2', subject: 'DS', lecturer: 'RDW', room: 'EL-102', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3-tue-3', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-tue-5', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3-tue-6', subject: 'CL', lecturer: 'Rina P', room: 'EL-102', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3-tue-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-204', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3a-tue-2', subject: 'DS', lecturer: 'RDW', room: 'EL-102', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-tue-3', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-tue-5', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3a-tue-6', subject: 'CL', lecturer: 'Rina P', room: 'EL-102', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3a-tue-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
 
     // Wednesday
-    { id: 'ct3-wed-1', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '10:00-11:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-wed-2', subject: 'DS', lecturer: 'RDW', room: 'EL-102', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3-wed-3', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-wed-5', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3-wed-6', subject: 'DS/WT', lecturer: 'SRK,AG,SADAF,RADHIKA', room: 'CT-LAB-2/CT-LAB-3', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3a-wed-1', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '10:00-11:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-wed-2', subject: 'DS', lecturer: 'RDW', room: 'EL-102', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-wed-3', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3a-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-wed-5', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-wed-6', subject: 'DS/WT', lecturer: 'SRK,AG,SADAF,RADHIKA', room: 'CT-LAB-2/CT-LAB-3', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4','A1','A2'], color: 'hsl(var(--chart-4))' },
 
     // Thursday
-    { id: 'ct3-thu-1', subject: 'DS', lecturer: 'RDW', room: 'EL-102', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3-thu-2', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-thu-4', subject: 'MDM 1: FSE / MDM2: FAR-VR', lecturer: 'SS/KPK', room: 'EL-102/EL-103', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3-thu-5', subject: 'CL', lecturer: 'Rina P', room: 'EL-102', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3-thu-6', subject: 'FOME', lecturer: 'SSN', room: 'EL-102', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-thu-1', subject: 'DS', lecturer: 'RDW', room: 'EL-102', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-thu-2', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-thu-4', subject: 'MDM 1: FSE / MDM2: FAR-VR', lecturer: 'SS/KPK', room: 'EL-102/EL-103', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3a-thu-5', subject: 'CL', lecturer: 'Rina P', room: 'EL-102', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3a-thu-6', subject: 'FOME', lecturer: 'SSN', room: 'EL-102', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     
     // Friday
-    { id: 'ct3-fri-1', subject: 'DS', lecturer: 'RDW', room: 'EL-103', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3-fri-2', subject: 'CL', lecturer: 'Rina P', room: 'EL-102', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3-fri-3', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3-fri-5', subject: 'MDM 1: FSE / MDM2: FAR-VR', lecturer: 'SS/KPK', room: 'EL-102/EL-103', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3-fri-6', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3-fri-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-fri-1', subject: 'DS', lecturer: 'RDW', room: 'EL-103', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-fri-2', subject: 'CL', lecturer: 'Rina P', room: 'EL-102', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3a-fri-3', subject: 'DMPT', lecturer: 'AG', room: 'EL-102', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3a-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3a-fri-5', subject: 'MDM 1: FSE / MDM2: FAR-VR', lecturer: 'SS/KPK', room: 'EL-102/EL-103', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3a-fri-6', subject: 'CAO', lecturer: 'GMV', room: 'EL-102', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-fri-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
 ];
+
+const CT_3_SEM_B_TIMETABLE: TimetableEntry[] = [
+    // Monday
+    { id: 'ct3b-mon-1', subject: 'OE:1', lecturer: '', room: 'EL-103', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3b-mon-2', subject: 'DS', lecturer: 'SRK', room: 'EL-103', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-mon-4', subject: 'DMPT', lecturer: 'KPK', room: 'EL-103', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3b-mon-5', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-mon-6', subject: 'Library', lecturer: 'PROF.NIRMIT', room: 'N/A', day: 'Monday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+
+    // Tuesday
+    { id: 'ct3b-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-103', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3b-tue-2', subject: 'FOME', lecturer: '', room: 'EL-103', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-tue-4', subject: 'CAO', lecturer: 'KSK', room: 'EL-103', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-tue-5', subject: 'DS', lecturer: 'SRK', room: 'EL-103', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-tue-6', subject: 'LAB: DS/WT', lecturer: 'SRK,NIRMIK,SADAF,Priya K', room: 'CT-LAB-2/CT-LAB-3', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B1','B2','B3','B4'], color: 'hsl(var(--chart-4))' },
+
+    // Wednesday
+    { id: 'ct3b-wed-1', subject: 'CAO', lecturer: 'KSK', room: 'EL-103', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-wed-2', subject: 'DMPT', lecturer: 'KPK', room: 'EL-103', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3b-wed-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-wed-4', subject: 'CL', lecturer: 'RADHIKA', room: 'EL-103', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3b-wed-5', subject: 'DS', lecturer: 'SRK', room: 'EL-103', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-wed-6', subject: 'DMPT', lecturer: 'KPK', room: 'EL-103', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3b-wed-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+
+    // Thursday
+    { id: 'ct3b-thu-1', subject: 'DMPI', lecturer: 'KPK', room: 'EL-103', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3b-thu-2', subject: 'DS', lecturer: 'SRK', room: 'EL-103', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-thu-4', subject: 'CAO', lecturer: 'KSK', room: 'EL-103', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-thu-5', subject: 'MDM 1: FSE/MDM2: FAR-VR', lecturer: 'SS/KPK', room: 'EL-102/EL-103', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-thu-6', subject: 'CL', lecturer: 'RADHIKA', room: 'EL-103', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ct3b-thu-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
+
+    // Friday
+    { id: 'ct3b-fri-1', subject: 'LAB: DS/WT', lecturer: 'GA,NIRMIK/SADAF,Priya K', room: 'CT-LAB-2/CT-LAB-3', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['B3','B4','B1','B2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-fri-2', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-fri-3', subject: 'CAO', lecturer: 'KSK', room: 'EL-103', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-fri-4', subject: 'MDM 1: FSE/MDM2: FAR-VR', lecturer: 'SS/KPK', room: 'EL-102/EL-103', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-fri-5', subject: 'FOME', lecturer: '', room: 'EL-103', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-fri-6', subject: 'CL', lecturer: 'RADHIKA', room: 'EL-103', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+];
+
 
 export const MASTER_TIMETABLE: TimetableData[] = [
     {
@@ -251,9 +296,13 @@ export const MASTER_TIMETABLE: TimetableData[] = [
         timetable: CSE_IOT_7_SEM_TIMETABLE,
     },
     {
-        id: 'tt-ct-3',
-        name: 'Computer Technology (3rd Sem)',
-        timetable: CT_3_SEM_TIMETABLE,
+        id: 'tt-ct-3-a',
+        name: 'Computer Technology (3rd Sem Sec A)',
+        timetable: CT_3_SEM_A_TIMETABLE,
+    },
+    {
+        id: 'tt-ct-3-b',
+        name: 'Computer Technology (3rd Sem Sec B)',
+        timetable: CT_3_SEM_B_TIMETABLE,
     }
 ];
-
