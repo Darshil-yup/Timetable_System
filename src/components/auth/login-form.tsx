@@ -9,25 +9,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const RegisterDialog = dynamic(() => import('./register-dialog').then(mod => mod.RegisterDialog));
 
 export function LoginForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<"admin" | "lecturer" | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState<'admin' | 'lecturer'>('lecturer');
 
-  const handleLogin = (role: 'admin' | 'lecturer') => {
-    setIsLoading(role);
+  const handleLogin = () => {
+    setIsLoading(true);
     // In a real app, you'd handle authentication here
     // We'll simulate a network delay
     setTimeout(() => {
       router.push(`/${role}`);
-      setIsLoading(null);
+      setIsLoading(false);
     }, 1000);
   };
   
-  const isFormDisabled = !!isLoading;
+  const isFormDisabled = isLoading;
 
   return (
     <Card className="w-full max-w-sm mt-10 shadow-lg bg-card/90">
@@ -56,13 +58,27 @@ export function LoginForm() {
             </Button>
           </div>
         </div>
+        <div className="grid gap-2">
+            <Label>Role</Label>
+            <RadioGroup defaultValue="lecturer" onValueChange={(value) => setRole(value as 'admin' | 'lecturer')} className="grid grid-cols-2 gap-4" disabled={isFormDisabled}>
+                <div>
+                    <RadioGroupItem value="lecturer" id="lecturer" className="peer sr-only" />
+                    <Label htmlFor="lecturer" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                        Lecturer
+                    </Label>
+                </div>
+                <div>
+                    <RadioGroupItem value="admin" id="admin" className="peer sr-only" />
+                    <Label htmlFor="admin" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                        Admin
+                    </Label>
+                </div>
+            </RadioGroup>
+        </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
-        <Button className="w-full" onClick={() => handleLogin('lecturer')} disabled={isFormDisabled}>
-          {isLoading === 'lecturer' ? <Loader2 className="animate-spin" /> : 'Login as Lecturer'}
-        </Button>
-        <Button className="w-full" onClick={() => handleLogin('admin')} disabled={isFormDisabled}>
-          {isLoading === 'admin' ? <Loader2 className="animate-spin" /> : 'Login as Admin'}
+        <Button className="w-full" onClick={handleLogin} disabled={isFormDisabled}>
+          {isLoading ? <Loader2 className="animate-spin" /> : 'Login'}
         </Button>
         <div className="text-sm text-muted-foreground pt-2 text-center">
           {"Haven't signed up yet? "}
