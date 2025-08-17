@@ -249,7 +249,7 @@ export default function AdminDashboardPage() {
 
   const hasTimetables = timetableMetadatas && timetableMetadatas.length > 0;
 
-  if (metadataLoading && !timetableMetadatas) {
+  if (metadataLoading && !hasTimetables) {
     return (
         <div className="container mx-auto p-8 space-y-8">
             <Skeleton className="h-10 w-full max-w-lg ml-auto" />
@@ -312,3 +312,5 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    

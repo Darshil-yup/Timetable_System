@@ -8,7 +8,7 @@ import type { TimetableData } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LabsPage() {
-    const { timetables, loading } = useTimetableData();
+    const { allTimetables, loading } = useTimetableData(undefined, true);
 
     if (loading) {
         return (
@@ -21,8 +21,10 @@ export default function LabsPage() {
     return (
         <div className="container mx-auto p-8">
             <LabView 
-                allTimetables={timetables || []}
+                allTimetables={allTimetables || []}
             />
         </div>
     );
 }
+
+    

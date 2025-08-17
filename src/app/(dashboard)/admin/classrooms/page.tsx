@@ -8,7 +8,7 @@ import { TimetableData } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ClassroomsPage() {
-    const { timetables, loading } = useTimetableData();
+    const { allTimetables, loading } = useTimetableData(undefined, true);
 
     if (loading) {
         return (
@@ -21,8 +21,10 @@ export default function ClassroomsPage() {
     return (
         <div className="container mx-auto p-8">
             <ClassroomView 
-                allTimetables={timetables || []}
+                allTimetables={allTimetables || []}
             />
         </div>
     );
 }
+
+    

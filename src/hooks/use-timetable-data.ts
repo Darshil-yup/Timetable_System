@@ -4,24 +4,30 @@
 import useSWR from 'swr';
 import type { TimetableData, TimetableMetadata } from '@/lib/types';
 import { db } from '@/lib/firebase';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, collectionGroup, query } from 'firebase/firestore';
 
 const fetcher = async (url: string) => {
-  // Simulate network delay
-  // await new Promise(res => setTimeout(res, 300));
-  
-  if (url === 'timetables') {
+  // Key for fetching all timetable metadata
+  if (url === 'timetables/metadata') {
     const querySnapshot = await getDocs(collection(db, "timetables"));
-    const timetables: (TimetableData | TimetableMetadata)[] = [];
+    const metadatas: TimetableMetadata[] = [];
     querySnapshot.forEach((doc) => {
-        // Decide whether to fetch full data or just metadata based on context
-        // For simplicity here, we'll fetch full data for 'timetables' key
-        // In a more optimized scenario, you might have separate keys like 'timetables/metadata'
+        metadatas.push({ id: doc.id, name: doc.data().name });
+    });
+    return metadatas;
+  }
+  
+  // Key for fetching all full timetable documents
+  if (url === 'timetables/all') {
+    const querySnapshot = await getDocs(collection(db, "timetables"));
+    const timetables: TimetableData[] = [];
+    querySnapshot.forEach((doc) => {
         timetables.push({ id: doc.id, ...doc.data() } as TimetableData);
     });
     return timetables;
   }
-  
+
+  // Key for fetching a single timetable document
   if (url.startsWith('timetables/')) {
     const id = url.split('/')[1];
     if (!id) return null;
@@ -36,22 +42,35 @@ const fetcher = async (url: string) => {
   return null;
 };
 
-export function useTimetableData(id?: string) {
-  // If an ID is provided, we fetch a single document.
-  // If no ID is provided, we fetch all documents (for consolidated views).
-  const key = id ? `timetables/${id}` : 'timetables';
+export function useTimetableData(id?: string, fetchAllFull?: boolean) {
+  let key: string | null = null;
+  
+  if (id) {
+    // Fetch a single full timetable
+    key = `timetables/${id}`;
+  } else if (fetchAllFull) {
+    // Fetch all full timetables (for consolidated views)
+    key = 'timetables/all';
+  } else {
+    // Fetch just the metadata (for selectors)
+    key = 'timetables/metadata';
+  }
 
   const { data, error, isLoading, mutate } = useSWR(key, fetcher, {
     revalidateOnFocus: false,
   });
 
   return {
-    // If ID is present, we're fetching a single timetable
+    // A single full timetable
     timetable: id ? (data as TimetableData | null | undefined) : undefined,
-    // If no ID, we're fetching all timetables for consolidation
-    timetables: !id ? (data as TimetableData[] | null | undefined) : undefined,
+    // Metadata for all timetables
+    timetables: !id && !fetchAllFull ? (data as TimetableMetadata[] | null | undefined) : undefined,
+    // All full timetables for consolidated views
+    allTimetables: fetchAllFull ? (data as TimetableData[] | null | undefined) : undefined,
     loading: isLoading,
     error,
     mutate
   };
 }
+
+    
