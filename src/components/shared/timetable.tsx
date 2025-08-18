@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { TimetableEntry, SpecialClassType } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { User, Book, MapPin, Users, FlaskConical, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
+import { User, Book, MapPin, Users, FlaskConical, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -165,6 +165,8 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
              {TIME_SLOTS.map((time, timeIndex) => {
                 const key = `${day}-${time}`;
                 const group = groupedEntries[key];
+                
+                // If there's no entry for this slot, render an empty cell for grid structure
                 if (!group) {
                     return (
                         <div
@@ -177,6 +179,8 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                 
                 const duration = Math.max(...group.map(e => e.duration || 1));
                 const alreadyPlaced = group.some(e => placedEntries.has(e.id));
+                
+                // If this entry has been placed by a multi-hour duration, skip rendering
                 if (alreadyPlaced) return null;
                 
                 group.forEach(e => placedEntries.add(e.id));
