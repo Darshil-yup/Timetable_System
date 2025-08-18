@@ -118,6 +118,18 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
     )
   }
 
+  const groupedEntries = React.useMemo(() => {
+    const groups: { [key: string]: TimetableEntry[] } = {};
+    entries.forEach(entry => {
+      const key = `${entry.day}-${entry.time}`;
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(entry);
+    });
+    return Object.values(groups);
+  }, [entries]);
+
   return (
     <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div
@@ -157,7 +169,8 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
         ))}
 
         {/* Timetable Entries */}
-        {entries.map((entry) => {
+        {groupedEntries.map((group) => {
+          const entry = group[0];
           const dayIndex = DAYS.indexOf(entry.day);
           const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
           
@@ -165,21 +178,38 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
             return null;
           }
 
+          const duration = Math.max(...group.map(e => e.duration || 1));
+
           return (
             <div
-              key={entry.id}
-              className="p-1"
+              key={group.map(e => e.id).join('-')}
+              className="p-1 h-full"
               style={{
                 gridRow: dayIndex + 2,
-                gridColumn: `${timeIndex + 2} / span ${entry.duration || 1}`,
+                gridColumn: `${timeIndex + 2} / span ${duration}`,
               }}
             >
-               <ClassCard 
+              {group.length > 1 ? (
+                <div className="h-full overflow-y-auto space-y-1 pr-1">
+                  {group.map(e => (
+                     <div key={e.id} className="h-[122px] flex-shrink-0">
+                        <ClassCard 
+                          entry={e} 
+                          isEditMode={isEditMode} 
+                          onEdit={onEdit} 
+                          isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false} 
+                        />
+                      </div>
+                  ))}
+                </div>
+              ) : (
+                <ClassCard 
                   entry={entry} 
                   isEditMode={isEditMode} 
                   onEdit={onEdit} 
                   isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false} 
                 />
+              )}
             </div>
           );
         })}
