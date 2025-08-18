@@ -28,11 +28,12 @@ const SpecialCardContent = React.memo(({ entry }: { entry: TimetableEntry }) => 
 });
 SpecialCardContent.displayName = 'SpecialCardContent';
 
-const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
+const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConflicting }: {
   entry: TimetableEntry;
   isEditMode?: boolean;
   onEdit?: (entry: TimetableEntry) => void;
   isHighlighted?: boolean;
+  isConflicting?: boolean;
 }) => {
   const isSpecial = SPECIAL_TYPES.includes(entry.type as SpecialClassType);
 
@@ -92,6 +93,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted }: {
         "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col relative",
         isEditMode && "cursor-pointer hover:border-primary",
         isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background",
+        isConflicting && isEditMode && "ring-2 ring-destructive ring-offset-2 ring-offset-background",
         isSpecial && "bg-muted/80"
       )}
       style={cardStyle}
@@ -109,9 +111,10 @@ interface TimetableProps {
     isEditMode?: boolean;
     onEdit?: (entry: TimetableEntry) => void;
     highlightedLecturer?: string;
+    conflictingIds?: Set<string>;
 }
 
-export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer }, ref) => {
+export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer, conflictingIds = new Set() }, ref) => {
    if (!entries || entries.length === 0) {
     return (
        <div ref={ref} className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
@@ -183,7 +186,18 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                 // If this entry has been placed by a multi-hour duration, skip rendering
                 if (alreadyPlaced) return null;
                 
-                group.forEach(e => placedEntries.add(e.id));
+                group.forEach(e => {
+                  for (let i=0; i < (e.duration || 1); i++) {
+                     const nextTimeSlotIndex = timeIndex + i;
+                     if (nextTimeSlotIndex < TIME_SLOTS.length) {
+                       const nextTime = TIME_SLOTS[nextTimeSlotIndex];
+                       const nextKey = `${day}-${nextTime}`;
+                       // this is a bit tricky, we need to mark all entries in the next slots as placed
+                       const entriesInNextSlot = groupedEntries[nextKey];
+                       entriesInNextSlot?.forEach(entryInNextSlot => placedEntries.add(entryInNextSlot.id));
+                     }
+                  }
+                });
 
                 return (
                     <div
@@ -204,6 +218,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                                             isEditMode={isEditMode}
                                             onEdit={onEdit}
                                             isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false}
+                                            isConflicting={conflictingIds.has(e.id)}
                                         />
                                     </div>
                                 ))}
@@ -216,6 +231,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                                 isEditMode={isEditMode}
                                 onEdit={onEdit}
                                 isHighlighted={highlightedLecturer ? group[0].lecturer.includes(highlightedLecturer) : false}
+                                isConflicting={conflictingIds.has(group[0].id)}
                             />
                         </div>
                     )}

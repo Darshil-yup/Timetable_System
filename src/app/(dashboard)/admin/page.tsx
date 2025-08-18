@@ -17,6 +17,7 @@ import * as XLSX from 'xlsx';
 import { MASTER_TIMETABLE } from '@/lib/mock-data';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
+import { useConflicts } from '@/hooks/use-conflicts';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -32,6 +33,8 @@ export default function AdminDashboardPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { conflictingEntryIds } = useConflicts(allTimetables);
 
   useEffect(() => {
     // Simulate fetching data
@@ -110,69 +113,69 @@ export default function AdminDashboardPage() {
   }, [allTimetables, toast]);
   
   const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, updatingClassId?: string): boolean => {
+    if (SPECIAL_TYPES.includes(newClass.type as SpecialClassType)) return false;
+
     const newClassStartHour = parseInt(newClass.time.split('-')[0].split(':')[0]);
     const newClassEndHour = newClassStartHour + (newClass.duration || 1);
 
-    if (SPECIAL_TYPES.includes(newClass.type as SpecialClassType)) return false;
+    const allEntries = allTimetables.flatMap(t => 
+        t.timetable.map(entry => ({...entry, timetableName: t.name}))
+    );
 
-    for (const timetable of allTimetables) {
-        const allDeptBatches = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
-        
-        for (const existingEntry of timetable.timetable) {
-            if (existingEntry.id === updatingClassId) continue;
-            if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
-            if (existingEntry.day !== newClass.day) continue;
-        
-            const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
-            const existingEndHour = existingStartHour + (existingEntry.duration || 1);
-            const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
+    for (const existingEntry of allEntries) {
+        if (existingEntry.id === updatingClassId) continue;
+        if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
+        if (existingEntry.day !== newClass.day) continue;
 
-            if (isOverlapping) {
-                // Room conflict (any type of class)
-                if (newClass.room && newClass.room !== 'N/A' && existingEntry.room && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
-                    toast({
-                        variant: "destructive",
-                        title: "Room Conflict",
-                        description: `Room ${newClass.room} is already booked at this time in the "${timetable.name}" timetable.`
-                    });
-                    return true;
-                }
+        const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
+        const existingEndHour = existingStartHour + (existingEntry.duration || 1);
+        const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
 
-                // Lecturer conflict (any type of class)
-                const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-                const existingLecturers = (existingEntry.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-                const lecturerConflict = newClassLecturers.some(lecturer => existingLecturers.includes(lecturer));
-                if (lecturerConflict) {
-                     const conflictingLecturer = newClassLecturers.find(lecturer => existingLecturers.includes(lecturer));
-                     toast({
-                         variant: "destructive",
-                         title: "Lecturer Conflict",
-                         description: `${conflictingLecturer} is already scheduled for a class at this time in the "${timetable.name}" timetable.`
-                     });
-                     return true;
-                }
+        if (isOverlapping) {
+            // Room conflict
+            if (newClass.room && newClass.room !== 'N/A' && existingEntry.room && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
+                toast({
+                    variant: "destructive",
+                    title: "Room Conflict",
+                    description: `Room ${newClass.room} is booked at this time in "${existingEntry.timetableName}".`
+                });
+                return true;
+            }
 
-                // Batch conflict
-                const newClassBatches = newClass.type === 'Lecture' ? allDeptBatches : (newClass.batches || []);
-                const existingBatchesInTimetable = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
-                const existingEntryBatches = existingEntry.type === 'Lecture' 
-                    ? existingBatchesInTimetable
-                    : (existingEntry.batches || []);
-                const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
-                if (conflictingBatch) {
-                     toast({
-                        variant: "destructive",
-                        title: "Batch Conflict",
-                        description: `Batch ${conflictingBatch} is already scheduled for another class at this time in the "${timetable.name}" timetable.`
-                    });
-                    return true;
-                }
+            // Lecturer conflict
+            const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+            const existingLecturers = (existingEntry.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+            const conflictingLecturer = newClassLecturers.find(lecturer => existingLecturers.includes(lecturer));
+            if (conflictingLecturer) {
+                 toast({
+                     variant: "destructive",
+                     title: "Lecturer Conflict",
+                     description: `${conflictingLecturer} is scheduled at this time in "${existingEntry.timetableName}".`
+                 });
+                 return true;
+            }
+
+            // Batch conflict
+            const allDeptBatchesInNewClassTimetable = [...new Set(allTimetables.find(t => t.id === selectedTimetableId)?.timetable.flatMap(e => e.batches || []))];
+            const newClassBatches = newClass.type === 'Lecture' ? allDeptBatchesInNewClassTimetable : (newClass.batches || []);
+            
+            const allDeptBatchesInExistingTimetable = [...new Set(allTimetables.find(t => t.name === existingEntry.timetableName)?.timetable.flatMap(e => e.batches || []))];
+            const existingEntryBatches = existingEntry.type === 'Lecture' ? allDeptBatchesInExistingTimetable : (existingEntry.batches || []);
+
+            const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
+            if (conflictingBatch) {
+                 toast({
+                    variant: "destructive",
+                    title: "Batch Conflict",
+                    description: `Batch ${conflictingBatch} is scheduled at this time in "${existingEntry.timetableName}".`
+                });
+                return true;
             }
         }
     }
 
     return false;
-  }, [toast, allTimetables]);
+  }, [toast, allTimetables, selectedTimetableId]);
 
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
@@ -221,7 +224,7 @@ export default function AdminDashboardPage() {
     setIsEditMode(prev => !prev);
     toast({
       title: !isEditMode ? "Edit Mode Active" : "Edit Mode Deactivated",
-      description: !isEditMode ? "Click on any class to modify it." : undefined,
+      description: !isEditMode ? "Click on any class to modify it. Conflicting slots are highlighted in red." : undefined,
       duration: 4000,
     });
   }, [isEditMode, toast]);
@@ -325,7 +328,7 @@ export default function AdminDashboardPage() {
                 </div>
             </CardHeader>
             <CardContent>
-              <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onEdit={openEditDialog} />
+              <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onEdit={openEditDialog} conflictingIds={conflictingEntryIds}/>
             </CardContent>
           </Card>
       ) : (
