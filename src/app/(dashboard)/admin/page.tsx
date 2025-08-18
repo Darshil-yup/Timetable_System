@@ -108,19 +108,17 @@ export default function AdminDashboardPage() {
     if (SPECIAL_TYPES.includes(newClass.type as SpecialClassType)) return false;
 
     const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+    const allDeptBatches = [...new Set(activeTimetable?.timetable.flatMap(e => e.batches || []))];
+    const newClassBatches = newClass.type === 'Lecture' ? allDeptBatches : (newClass.batches || []);
 
     for (const timetable of allTimetables) {
         for (const existingEntry of timetable.timetable) {
-            // Skip self-check when updating
             if (existingEntry.id === updatingClassId) continue;
-            
             if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
-            
             if (existingEntry.day !== newClass.day) continue;
 
             const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
             const existingEndHour = existingStartHour + (existingEntry.duration || 1);
-
             const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
 
             if (isOverlapping) {
@@ -148,15 +146,11 @@ export default function AdminDashboardPage() {
                 }
 
                 // Batch conflict
-                // Get all batches for the current department (activeTimetable)
-                const allBatchesInDept = [...new Set(activeTimetable?.timetable.flatMap(e => e.batches || []))];
-                const newClassBatches = newClass.type === 'Lecture' ? allBatchesInDept : (newClass.batches || []);
+                const batchesInConflictTimetable = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
                 const existingEntryBatches = existingEntry.type === 'Lecture' 
-                    ? [...new Set(allTimetables.find(t=>t.id === timetable.id)?.timetable.flatMap(e => e.batches || []))]
+                    ? batchesInConflictTimetable
                     : (existingEntry.batches || []);
-
                 const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
-
                 if (conflictingBatch) {
                      toast({
                         variant: "destructive",
@@ -290,7 +284,6 @@ export default function AdminDashboardPage() {
                 <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
               </div>
                 <div className="flex items-center justify-end gap-2 flex-wrap">
-                    <AddClassDialog onAddClass={handleAddClass} />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -298,13 +291,19 @@ export default function AdminDashboardPage() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                            <AddClassDialog onAddClass={handleAddClass}>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <PlusCircle />
+                                    Add New Class
+                                </DropdownMenuItem>
+                            </AddClassDialog>
                             <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
                                 <FileSpreadsheet />
-                                <span>Export as Sheet</span>
+                                Export as Sheet
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={toggleEditMode}>
                                 {isEditMode ? <XCircle /> : <Pencil />}
-                                <span>{isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}</span>
+                                {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

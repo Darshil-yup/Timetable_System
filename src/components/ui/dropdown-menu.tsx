@@ -81,10 +81,6 @@ const DropdownMenuItem = React.forwardRef<
     inset?: boolean
   }
 >(({ className, inset, children, ...props }, ref) => {
-    const childArray = React.Children.toArray(children);
-    const hasIcon = childArray.some(child => React.isValidElement(child) && child.props.className?.includes('lucide'));
-    const hasText = childArray.some(child => typeof child === 'string' && child.trim().length > 0);
-
     return (
       <DropdownMenuPrimitive.Item
         ref={ref}
@@ -95,12 +91,7 @@ const DropdownMenuItem = React.forwardRef<
         )}
         {...props}
       >
-        {React.Children.map(children, child => {
-          if (React.isValidElement(child)) {
-             return React.cloneElement(child as React.ReactElement, { className: cn(child.props.className, 'h-4 w-4 shrink-0') });
-          }
-          return child;
-        })}
+        {children}
       </DropdownMenuPrimitive.Item>
     );
 })

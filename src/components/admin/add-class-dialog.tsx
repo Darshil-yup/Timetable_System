@@ -19,9 +19,10 @@ import { ClassForm } from "./class-form";
 
 type AddClassDialogProps = {
     onAddClass: (newClass: Omit<TimetableEntry, 'id'>) => void;
+    children?: React.ReactNode;
 }
 
-export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
+export function AddClassDialog({ onAddClass, children }: AddClassDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFormSubmit = (data: Omit<TimetableEntry, 'id'>) => {
@@ -32,10 +33,12 @@ export function AddClassDialog({ onAddClass }: AddClassDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <PlusCircle />
-          Add New Class
-        </Button>
+        {children || (
+            <Button>
+                <PlusCircle />
+                Add New Class
+            </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] flex flex-col">
           <DialogHeader className="px-6 pt-6">
