@@ -137,7 +137,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
   return (
     <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
       <div
-        className="grid relative"
+        className="grid"
         style={{
           gridTemplateColumns: `minmax(100px, auto) repeat(${TIME_SLOTS.length}, minmax(150px, 1fr))`,
           gridTemplateRows: `auto repeat(${DAYS.length}, minmax(130px, auto))`
@@ -163,43 +163,33 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
               {day}
             </div>
              {TIME_SLOTS.map((time, timeIndex) => {
+                const key = `${day}-${time}`;
+                const group = groupedEntries[key];
+                if (!group) {
+                    return (
+                        <div
+                            key={key}
+                            className="border-r border-b"
+                            style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + 2 }}
+                        />
+                    );
+                }
+                
+                const duration = Math.max(...group.map(e => e.duration || 1));
+                const alreadyPlaced = group.some(e => placedEntries.has(e.id));
+                if (alreadyPlaced) return null;
+                
+                group.forEach(e => placedEntries.add(e.id));
+
                 return (
                     <div
-                      key={`${day}-${time}`}
+                      key={key}
                       className="border-r border-b p-1 relative"
                       style={{
-                        gridRow: dayIndex + 2,
-                        gridColumn: timeIndex + 2
+                        gridRow: `${dayIndex + 2}`,
+                        gridColumn: `${timeIndex + 2} / span ${duration}`,
                       }}
                     >
-                    </div>
-                )
-             })}
-          </React.Fragment>
-        ))}
-
-        {/* Class Entries */}
-        {Object.entries(groupedEntries).map(([key, group]) => {
-            const entry = group[0];
-            const dayIndex = DAYS.indexOf(entry.day);
-            const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-            if (dayIndex === -1 || timeIndex === -1) return null;
-
-            const duration = Math.max(...group.map(e => e.duration || 1));
-
-            return (
-                <div
-                    key={key}
-                    className="p-1 absolute"
-                    style={{
-                        top: `${37 + dayIndex * 130}px`,
-                        left: `${100 + timeIndex * 150}px`,
-                        width: `${150 * duration}px`,
-                        height: '130px',
-                        gridRow: `${dayIndex + 2} / span 1`,
-                        gridColumn: `${timeIndex + 2} / span ${duration}`,
-                    }}
-                >
                     {group.length > 1 ? (
                         <ScrollArea className="h-full" style={{ maxHeight: '122px' }}>
                             <div className="space-y-1 pr-3">
@@ -225,10 +215,11 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                             />
                         </div>
                     )}
-                </div>
-            )
-        })}
-
+                    </div>
+                )
+             })}
+          </React.Fragment>
+        ))}
       </div>
     </div>
   )
