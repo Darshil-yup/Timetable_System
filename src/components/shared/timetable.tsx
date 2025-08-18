@@ -190,7 +190,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
               }}
             >
               {group.length > 1 ? (
-                <div className="h-full overflow-y-auto space-y-1 pr-1">
+                <div className="h-full overflow-y-auto space-y-1 pr-1" style={{ maxHeight: '122px' }}>
                   {group.map(e => (
                      <div key={e.id} className="h-[122px] flex-shrink-0">
                         <ClassCard 
@@ -203,12 +203,14 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                   ))}
                 </div>
               ) : (
-                <ClassCard 
-                  entry={entry} 
-                  isEditMode={isEditMode} 
-                  onEdit={onEdit} 
-                  isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false} 
-                />
+                <div className="h-full">
+                    <ClassCard 
+                      entry={entry} 
+                      isEditMode={isEditMode} 
+                      onEdit={onEdit} 
+                      isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false} 
+                    />
+                </div>
               )}
             </div>
           );
