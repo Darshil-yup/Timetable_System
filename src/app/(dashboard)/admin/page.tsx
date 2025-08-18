@@ -10,12 +10,13 @@ import { useTimetables } from '@/context/TimetableContext';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical } from 'lucide-react';
+import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload } from 'lucide-react';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
 import { MASTER_TIMETABLE } from '@/lib/mock-data';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -114,16 +115,14 @@ export default function AdminDashboardPage() {
 
     if (SPECIAL_TYPES.includes(newClass.type as SpecialClassType)) return false;
 
-    const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-    const allDeptBatches = [...new Set(activeTimetable?.timetable.flatMap(e => e.batches || []))];
-    const newClassBatches = newClass.type === 'Lecture' ? allDeptBatches : (newClass.batches || []);
-
     for (const timetable of allTimetables) {
+        const allDeptBatches = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
+        
         for (const existingEntry of timetable.timetable) {
             if (existingEntry.id === updatingClassId) continue;
             if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
             if (existingEntry.day !== newClass.day) continue;
-
+        
             const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
             const existingEndHour = existingStartHour + (existingEntry.duration || 1);
             const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
@@ -140,6 +139,7 @@ export default function AdminDashboardPage() {
                 }
 
                 // Lecturer conflict (any type of class)
+                const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
                 const existingLecturers = (existingEntry.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
                 const lecturerConflict = newClassLecturers.some(lecturer => existingLecturers.includes(lecturer));
                 if (lecturerConflict) {
@@ -153,9 +153,10 @@ export default function AdminDashboardPage() {
                 }
 
                 // Batch conflict
-                const batchesInConflictTimetable = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
+                const newClassBatches = newClass.type === 'Lecture' ? allDeptBatches : (newClass.batches || []);
+                const existingBatchesInTimetable = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
                 const existingEntryBatches = existingEntry.type === 'Lecture' 
-                    ? batchesInConflictTimetable
+                    ? existingBatchesInTimetable
                     : (existingEntry.batches || []);
                 const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
                 if (conflictingBatch) {
@@ -171,7 +172,7 @@ export default function AdminDashboardPage() {
     }
 
     return false;
-  }, [toast, allTimetables, activeTimetable]);
+  }, [toast, allTimetables]);
 
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
@@ -305,6 +306,12 @@ export default function AdminDashboardPage() {
                                     Add New Class
                                 </DropdownMenuItem>
                             </AddClassDialog>
+                            <ImportTimetableDialog onImport={importTimetable}>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                    <Upload />
+                                    Import from Sheet
+                                </DropdownMenuItem>
+                            </ImportTimetableDialog>
                             <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
                                 <FileSpreadsheet />
                                 Export as Sheet

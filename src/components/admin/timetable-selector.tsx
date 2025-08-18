@@ -86,9 +86,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
 
         {!isReadOnly && (
           <>
-            <ImportTimetableDialog onImport={onImportTimetable} />
             <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
-
             {activeTimetable && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
