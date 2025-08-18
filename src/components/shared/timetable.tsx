@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { TimetableEntry, SpecialClassType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { User, Book, MapPin, Users, FlaskConical, Clock, Library, HelpCircle, Dumbbell, Coffee } from "lucide-react";
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -190,18 +191,20 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
               }}
             >
               {group.length > 1 ? (
-                <div className="h-full overflow-y-auto space-y-1 pr-1" style={{ maxHeight: '122px' }}>
-                  {group.map(e => (
-                     <div key={e.id} className="h-[122px] flex-shrink-0">
-                        <ClassCard 
-                          entry={e} 
-                          isEditMode={isEditMode} 
-                          onEdit={onEdit} 
-                          isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false} 
-                        />
-                      </div>
-                  ))}
-                </div>
+                <ScrollArea className="h-full" style={{ maxHeight: '122px' }}>
+                    <div className="space-y-1 pr-3">
+                        {group.map(e => (
+                            <div key={e.id} className="h-[122px] flex-shrink-0">
+                                <ClassCard 
+                                entry={e} 
+                                isEditMode={isEditMode} 
+                                onEdit={onEdit} 
+                                isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false} 
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </ScrollArea>
               ) : (
                 <div className="h-full">
                     <ClassCard 
