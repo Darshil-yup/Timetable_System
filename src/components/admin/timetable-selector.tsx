@@ -22,8 +22,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from 'lucide-react';
-import type { TimetableMetadata } from '@/lib/types';
+import type { TimetableMetadata, TimetableData } from '@/lib/types';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
+import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
 
 interface TimetableSelectorProps {
   timetables: TimetableMetadata[];
@@ -31,6 +32,7 @@ interface TimetableSelectorProps {
   onSelectTimetable: (id: string) => void;
   onCreateTimetable: (name: string, year: string, entries?: any[]) => Promise<string | null>;
   onDeleteTimetable: (id: string) => Promise<void>;
+  onImportTimetable: (newTimetable: TimetableData) => Promise<string | null>;
   isReadOnly?: boolean;
 }
 
@@ -40,6 +42,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
   onSelectTimetable,
   onCreateTimetable,
   onDeleteTimetable,
+  onImportTimetable,
   isReadOnly = false
 }) => {
   const activeTimetable = timetables.find(t => t.id === selectedTimetableId);
@@ -52,7 +55,8 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
   
   if (timetables.length === 0 && !isReadOnly) {
       return (
-        <div className="flex items-center justify-end mb-6">
+        <div className="flex items-center justify-end mb-6 gap-2">
+           <ImportTimetableDialog onImport={onImportTimetable} />
           <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
             <Button>
               Create New Timetable
@@ -82,6 +86,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
 
         {!isReadOnly && (
           <>
+            <ImportTimetableDialog onImport={onImportTimetable} />
             <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
 
             {activeTimetable && (

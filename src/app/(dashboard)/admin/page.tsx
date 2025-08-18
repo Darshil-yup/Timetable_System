@@ -83,6 +83,13 @@ export default function AdminDashboardPage() {
     toast({ title: "Timetable Created!", description: `The timetable for "${timetableName}" has been created.` });
     return newTimetable.id;
   }, [toast]);
+  
+  const importTimetable = useCallback(async (newTimetable: TimetableData): Promise<string | null> => {
+    setAllTimetables(prev => [...prev, newTimetable]);
+    setSelectedTimetableId(newTimetable.id);
+    toast({ title: "Timetable Imported!", description: `The timetable for "${newTimetable.name}" has been imported.` });
+    return newTimetable.id;
+  }, [toast]);
 
   const deleteTimetable = useCallback(async (id: string) => {
     const timetableToDelete = allTimetables.find(t => t.id === id);
@@ -274,6 +281,7 @@ export default function AdminDashboardPage() {
         onSelectTimetable={handleSelectTimetable}
         onCreateTimetable={addTimetable}
         onDeleteTimetable={deleteTimetable}
+        onImportTimetable={importTimetable}
       />
      
      {hasTimetables ? (
@@ -286,7 +294,7 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-end gap-2 flex-wrap">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" data-state={isEditMode ? 'open' : 'closed'}>
                                 <MoreVertical />
                             </Button>
                         </DropdownMenuTrigger>
