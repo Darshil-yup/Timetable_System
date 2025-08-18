@@ -130,6 +130,8 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
     });
     return Object.values(groups);
   }, [entries]);
+  
+  const placedEntries = new Set<string>();
 
   return (
     <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
@@ -150,7 +152,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
             </div>
         ))}
 
-        {/* Day Headers and Grid Background */}
+        {/* Day Headers and Grid Cells */}
         {DAYS.map((day, dayIndex) => (
           <React.Fragment key={day}>
             <div
@@ -159,65 +161,68 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
             >
               {day}
             </div>
-             {TIME_SLOTS.map((time, timeIndex) => (
-                <div
-                  key={`${day}-${time}`}
-                  className="border-r border-b"
-                  style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + 2 }}
-                ></div>
-              ))}
+             {TIME_SLOTS.map((time, timeIndex) => {
+                const dayTimeKey = `${day}-${time}`;
+                const group = groupedEntries.find(g => g[0] && g[0].day === day && g[0].time === time);
+                const isPlaced = group && placedEntries.has(group.map(e=>e.id).join('-'));
+                
+                if (isPlaced) return null; // This cell is covered by a multi-hour entry
+                
+                let duration = 1;
+                if (group) {
+                  duration = Math.max(...group.map(e => e.duration || 1));
+                  for(let i=1; i<duration; i++){
+                    const nextTimeIndex = timeIndex + i;
+                    if(nextTimeIndex < TIME_SLOTS.length){
+                       const nextKey = `${day}-${TIME_SLOTS[nextTimeIndex]}`;
+                       const nextGroup = groupedEntries.find(g => g[0] && `${g[0].day}-${g[0].time}` === nextKey);
+                       if(nextGroup) placedEntries.add(nextGroup.map(e=>e.id).join('-'));
+                    }
+                  }
+                  placedEntries.add(group.map(e=>e.id).join('-'));
+                }
+                
+                return (
+                    <div
+                      key={dayTimeKey}
+                      className="border-r border-b p-1"
+                      style={{
+                        gridRow: dayIndex + 2,
+                        gridColumn: `${timeIndex + 2} / span ${duration}`
+                      }}
+                    >
+                      {group && (
+                          group.length > 1 ? (
+                              <ScrollArea className="h-full" style={{ maxHeight: '122px' }}>
+                                  <div className="space-y-1 pr-3">
+                                      {group.map(e => (
+                                          <div key={e.id} className="h-[122px] flex-shrink-0">
+                                              <ClassCard 
+                                              entry={e} 
+                                              isEditMode={isEditMode} 
+                                              onEdit={onEdit} 
+                                              isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false} 
+                                              />
+                                          </div>
+                                      ))}
+                                  </div>
+                              </ScrollArea>
+                            ) : (
+                              <div className="h-full">
+                                  <ClassCard 
+                                    entry={group[0]} 
+                                    isEditMode={isEditMode} 
+                                    onEdit={onEdit} 
+                                    isHighlighted={highlightedLecturer ? group[0].lecturer.includes(highlightedLecturer) : false} 
+                                  />
+                              </div>
+                            )
+                      )}
+                    </div>
+                )
+             })}
           </React.Fragment>
         ))}
-
-        {/* Timetable Entries */}
-        {groupedEntries.map((group) => {
-          const entry = group[0];
-          const dayIndex = DAYS.indexOf(entry.day);
-          const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-          
-          if (dayIndex === -1 || timeIndex === -1) {
-            return null;
-          }
-
-          const duration = Math.max(...group.map(e => e.duration || 1));
-
-          return (
-            <div
-              key={group.map(e => e.id).join('-')}
-              className="p-1 h-full"
-              style={{
-                gridRow: dayIndex + 2,
-                gridColumn: `${timeIndex + 2} / span ${duration}`,
-              }}
-            >
-              {group.length > 1 ? (
-                <ScrollArea className="h-full" style={{ maxHeight: '122px' }}>
-                    <div className="space-y-1 pr-3">
-                        {group.map(e => (
-                            <div key={e.id} className="h-[122px] flex-shrink-0">
-                                <ClassCard 
-                                entry={e} 
-                                isEditMode={isEditMode} 
-                                onEdit={onEdit} 
-                                isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false} 
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </ScrollArea>
-              ) : (
-                <div className="h-full">
-                    <ClassCard 
-                      entry={entry} 
-                      isEditMode={isEditMode} 
-                      onEdit={onEdit} 
-                      isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false} 
-                    />
-                </div>
-              )}
-            </div>
-          );
-        })}
       </div>
     </div>
   )
