@@ -7,15 +7,15 @@ import { useToast } from '@/hooks/use-toast';
 import { TimetableSelector } from '@/components/admin/timetable-selector';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
-import { useTimetableData } from '@/hooks/use-timetable-data';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pencil, FileSpreadsheet, XCircle } from 'lucide-react';
+import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical } from 'lucide-react';
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
 import { MASTER_TIMETABLE } from '@/lib/mock-data';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -110,11 +110,12 @@ export default function AdminDashboardPage() {
     const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
 
     for (const timetable of allTimetables) {
-        const entriesToCheck = timetable.timetable.filter(entry => entry.id !== updatingClassId);
-
-        for (const existingEntry of entriesToCheck) {
+        for (const existingEntry of timetable.timetable) {
+            // Skip self-check when updating
+            if (existingEntry.id === updatingClassId) continue;
+            
             if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
-
+            
             if (existingEntry.day !== newClass.day) continue;
 
             const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
@@ -123,7 +124,7 @@ export default function AdminDashboardPage() {
             const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
 
             if (isOverlapping) {
-                // Room conflict
+                // Room conflict (any type of class)
                 if (newClass.room && newClass.room !== 'N/A' && existingEntry.room && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
                     toast({
                         variant: "destructive",
@@ -133,7 +134,7 @@ export default function AdminDashboardPage() {
                     return true;
                 }
 
-                // Lecturer conflict
+                // Lecturer conflict (any type of class)
                 const existingLecturers = (existingEntry.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
                 const lecturerConflict = newClassLecturers.some(lecturer => existingLecturers.includes(lecturer));
                 if (lecturerConflict) {
@@ -141,72 +142,35 @@ export default function AdminDashboardPage() {
                      toast({
                          variant: "destructive",
                          title: "Lecturer Conflict",
-                         description: `${conflictingLecturer} is already scheduled at this time in the "${timetable.name}" timetable.`
+                         description: `${conflictingLecturer} is already scheduled for a class at this time in the "${timetable.name}" timetable.`
                      });
                      return true;
                 }
 
-                // Batch conflict (Practical vs Practical in any timetable)
-                if (newClass.type === 'Practical' && existingEntry.type === 'Practical' && newClass.batches && existingEntry.batches) {
-                    const conflictingBatch = newClass.batches.find(b => existingEntry.batches?.includes(b));
-                    if (conflictingBatch) {
-                        toast({
-                            variant: "destructive",
-                            title: "Batch Conflict",
-                            description: `Batch ${conflictingBatch} is already scheduled for a practical at this time in the "${timetable.name}" timetable.`
-                        });
-                        return true;
-                    }
-                }
-                
-                // Batch conflict (Lecture vs Practical for the same timetable)
-                if (timetable.id === selectedTimetableId) {
-                    const currentTimetableBatches = newClass.type === 'Lecture' 
-                        ? (activeTimetable?.timetable.find(e => e.id === updatingClassId)?.batches || newClass.batches || [])
-                        : (newClass.batches || []);
-                    
-                    const otherEntryBatches = existingEntry.batches || [];
-                    
-                    let conflictFound = false;
+                // Batch conflict
+                // Get all batches for the current department (activeTimetable)
+                const allBatchesInDept = [...new Set(activeTimetable?.timetable.flatMap(e => e.batches || []))];
+                const newClassBatches = newClass.type === 'Lecture' ? allBatchesInDept : (newClass.batches || []);
+                const existingEntryBatches = existingEntry.type === 'Lecture' 
+                    ? [...new Set(allTimetables.find(t=>t.id === timetable.id)?.timetable.flatMap(e => e.batches || []))]
+                    : (existingEntry.batches || []);
 
-                    if (newClass.type === 'Lecture' && existingEntry.type === 'Practical') {
-                        // All batches of the current timetable are implicitly in the lecture.
-                        // Check if any of those batches has a practical at the same time.
-                        const allBatchesInTimetable = [...new Set(activeTimetable?.timetable.flatMap(e => e.batches || []))];
-                        const conflictingBatch = allBatchesInTimetable.find(b => existingEntry.batches?.includes(b));
-                        if(conflictingBatch){
-                             toast({
-                                variant: "destructive",
-                                title: "Scheduling Conflict",
-                                description: `Batch ${conflictingBatch} has a practical at the same time as this lecture.`
-                            });
-                            return true;
-                        }
+                const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
 
-                    } else if (newClass.type === 'Practical' && existingEntry.type === 'Lecture') {
-                         const conflictingBatch = newClass.batches?.find(b => {
-                            // Since it's a lecture, it applies to all batches of its timetable.
-                            // We just need to check if the new practical's batch belongs to this timetable.
-                            const allBatchesInTimetable = [...new Set(allTimetables.find(t=>t.name === timetable.name)?.timetable.flatMap(e => e.batches || []))];
-                            return allBatchesInTimetable.includes(b);
-                         });
-
-                         if(conflictingBatch){
-                             toast({
-                                variant: "destructive",
-                                title: "Scheduling Conflict",
-                                description: `Batch ${conflictingBatch} has a lecture at the same time as this practical.`
-                            });
-                             return true;
-                         }
-                    }
+                if (conflictingBatch) {
+                     toast({
+                        variant: "destructive",
+                        title: "Batch Conflict",
+                        description: `Batch ${conflictingBatch} is already scheduled for another class at this time in the "${timetable.name}" timetable.`
+                    });
+                    return true;
                 }
             }
         }
     }
 
     return false;
-  }, [toast, allTimetables, selectedTimetableId, activeTimetable]);
+  }, [toast, allTimetables, activeTimetable]);
 
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
@@ -325,16 +289,25 @@ export default function AdminDashboardPage() {
                 <CardTitle>Master Timetable</CardTitle>
                 <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
               </div>
-               <div className="flex items-center justify-end gap-2 flex-wrap">
-                  <Button variant="outline" onClick={handleExportSheet} disabled={!activeTimetable}>
-                    <FileSpreadsheet />
-                    Export as Sheet
-                  </Button>
-                  <AddClassDialog onAddClass={handleAddClass} />
-                  <Button variant="outline" onClick={toggleEditMode}>
-                    {isEditMode ? <XCircle /> : <Pencil />}
-                    {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-                  </Button>
+                <div className="flex items-center justify-end gap-2 flex-wrap">
+                    <AddClassDialog onAddClass={handleAddClass} />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <MoreVertical />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
+                                <FileSpreadsheet />
+                                <span>Export as Sheet</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={toggleEditMode}>
+                                {isEditMode ? <XCircle /> : <Pencil />}
+                                <span>{isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </CardHeader>
             <CardContent>
@@ -360,5 +333,7 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+
+    
 
     

@@ -80,17 +80,30 @@ const DropdownMenuItem = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
     inset?: boolean
   }
->(({ className, inset, ...props }, ref) => (
-  <DropdownMenuPrimitive.Item
-    ref={ref}
-    className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 gap-2 [&_svg]:size-4 [&_svg]:shrink-0",
-      inset && "pl-8",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, inset, children, ...props }, ref) => {
+    const childArray = React.Children.toArray(children);
+    const hasIcon = childArray.some(child => React.isValidElement(child) && child.props.className?.includes('lucide'));
+    const hasText = childArray.some(child => typeof child === 'string' && child.trim().length > 0);
+
+    return (
+      <DropdownMenuPrimitive.Item
+        ref={ref}
+        className={cn(
+          "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 gap-2 [&_svg]:size-4 [&_svg]:shrink-0",
+          inset && "pl-8",
+          className
+        )}
+        {...props}
+      >
+        {React.Children.map(children, child => {
+          if (React.isValidElement(child)) {
+             return React.cloneElement(child as React.ReactElement, { className: cn(child.props.className, 'h-4 w-4 shrink-0') });
+          }
+          return child;
+        })}
+      </DropdownMenuPrimitive.Item>
+    );
+})
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
 
 const DropdownMenuCheckboxItem = React.forwardRef<
@@ -199,3 +212,5 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
 }
+
+    
