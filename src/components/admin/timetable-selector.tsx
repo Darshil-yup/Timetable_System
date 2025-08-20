@@ -25,7 +25,7 @@ import { Trash2, PlusCircle, Upload } from 'lucide-react';
 import type { TimetableMetadata, TimetableData } from '@/lib/types';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 interface TimetableSelectorProps {
   timetables: TimetableMetadata[];
