@@ -65,8 +65,8 @@
     @apply text-foreground;
   }
   html:not(.dark) body {
-    background-color: #98e4f5;
-    background-image: linear-gradient(to bottom right, #a0a9f8, #98e4f5, #faffde);
+    background-color: #FFFFFF;
+    background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 50%), radial-gradient(at 98% 2%, hsla(205, 68%, 56%, 0.3) 0px, transparent 50%);
     background-attachment: fixed;
   }
   .dark body {
