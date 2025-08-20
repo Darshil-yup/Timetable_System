@@ -185,7 +185,7 @@ export default function LecturerDashboardPage() {
 if (timetablesLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
-            <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                <Skeleton className="h-10 w-[280px]" />
                <Skeleton className="h-10 w-[170px]" />
             </div>
@@ -196,35 +196,37 @@ if (timetablesLoading) {
 
   return (
     <div className="container mx-auto p-8">
-       <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
-            <Select value={selectedLecturer} onValueChange={handleLecturerChange}>
-              <SelectTrigger className="w-[280px]">
-                  <div className="flex items-center gap-2">
-                     <User />
-                     <SelectValue placeholder="Select a Lecturer" />
-                  </div>
-              </SelectTrigger>
-              <SelectContent>
-                  {LECTURERS.map(lecturer => (
-                    <SelectItem key={lecturer.id} value={lecturer.name}>{lecturer.name}</SelectItem>
-                  ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={!selectedLecturer || lecturerSubjects.length <= 1}>
-                <SelectTrigger className="w-[280px]">
-                    <div className="flex items-center gap-2">
-                        <Book />
-                        <SelectValue placeholder="Select a Subject" />
-                    </div>
-                </SelectTrigger>
-                <SelectContent>
-                    {lecturerSubjects.map(subject => (
-                        <SelectItem key={subject} value={subject === 'All Subjects' ? 'all' : subject}>
-                            {subject}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
+                <Select value={selectedLecturer} onValueChange={handleLecturerChange}>
+                  <SelectTrigger className="w-[280px]">
+                      <div className="flex items-center gap-2">
+                         <User />
+                         <SelectValue placeholder="Select a Lecturer" />
+                      </div>
+                  </SelectTrigger>
+                  <SelectContent>
+                      {LECTURERS.map(lecturer => (
+                        <SelectItem key={lecturer.id} value={lecturer.name}>{lecturer.name}</SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={!selectedLecturer || lecturerSubjects.length <= 1}>
+                    <SelectTrigger className="w-[280px]">
+                        <div className="flex items-center gap-2">
+                            <Book />
+                            <SelectValue placeholder="Select a Subject" />
+                        </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                        {lecturerSubjects.map(subject => (
+                            <SelectItem key={subject} value={subject === 'All Subjects' ? 'all' : subject}>
+                                {subject}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
             <Button onClick={handleExportSheet} disabled={!selectedLecturer}>
               <FileSpreadsheet />
               Export as Sheet

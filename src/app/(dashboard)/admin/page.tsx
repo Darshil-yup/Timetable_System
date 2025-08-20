@@ -256,7 +256,7 @@ export default function AdminDashboardPage() {
   
   return (
     <div className="container mx-auto p-8">
-      <div className="flex items-center justify-start mb-6 flex-wrap gap-4">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <TimetableSelector
           timetables={timetableMetadatas || []}
           selectedTimetableId={selectedTimetableId}
@@ -265,6 +265,31 @@ export default function AdminDashboardPage() {
           onDeleteTimetable={handleDeleteTimetable}
           onImportTimetable={handleImportTimetable}
         />
+        <div className="flex items-center justify-end gap-2 flex-wrap">
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                        <MoreVertical />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <AddClassDialog onAddClass={handleAddClass}>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <PlusCircle />
+                            Add New Class
+                        </DropdownMenuItem>
+                    </AddClassDialog>
+                    <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
+                        <FileSpreadsheet />
+                        Export as Sheet
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={toggleEditMode}>
+                        {isEditMode ? <XCircle /> : <Pencil />}
+                        {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
       </div>
 
      {hasTimetables ? (
@@ -274,31 +299,6 @@ export default function AdminDashboardPage() {
                 <div className="flex-1">
                   <CardTitle>Master Timetable</CardTitle>
                   <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
-                </div>
-                <div className="flex items-center justify-end gap-2 flex-wrap">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" data-state={isEditMode ? 'open' : 'closed'}>
-                                <MoreVertical />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <AddClassDialog onAddClass={handleAddClass}>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                    <PlusCircle />
-                                    Add New Class
-                                </DropdownMenuItem>
-                            </AddClassDialog>
-                            <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
-                                <FileSpreadsheet />
-                                Export as Sheet
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={toggleEditMode}>
-                                {isEditMode ? <XCircle /> : <Pencil />}
-                                {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
                 </div>
               </div>
             </CardHeader>

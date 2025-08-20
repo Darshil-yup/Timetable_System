@@ -168,7 +168,7 @@ export const ClassroomView: React.FC = React.memo(() => {
     <>
         <Card>
           <CardHeader className="flex-row items-center justify-between gap-4">
-            <div>
+            <div className="flex-1">
               <CardTitle>Consolidated Classroom Timetable</CardTitle>
               <CardDescription>View of all lectures scheduled in a classroom across all timetables.</CardDescription>
             </div>
