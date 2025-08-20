@@ -256,6 +256,17 @@ export default function AdminDashboardPage() {
   
   return (
     <div className="container mx-auto p-8">
+      <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
+        <TimetableSelector
+          timetables={timetableMetadatas || []}
+          selectedTimetableId={selectedTimetableId}
+          onSelectTimetable={handleSelectTimetable}
+          onCreateTimetable={handleCreateTimetable}
+          onDeleteTimetable={handleDeleteTimetable}
+          onImportTimetable={handleImportTimetable}
+        />
+      </div>
+
      {hasTimetables ? (
         <Card>
             <CardHeader>
@@ -290,14 +301,6 @@ export default function AdminDashboardPage() {
                     </DropdownMenu>
                 </div>
               </div>
-              <TimetableSelector
-                timetables={timetableMetadatas || []}
-                selectedTimetableId={selectedTimetableId}
-                onSelectTimetable={handleSelectTimetable}
-                onCreateTimetable={handleCreateTimetable}
-                onDeleteTimetable={handleDeleteTimetable}
-                onImportTimetable={handleImportTimetable}
-              />
             </CardHeader>
             <CardContent>
               <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onCellClick={handleCellClick} conflictingIds={conflictingEntryIds}/>
@@ -341,3 +344,6 @@ export default function AdminDashboardPage() {
 
     
 
+
+
+    
