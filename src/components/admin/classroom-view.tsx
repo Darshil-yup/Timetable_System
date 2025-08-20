@@ -74,11 +74,13 @@ export const ClassroomView: React.FC = React.memo(() => {
         if (dayIndex > -1 && timeIndex > -1) {
             const cellContent = [entry.subject, entry.lecturer, entry.room].filter(Boolean).join('\n');
             for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + 1 + i < grid[0].length) {
-                    if (grid[dayIndex + 1][timeIndex + 1] === null) {
-                        grid[dayIndex + 1][timeIndex + 1] = cellContent;
+                const targetIndex = timeIndex + i;
+                if (targetIndex < TIME_SLOTS.length) {
+                    const existingContent = grid[dayIndex + 1][targetIndex + 1];
+                    if (existingContent) {
+                        grid[dayIndex + 1][targetIndex + 1] = `${existingContent}\n---\n${cellContent}`;
                     } else {
-                        grid[dayIndex + 1][timeIndex + 1] += `\n\n${cellContent}`;
+                        grid[dayIndex + 1][targetIndex + 1] = cellContent;
                     }
                 }
             }

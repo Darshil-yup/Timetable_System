@@ -99,7 +99,7 @@ export default function LecturerDashboardPage() {
     filteredTimetable.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex > 0 && timeIndex > -1) {
+        if (dayIndex > -1 && timeIndex > -1) {
             const cellContent = [
                 entry.type === 'Practical' ? `LAB: ${entry.subject}` : entry.subject,
                 entry.room,
@@ -107,11 +107,11 @@ export default function LecturerDashboardPage() {
             ].filter(Boolean).join('\n');
             
             for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + 1 + i < grid[0].length) {
-                    if (grid[dayIndex + 1][timeIndex + 1] === null) {
-                        grid[dayIndex + 1][timeIndex + 1] = cellContent;
+                if (timeIndex + i < grid[0].length) {
+                    if (grid[dayIndex + 1][timeIndex + 1 + i] === null) {
+                        grid[dayIndex + 1][timeIndex + 1 + i] = cellContent;
                     } else {
-                         grid[dayIndex + 1][timeIndex + 1] += `\n\n${cellContent}`;
+                         grid[dayIndex + 1][timeIndex + 1 + i] += `\n---\n${cellContent}`;
                     }
                 }
             }

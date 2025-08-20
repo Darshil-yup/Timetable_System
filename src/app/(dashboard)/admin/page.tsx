@@ -144,12 +144,18 @@ export default function AdminDashboardPage() {
           (e.duration || 1) === duration
         );
         
-        const subjects = group.map(e => (e.type === 'Practical' ? `LAB: ${e.subject}` : e.subject)).join(' / ');
-        const lecturers = group.map(e => e.lecturer).join(' / ');
-        const rooms = group.map(e => e.room).join(' / ');
-        const batches = group.map(e => e.batches?.join(', ')).join(' / ');
+        let cellContent = '';
+        group.forEach((g, index) => {
+            const subject = g.type === 'Practical' ? `LAB: ${g.subject}` : g.subject;
+            const lecturer = g.lecturer;
+            const room = g.room;
+            const batches = g.batches?.join(', ');
 
-        const cellContent = [subjects, lecturers, rooms, batches].filter(Boolean).join('\n');
+            cellContent += [subject, lecturer, room, batches].filter(Boolean).join('\n');
+            if (index < group.length - 1) {
+                cellContent += '\n---\n';
+            }
+        });
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
