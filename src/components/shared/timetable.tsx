@@ -97,7 +97,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
     <Card
       className={cn(
         "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col relative",
-        isEditMode && "cursor-pointer hover:border-primary",
+        (isEditMode || onClick) && "cursor-pointer hover:border-primary",
         isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background",
         isConflicting && isEditMode && "ring-2 ring-destructive ring-offset-2 ring-offset-background",
         isSpecial && "bg-muted/80"
@@ -210,11 +210,11 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                         time: group[0].time,
                         type: group[0].type, // Assuming same type for combined view
                         duration,
-                        batches: group.map(e => e.batches?.join(', ')).join(' / '),
+                        batches: group.flatMap(e => e.batches || []).join(', '),
                         color: group[0].color,
                     };
                     const isConflicting = group.some(e => conflictingIds.has(e.id));
-                     const isHighlighted = highlightedLecturer ? group.some(e => e.lecturer.includes(highlightedLecturer)) : false;
+                     const isHighlighted = highlightedLecturer ? group.some(e => (e.lecturer || '').includes(highlightedLecturer)) : false;
 
                     return (
                         <div
@@ -229,7 +229,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                             entry={combinedEntry}
                             isEditMode={isEditMode}
                             onEdit={isEditMode ? () => onEdit?.(group[0]) : undefined} // open first one
-                            onClick={isEditMode ? () => onEdit?.(group[0]) : undefined}
+                            onClick={onEdit ? () => onEdit(group[0]) : undefined}
                             isHighlighted={isHighlighted}
                             isConflicting={isConflicting}
                           />
@@ -252,7 +252,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                         entry={entry}
                         isEditMode={isEditMode}
                         onEdit={onEdit}
-                        isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false}
+                        isHighlighted={highlightedLecturer ? (entry.lecturer || '').includes(highlightedLecturer) : false}
                         isConflicting={conflictingIds.has(entry.id)}
                       />
                     </div>
