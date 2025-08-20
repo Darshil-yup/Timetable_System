@@ -16,6 +16,7 @@ import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
+import { ClassDetailsDialog } from '@/components/shared/class-details-dialog';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -39,6 +40,7 @@ export default function AdminDashboardPage() {
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
+  const [viewingEntries, setViewingEntries] = useState<TimetableEntry[] | null>(null);
 
   useEffect(() => {
     if (!loading && allTimetables && allTimetables.length > 0 && !selectedTimetableId) {
@@ -60,12 +62,20 @@ export default function AdminDashboardPage() {
     setSelectedClass(null);
   }, []);
 
-  const openEditDialog = useCallback((entry: TimetableEntry) => {
-    setSelectedClass(entry);
-  }, []);
+  const handleCellClick = useCallback((entries: TimetableEntry[]) => {
+    if (isEditMode && entries.length === 1) {
+        setSelectedClass(entries[0]);
+    } else if (entries.length > 0) {
+        setViewingEntries(entries);
+    }
+  }, [isEditMode]);
 
   const closeEditDialog = useCallback(() => {
     setSelectedClass(null);
+  }, []);
+
+  const closeDetailsDialog = useCallback(() => {
+    setViewingEntries(null);
   }, []);
   
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>, parallelClass?: Omit<TimetableEntry, 'id'>) => {
@@ -238,7 +248,7 @@ export default function AdminDashboardPage() {
                 </div>
             </CardHeader>
             <CardContent>
-              <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onEdit={openEditDialog} conflictingIds={conflictingEntryIds}/>
+              <Timetable entries={activeTimetable?.timetable || []} view="admin" isEditMode={isEditMode} onCellClick={handleCellClick} conflictingIds={conflictingEntryIds}/>
             </CardContent>
           </Card>
       ) : (
@@ -255,6 +265,14 @@ export default function AdminDashboardPage() {
             classEntry={selectedClass}
             onUpdateClass={handleUpdateClass}
             onDeleteClass={handleDeleteClass}
+        />
+      )}
+
+      {viewingEntries && (
+        <ClassDetailsDialog
+            isOpen={!!viewingEntries}
+            onOpenChange={(isOpen) => !isOpen && closeDetailsDialog()}
+            entries={viewingEntries}
         />
       )}
     </div>

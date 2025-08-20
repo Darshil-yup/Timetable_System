@@ -28,13 +28,13 @@ const SpecialCardContent = React.memo(({ entry }: { entry: TimetableEntry }) => 
 });
 SpecialCardContent.displayName = 'SpecialCardContent';
 
-const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConflicting, onClick }: {
+const ClassCard = React.memo(({ entry, isEditMode, onCellClick, isHighlighted, isConflicting, originalEntries }: {
   entry: TimetableEntry;
   isEditMode?: boolean;
-  onEdit?: (entry: TimetableEntry) => void;
+  onCellClick?: (entries: TimetableEntry[]) => void;
   isHighlighted?: boolean;
   isConflicting?: boolean;
-  onClick?: () => void;
+  originalEntries: TimetableEntry[];
 }) => {
   const isSpecial = SPECIAL_TYPES.includes(entry.type as SpecialClassType);
 
@@ -53,11 +53,9 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
     color: entry.color ? `${entry.color}CC` : 'hsl(var(--muted-foreground))',
   }
 
-  const handleEditClick = () => {
-    if (onClick) {
-        onClick();
-    } else if (isEditMode && onEdit) {
-      onEdit(entry);
+  const handleClick = () => {
+    if (onCellClick) {
+      onCellClick(originalEntries);
     }
   };
   
@@ -83,7 +81,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
           <MapPin className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
           <span className="truncate">Room: {entry.room}</span>
         </div>
-        {entry.batches && entry.batches.length > 0 && (
+        {entry.batches && String(entry.batches).length > 0 && (
           <div className="flex items-start gap-2">
             <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
             <span className="truncate">Batches: {Array.isArray(entry.batches) ? entry.batches.join(', ') : entry.batches}</span>
@@ -97,13 +95,13 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
     <Card
       className={cn(
         "h-full w-full hover:shadow-lg transition-shadow duration-300 flex flex-col relative",
-        (isEditMode || onClick) && "cursor-pointer hover:border-primary",
+        (isEditMode || onCellClick) && "cursor-pointer hover:border-primary",
         isHighlighted && "ring-2 ring-primary ring-offset-2 ring-offset-background",
         isConflicting && isEditMode && "ring-2 ring-destructive ring-offset-2 ring-offset-background",
         isSpecial && "bg-muted/80"
       )}
       style={cardStyle}
-      onClick={handleEditClick}
+      onClick={handleClick}
     >
         {cardContent}
     </Card>
@@ -115,12 +113,12 @@ interface TimetableProps {
     entries: TimetableEntry[];
     view: 'admin' | 'lecturer';
     isEditMode?: boolean;
-    onEdit?: (entry: TimetableEntry) => void;
+    onCellClick?: (entries: TimetableEntry[]) => void;
     highlightedLecturer?: string;
     conflictingIds?: Set<string>;
 }
 
-export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onEdit, highlightedLecturer, conflictingIds = new Set() }, ref) => {
+export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetableProps>(({ entries, isEditMode, onCellClick, highlightedLecturer, conflictingIds = new Set() }, ref) => {
    if (!entries || entries.length === 0) {
     return (
        <div ref={ref} className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
@@ -129,7 +127,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
     )
   }
 
-  const gridData: (TimetableEntry | TimetableEntry[])[][] = DAYS.map(() => Array(TIME_SLOTS.length).fill(null));
+  const gridData: (TimetableEntry[] | null)[][] = DAYS.map(() => Array(TIME_SLOTS.length).fill(null));
   const placedEntries = new Set<string>();
 
   entries.forEach(entry => {
@@ -140,21 +138,21 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
     
     if (dayIndex === -1 || timeIndex === -1) return;
 
-    const key = `${entry.day}-${entry.time}`;
-    const group = entries.filter(e => e.day === entry.day && e.time === entry.time);
+    const duration = entry.duration || 1;
+    const group = entries.filter(e => 
+      e.day === entry.day && 
+      e.time === entry.time &&
+      (e.duration || 1) === duration
+    );
 
     if (gridData[dayIndex][timeIndex] === null) {
-      gridData[dayIndex][timeIndex] = group.length > 1 ? group : entry;
-    }
-
-    const duration = entry.duration || 1;
-    for (let i = 0; i < duration; i++) {
-        const currentSlotIndex = timeIndex + i;
-        if (currentSlotIndex < TIME_SLOTS.length) {
-            const currentKey = `${entry.day}-${TIME_SLOTS[currentSlotIndex]}`;
-            const entriesInSlot = entries.filter(e => e.day === entry.day && e.time === TIME_SLOTS[currentSlotIndex]);
-            entriesInSlot.forEach(e => placedEntries.add(e.id));
-        }
+      gridData[dayIndex][timeIndex] = group;
+      group.forEach(g => placedEntries.add(g.id));
+      for (let i = 1; i < duration; i++) {
+          if (timeIndex + i < TIME_SLOTS.length) {
+              gridData[dayIndex][timeIndex + i] = []; // Mark as occupied
+          }
+      }
     }
   });
 
@@ -188,72 +186,49 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
               {day}
             </div>
              {gridData[dayIndex].map((cellData, timeIndex) => {
-                if (!cellData) {
-                    return (
-                        <div
-                            key={`${day}-${timeIndex}`}
-                            className="border-r border-b"
-                            style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + 2 }}
-                        />
-                    );
+                if (cellData === null) { // Empty cell
+                    return <div key={`${day}-${timeIndex}`} className="border-r border-b" />;
+                }
+                if (cellData.length === 0) { // Occupied by a multi-hour class
+                    return null;
                 }
                 
-                if (Array.isArray(cellData)) { // Grouped entries
-                    const group = cellData;
-                    const duration = Math.max(...group.map(e => e.duration || 1));
-                    const combinedEntry: TimetableEntry = {
-                        id: group.map(e => e.id).join('/'),
-                        subject: group.map(e => e.subject).join(' / '),
-                        lecturer: group.map(e => e.lecturer).join(' / '),
-                        room: group.map(e => e.room).join(' / '),
-                        day: group[0].day,
-                        time: group[0].time,
-                        type: group[0].type, // Assuming same type for combined view
-                        duration,
-                        batches: group.flatMap(e => e.batches || []).join(', '),
-                        color: group[0].color,
-                    };
-                    const isConflicting = group.some(e => conflictingIds.has(e.id));
-                     const isHighlighted = highlightedLecturer ? group.some(e => (e.lecturer || '').includes(highlightedLecturer)) : false;
+                const group = cellData;
+                const duration = Math.max(...group.map(e => e.duration || 1));
+                const isMultiSlot = group.length > 1;
 
-                    return (
-                        <div
-                            key={combinedEntry.id}
-                            className="border-r border-b p-1 relative"
-                            style={{
-                                gridRow: `${dayIndex + 2}`,
-                                gridColumn: `${timeIndex + 2} / span ${duration}`,
-                            }}
-                        >
-                          <ClassCard
-                            entry={combinedEntry}
-                            isEditMode={isEditMode}
-                            onEdit={isEditMode ? () => onEdit?.(group[0]) : undefined} // open first one
-                            onClick={onEdit ? () => onEdit(group[0]) : undefined}
-                            isHighlighted={isHighlighted}
-                            isConflicting={isConflicting}
-                          />
-                        </div>
-                    )
-                }
+                const combinedEntry: TimetableEntry = isMultiSlot ? {
+                    id: group.map(e => e.id).join('/'),
+                    subject: group.map(e => e.subject).join(' / '),
+                    lecturer: group.map(e => e.lecturer).join(' / '),
+                    room: group.map(e => e.room).join(' / '),
+                    day: group[0].day,
+                    time: group[0].time,
+                    type: group[0].type, // Assuming same type for combined view
+                    duration,
+                    batches: group.map(e => e.batches ? e.batches.join(', ') : '').join(' / '),
+                    color: group[0].color,
+                } : group[0];
                 
-                // Single entry
-                const entry = cellData as TimetableEntry;
+                const isConflicting = group.some(e => conflictingIds.has(e.id));
+                const isHighlighted = highlightedLecturer ? group.some(e => (e.lecturer || '').includes(highlightedLecturer)) : false;
+
                 return (
                     <div
-                      key={entry.id}
-                      className="border-r border-b p-1 relative"
-                      style={{
-                        gridRow: `${dayIndex + 2}`,
-                        gridColumn: `${timeIndex + 2} / span ${entry.duration || 1}`,
-                      }}
+                        key={combinedEntry.id}
+                        className="border-r border-b p-1 relative"
+                        style={{
+                            gridRow: `${dayIndex + 2}`,
+                            gridColumn: `${timeIndex + 2} / span ${duration}`,
+                        }}
                     >
                       <ClassCard
-                        entry={entry}
+                        entry={combinedEntry}
                         isEditMode={isEditMode}
-                        onEdit={onEdit}
-                        isHighlighted={highlightedLecturer ? (entry.lecturer || '').includes(highlightedLecturer) : false}
-                        isConflicting={conflictingIds.has(entry.id)}
+                        onCellClick={onCellClick}
+                        isHighlighted={isHighlighted}
+                        isConflicting={isConflicting}
+                        originalEntries={group}
                       />
                     </div>
                 )
