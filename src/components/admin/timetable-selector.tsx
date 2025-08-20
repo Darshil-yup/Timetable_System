@@ -105,7 +105,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
           <>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
+                    <Button>
                         <PlusCircle />
                         New Timetable
                     </Button>

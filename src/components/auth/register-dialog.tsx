@@ -131,7 +131,7 @@ export function RegisterDialog({ children }: { children?: React.ReactNode }) {
       }
     }}>
       <DialogTrigger asChild>
-        {children || <Button variant="outline" className="w-full"><span className="px-0.5">Create Account</span></Button>}
+        {children || <Button className="w-full"><span className="px-0.5">Create Account</span></Button>}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

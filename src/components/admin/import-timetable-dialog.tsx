@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import type { TimetableData, TimetableEntry, ClassType } from "@/lib/types";
 import { Upload } from "lucide-react";
+import { SUBJECT_ABBREVIATIONS } from "@/lib/constants";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -106,7 +107,8 @@ export function ImportTimetableDialog({ onImport, children }: ImportTimetableDia
                     batches: batchesStr ? batchesStr.split(',').map(b => b.trim()) : [],
                     type,
                     duration,
-                    color: `hsl(var(--chart-${(entries.length % 5) + 1}))` // Cycle through colors
+                    color: `hsl(var(--chart-${(entries.length % 5) + 1}))`, // Cycle through colors
+                    abbreviation: SUBJECT_ABBREVIATIONS[subject] || undefined
                 });
             }
         }
@@ -138,7 +140,7 @@ export function ImportTimetableDialog({ onImport, children }: ImportTimetableDia
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {children || (
-          <Button variant="outline">
+          <Button>
             <Upload className="mr-2 h-4 w-4" />
             Import Timetable
           </Button>

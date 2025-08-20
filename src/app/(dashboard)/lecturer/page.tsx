@@ -63,7 +63,7 @@ export default function LecturerDashboardPage() {
   }, [lecturerTimetable]);
 
   const filteredTimetable = useMemo(() => {
-    if (selectedSubject === 'all') {
+    if (selectedSubject === 'all' || selectedSubject === 'All Subjects') {
       return lecturerTimetable;
     }
     return lecturerTimetable.filter(entry => entry.subject === selectedSubject);
@@ -95,24 +95,37 @@ export default function LecturerDashboardPage() {
         header,
         ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
+    
+    const placedEntries = new Set<string>();
 
     filteredTimetable.forEach(entry => {
+        if (placedEntries.has(entry.id)) return;
+
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex > -1 && timeIndex > -1) {
-            const cellContent = [
-                entry.type === 'Practical' ? `LAB: ${entry.subject}` : entry.subject,
-                entry.room,
-                entry.batches?.join(', '),
-            ].filter(Boolean).join('\n');
-            
-            for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + i < grid[0].length) {
-                    if (grid[dayIndex + 1][timeIndex + 1 + i] === null) {
-                        grid[dayIndex + 1][timeIndex + 1 + i] = cellContent;
-                    } else {
-                         grid[dayIndex + 1][timeIndex + 1 + i] += `\n---\n${cellContent}`;
-                    }
+        if (dayIndex === -1 || timeIndex === -1) return;
+
+        const duration = entry.duration || 1;
+        const group = filteredTimetable.filter(e => 
+          e.day === entry.day && 
+          e.time === entry.time &&
+          (e.duration || 1) === duration
+        );
+        
+        const cellContent = group.map(g => {
+            const subject = g.type === 'Practical' ? `LAB: ${g.subject}` : g.subject;
+            const room = g.room;
+            const batches = g.batches?.join(', ');
+            return [subject, room, batches].filter(Boolean).join('\n');
+        }).join('\n---\n');
+        
+        if (grid[dayIndex + 1][timeIndex + 1] === null) {
+            grid[dayIndex + 1][timeIndex + 1] = cellContent;
+            group.forEach(g => placedEntries.add(g.id));
+
+            for (let i = 1; i < duration; i++) {
+                if (timeIndex + 1 + i < grid[0].length) {
+                    grid[dayIndex + 1][timeIndex + 1 + i] = ""; 
                 }
             }
         }
@@ -147,18 +160,18 @@ export default function LecturerDashboardPage() {
 
     // Handle merged cells
     worksheet['!merges'] = [];
-    const processedMerges = new Set();
     filteredTimetable.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day) + 1;
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-        const mergeKey = `${dayIndex}-${timeIndex}`;
         
-        if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1 && !processedMerges.has(mergeKey)) {
-            worksheet['!merges']?.push({
-                s: { r: dayIndex, c: timeIndex },
-                e: { r: dayIndex, c: timeIndex + entry.duration - 1 }
-            });
-            processedMerges.add(mergeKey);
+        if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
+             const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
+            if (!existingMerge) {
+                worksheet['!merges']?.push({
+                    s: { r: dayIndex, c: timeIndex },
+                    e: { r: dayIndex, c: timeIndex + entry.duration - 1 }
+                });
+            }
         }
     });
 
@@ -212,7 +225,7 @@ if (timetablesLoading) {
                     ))}
                 </SelectContent>
             </Select>
-            <Button variant="outline" onClick={handleExportSheet} disabled={!selectedLecturer}>
+            <Button onClick={handleExportSheet} disabled={!selectedLecturer}>
               <FileSpreadsheet />
               Export as Sheet
             </Button>

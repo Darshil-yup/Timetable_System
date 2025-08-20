@@ -35,7 +35,7 @@ export const LabView: React.FC = React.memo(() => {
     const allClasses: TimetableEntry[] = [];
     allTimetables.forEach(timetable => {
         const labClasses = timetable.timetable.filter(entry => 
-            entry.type === 'Practical'
+            entry.type === 'Practical' && entry.room && ALL_LABS.includes(entry.room)
         );
         allClasses.push(...labClasses);
     });
@@ -69,20 +69,37 @@ export const LabView: React.FC = React.memo(() => {
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
+    const placedEntries = new Set<string>();
+
     filteredPracticalTimetable.forEach(entry => {
+        if (placedEntries.has(entry.id)) return;
+
         const dayIndex = DAYS.indexOf(entry.day);
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex > -1 && timeIndex > -1) {
-            const cellContent = [`LAB: ${entry.subject}`, entry.lecturer, entry.room, entry.batches?.join(', ')].filter(Boolean).join('\n');
-            for (let i = 0; i < (entry.duration || 1); i++) {
-                 const targetIndex = timeIndex + i;
-                 if (targetIndex < TIME_SLOTS.length) {
-                    const existingContent = grid[dayIndex + 1][targetIndex + 1];
-                    if (existingContent) {
-                        grid[dayIndex + 1][targetIndex + 1] = `${existingContent}\n---\n${cellContent}`;
-                    } else {
-                        grid[dayIndex + 1][targetIndex + 1] = cellContent;
-                    }
+        if (dayIndex === -1 || timeIndex === -1) return;
+
+        const duration = entry.duration || 1;
+        const group = filteredPracticalTimetable.filter(e => 
+          e.day === entry.day && 
+          e.time === entry.time &&
+          (e.duration || 1) === duration &&
+          e.room === entry.room
+        );
+        
+        const cellContent = group.map(g => {
+            const subject = `LAB: ${g.subject}`;
+            const lecturer = g.lecturer;
+            const batches = g.batches?.join(', ');
+            return [subject, lecturer, batches].filter(Boolean).join('\n');
+        }).join('\n---\n');
+        
+        if (grid[dayIndex + 1][timeIndex + 1] === null) {
+            grid[dayIndex + 1][timeIndex + 1] = cellContent;
+            group.forEach(g => placedEntries.add(g.id));
+
+            for (let i = 1; i < duration; i++) {
+                if (timeIndex + 1 + i < grid[0].length) {
+                    grid[dayIndex + 1][timeIndex + 1 + i] = "";
                 }
             }
         }
@@ -117,15 +134,15 @@ export const LabView: React.FC = React.memo(() => {
     
     // Handle merged cells
     worksheet['!merges'] = [];
-    const processedMerges = new Set();
     filteredPracticalTimetable.forEach(entry => {
       const dayIndex = DAYS.indexOf(entry.day) + 1;
       const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-      const mergeKey = `${dayIndex}-${timeIndex}`;
-
-      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1 && !processedMerges.has(mergeKey)) {
-          worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
-          processedMerges.add(mergeKey);
+      
+      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
+          const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
+          if (!existingMerge) {
+            worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
+          }
       }
     });
 
@@ -164,7 +181,7 @@ export const LabView: React.FC = React.memo(() => {
                   {ALL_LABS.map(lab => <SelectItem key={lab} value={lab}>{lab}</SelectItem>)}
                 </SelectContent>
               </Select>
-              <Button variant="outline" onClick={handleExportSheet}>
+              <Button onClick={handleExportSheet}>
                 <FileSpreadsheet />
                 Export as Sheet
               </Button>

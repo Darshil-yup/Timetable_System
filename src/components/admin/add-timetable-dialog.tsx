@@ -64,7 +64,7 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {children || (
-            <Button variant="outline">
+            <Button>
                 <PlusCircle />
                 New Timetable
             </Button>
