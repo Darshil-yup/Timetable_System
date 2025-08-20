@@ -63,12 +63,12 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        {children ? children :
+        {children || (
             <Button variant="outline">
                 <PlusCircle />
                 New Timetable
             </Button>
-        }
+        )}
       </DialogTrigger>
       <DialogContent className="w-[425px]">
         <DialogHeader>

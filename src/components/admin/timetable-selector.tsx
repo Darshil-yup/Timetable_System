@@ -21,10 +21,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2 } from 'lucide-react';
+import { Trash2, PlusCircle, Upload } from 'lucide-react';
 import type { TimetableMetadata, TimetableData } from '@/lib/types';
 import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
 import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu';
 
 interface TimetableSelectorProps {
   timetables: TimetableMetadata[];
@@ -56,12 +57,28 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
   if (timetables.length === 0 && !isReadOnly) {
       return (
         <div className="flex items-center justify-end mb-6 gap-2">
-           <ImportTimetableDialog onImport={onImportTimetable} />
-          <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
-            <Button>
-              Create New Timetable
-            </Button>
-          </AddTimetableDialog>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button>
+                        <PlusCircle />
+                        New Timetable
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                     <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <PlusCircle />
+                            Create Blank Timetable
+                        </DropdownMenuItem>
+                    </AddTimetableDialog>
+                    <ImportTimetableDialog onImport={onImportTimetable}>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <Upload />
+                            Import from Sheet
+                        </DropdownMenuItem>
+                    </ImportTimetableDialog>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
       )
   }
@@ -86,8 +103,28 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
 
         {!isReadOnly && (
           <>
-            <ImportTimetableDialog onImport={onImportTimetable} />
-            <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                        <PlusCircle />
+                        New Timetable
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                     <AddTimetableDialog onCreateTimetable={onCreateTimetable}>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <PlusCircle />
+                            Create Blank Timetable
+                        </DropdownMenuItem>
+                    </AddTimetableDialog>
+                    <ImportTimetableDialog onImport={onImportTimetable}>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <Upload />
+                            Import from Sheet
+                        </DropdownMenuItem>
+                    </ImportTimetableDialog>
+                </DropdownMenuContent>
+            </DropdownMenu>
             {activeTimetable && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
