@@ -18,26 +18,18 @@ import { FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
+import { useTimetables } from '@/context/TimetableContext';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
-interface LabViewProps {
-  allTimetables: TimetableData[];
-}
-
-export const LabView: React.FC<LabViewProps> = ({ allTimetables }) => {
+export const LabView: React.FC = React.memo(() => {
   const { toast } = useToast();
+  const { allTimetables, loading } = useTimetables();
   const [selectedLab, setSelectedLab] = useState(ALL_LABS[0]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 300);
-    return () => clearTimeout(timer);
-  }, [selectedLab]);
 
   const practicalTimetable = useMemo(() => {
+    if (!allTimetables) return [];
     const allClasses: TimetableEntry[] = [];
     allTimetables.forEach(timetable => {
         const labClasses = timetable.timetable.filter(entry => 
@@ -93,6 +85,10 @@ export const LabView: React.FC<LabViewProps> = ({ allTimetables }) => {
     XLSX.writeFile(workbook, `Consolidated-${sheetName}.xlsx`);
     toast({ title: "Export Successful" });
   }, [filteredPracticalTimetable, selectedLab, toast]);
+  
+  if (loading) {
+    return <Skeleton className="h-[700px] w-full" />
+  }
 
   if (!allTimetables) {
     return (
@@ -124,10 +120,9 @@ export const LabView: React.FC<LabViewProps> = ({ allTimetables }) => {
         </div>
       </CardHeader>
       <CardContent>
-         {isLoading ? <Skeleton className="h-[600px] w-full" /> : 
-            <Timetable entries={filteredPracticalTimetable} view="admin" />
-         }
+        <Timetable entries={filteredPracticalTimetable} view="admin" />
       </CardContent>
     </Card>
   );
-};
+});
+LabView.displayName = 'LabView';

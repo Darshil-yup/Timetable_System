@@ -18,32 +18,24 @@ import { FileSpreadsheet } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
+import { useTimetables } from '@/context/TimetableContext';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
-interface ClassroomViewProps {
-  allTimetables: TimetableData[];
-}
-
-export const ClassroomView: React.FC<ClassroomViewProps> = ({ allTimetables }) => {
+export const ClassroomView: React.FC = React.memo(() => {
   const { toast } = useToast();
+  const { allTimetables, loading } = useTimetables();
   const [selectedRoom, setSelectedRoom] = useState(ALL_CLASSROOMS[0]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  React.useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 300);
-    return () => clearTimeout(timer);
-  }, [selectedRoom]);
 
   const lectureTimetable = useMemo(() => {
+    if (!allTimetables) return [];
     const allClasses: TimetableEntry[] = [];
     allTimetables.forEach(timetable => {
-        const lecturerClasses = timetable.timetable.filter(entry => 
+        const lectureClasses = timetable.timetable.filter(entry => 
             entry.type === 'Lecture'
         );
-        allClasses.push(...lecturerClasses);
+        allClasses.push(...lectureClasses);
     });
     return allClasses;
   }, [allTimetables]);
@@ -94,6 +86,10 @@ export const ClassroomView: React.FC<ClassroomViewProps> = ({ allTimetables }) =
     toast({ title: "Export Successful" });
   }, [filteredLectureTimetable, selectedRoom, toast]);
 
+  if (loading) {
+    return <Skeleton className="h-[700px] w-full" />
+  }
+
   if (!allTimetables) {
     return (
         <div className="flex flex-col items-center justify-center h-64 border rounded-lg bg-card text-card-foreground shadow-sm">
@@ -124,10 +120,10 @@ export const ClassroomView: React.FC<ClassroomViewProps> = ({ allTimetables }) =
         </div>
       </CardHeader>
       <CardContent>
-         {isLoading ? <Skeleton className="h-[600px] w-full" /> : 
-            <Timetable entries={filteredLectureTimetable} view="admin" />
-         }
+        <Timetable entries={filteredLectureTimetable} view="admin" />
       </CardContent>
     </Card>
   );
-};
+});
+
+ClassroomView.displayName = 'ClassroomView';

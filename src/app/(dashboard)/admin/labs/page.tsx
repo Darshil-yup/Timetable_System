@@ -3,11 +3,11 @@
 
 import React from 'react';
 import { LabView } from '@/components/admin/lab-view';
-import { useTimetableData } from '@/hooks/use-timetable-data';
+import { useTimetables } from '@/context/TimetableContext';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LabsPage() {
-    const { allTimetables, loading } = useTimetableData();
+    const { loading } = useTimetables();
 
     if (loading) {
         return (
@@ -19,11 +19,8 @@ export default function LabsPage() {
 
     return (
         <div className="container mx-auto p-8">
-            <LabView 
-                allTimetables={allTimetables || []}
-            />
+            <LabView />
         </div>
     );
 }
-
     

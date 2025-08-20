@@ -3,11 +3,11 @@
 
 import React from 'react';
 import { ClassroomView } from '@/components/admin/classroom-view';
-import { useTimetableData } from '@/hooks/use-timetable-data';
+import { useTimetables } from '@/context/TimetableContext';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ClassroomsPage() {
-    const { allTimetables, loading } = useTimetableData();
+    const { loading } = useTimetables();
 
     if (loading) {
         return (
@@ -19,9 +19,7 @@ export default function ClassroomsPage() {
 
     return (
         <div className="container mx-auto p-8">
-            <ClassroomView 
-                allTimetables={allTimetables || []}
-            />
+            <ClassroomView />
         </div>
     );
 }

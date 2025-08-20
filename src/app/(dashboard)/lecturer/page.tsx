@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
-import { useTimetableData } from '@/hooks/use-timetable-data';
+import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
 import { FileSpreadsheet, User } from 'lucide-react';
 import {
@@ -25,7 +25,7 @@ const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", 
 
 export default function LecturerDashboardPage() {
   const { toast } = useToast();
-  const { allTimetables, loading: timetablesLoading } = useTimetableData();
+  const { allTimetables, loading: timetablesLoading } = useTimetables();
   
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
   

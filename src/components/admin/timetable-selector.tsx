@@ -36,7 +36,7 @@ interface TimetableSelectorProps {
   isReadOnly?: boolean;
 }
 
-export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
+export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
   timetables,
   selectedTimetableId,
   onSelectTimetable,
@@ -115,6 +115,6 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = ({
       </div>
     </div>
   );
-};
+});
 
 TimetableSelector.displayName = 'TimetableSelector';

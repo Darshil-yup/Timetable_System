@@ -14,51 +14,45 @@ import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload } fr
 import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
-import { MASTER_TIMETABLE } from '@/lib/mock-data';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
-import { useConflicts } from '@/hooks/use-conflicts';
 
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
-const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
 export default function AdminDashboardPage() {
-  const { setActiveTimetable: setGlobalActiveTimetable } = useTimetables();
+  const { 
+    allTimetables,
+    loading,
+    conflictingEntryIds,
+    addTimetable,
+    deleteTimetable,
+    importTimetable,
+    addEntry,
+    updateEntry,
+    deleteEntry
+  } = useTimetables();
+
   const { toast } = useToast();
 
-  const [allTimetables, setAllTimetables] = useState<TimetableData[]>([]);
   const [selectedTimetableId, setSelectedTimetableId] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const { conflictingEntryIds } = useConflicts(allTimetables);
 
   useEffect(() => {
-    // Simulate fetching data
-    setIsLoading(true);
-    setAllTimetables(MASTER_TIMETABLE);
-    if (MASTER_TIMETABLE.length > 0) {
-      setSelectedTimetableId(MASTER_TIMETABLE[0].id);
+    if (!loading && allTimetables && allTimetables.length > 0 && !selectedTimetableId) {
+      setSelectedTimetableId(allTimetables[0].id);
     }
-    setIsLoading(false);
-  }, []);
+  }, [loading, allTimetables, selectedTimetableId]);
 
   const timetableMetadatas = useMemo((): TimetableMetadata[] => {
-    return allTimetables.map(t => ({ id: t.id, name: t.name }));
+    return allTimetables?.map(t => ({ id: t.id, name: t.name })) || [];
   }, [allTimetables]);
 
   const activeTimetable = useMemo(() => {
-    return allTimetables.find(t => t.id === selectedTimetableId) || null;
+    return allTimetables?.find(t => t.id === selectedTimetableId) || null;
   }, [allTimetables, selectedTimetableId]);
-
-  useEffect(() => {
-    if (activeTimetable) {
-      setGlobalActiveTimetable(activeTimetable);
-    }
-  }, [activeTimetable, setGlobalActiveTimetable]);
 
   const handleSelectTimetable = useCallback((id: string) => {
     setSelectedTimetableId(id);
@@ -73,152 +67,33 @@ export default function AdminDashboardPage() {
   const closeEditDialog = useCallback(() => {
     setSelectedClass(null);
   }, []);
-
-  const addTimetable = useCallback(async (name: string, year: string): Promise<string | null> => {
-    const timetableName = `${name} (${year})`;
-    const newTimetable: TimetableData = {
-      id: `tt-${Date.now()}`,
-      name: timetableName,
-      timetable: []
-    };
-    
-    setAllTimetables(prev => [...prev, newTimetable]);
-    setSelectedTimetableId(newTimetable.id);
-    toast({ title: "Timetable Created!", description: `The timetable for "${timetableName}" has been created.` });
-    return newTimetable.id;
-  }, [toast]);
   
-  const importTimetable = useCallback(async (newTimetable: TimetableData): Promise<string | null> => {
-    setAllTimetables(prev => [...prev, newTimetable]);
-    setSelectedTimetableId(newTimetable.id);
-    toast({ title: "Timetable Imported!", description: `The timetable for "${newTimetable.name}" has been imported.` });
-    return newTimetable.id;
-  }, [toast]);
-
-  const deleteTimetable = useCallback(async (id: string) => {
-    const timetableToDelete = allTimetables.find(t => t.id === id);
-    if (!timetableToDelete) return;
-
-    setAllTimetables(prev => {
-        const newTimetables = prev.filter(t => t.id !== id);
-        if (newTimetables.length > 0) {
-            setSelectedTimetableId(newTimetables[0].id);
-        } else {
-            setSelectedTimetableId('');
-        }
-        return newTimetables;
-    });
-    
-    toast({ title: "Timetable Deleted", description: `The timetable for "${timetableToDelete.name}" has been deleted.`, variant: "destructive" });
-  }, [allTimetables, toast]);
-  
-  const checkForConflicts = useCallback((newClass: Omit<TimetableEntry, 'id'>, updatingClassId?: string): boolean => {
-    if (SPECIAL_TYPES.includes(newClass.type as SpecialClassType)) return false;
-
-    const newClassStartHour = parseInt(newClass.time.split('-')[0].split(':')[0]);
-    const newClassEndHour = newClassStartHour + (newClass.duration || 1);
-
-    const allEntries = allTimetables.flatMap(t => 
-        t.timetable.map(entry => ({...entry, timetableName: t.name}))
-    );
-
-    for (const existingEntry of allEntries) {
-        if (existingEntry.id === updatingClassId) continue;
-        if (SPECIAL_TYPES.includes(existingEntry.type as SpecialClassType)) continue;
-        if (existingEntry.day !== newClass.day) continue;
-
-        const existingStartHour = parseInt(existingEntry.time.split('-')[0].split(':')[0]);
-        const existingEndHour = existingStartHour + (existingEntry.duration || 1);
-        const isOverlapping = newClassStartHour < existingEndHour && newClassEndHour > existingStartHour;
-
-        if (isOverlapping) {
-            // Room conflict
-            if (newClass.room && newClass.room !== 'N/A' && existingEntry.room && existingEntry.room !== 'N/A' && newClass.room === existingEntry.room) {
-                toast({
-                    variant: "destructive",
-                    title: "Room Conflict",
-                    description: `Room ${newClass.room} is booked at this time in "${existingEntry.timetableName}".`
-                });
-                return true;
-            }
-
-            // Lecturer conflict
-            const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-            const existingLecturers = (existingEntry.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-            const conflictingLecturer = newClassLecturers.find(lecturer => existingLecturers.includes(lecturer));
-            if (conflictingLecturer) {
-                 toast({
-                     variant: "destructive",
-                     title: "Lecturer Conflict",
-                     description: `${conflictingLecturer} is scheduled at this time in "${existingEntry.timetableName}".`
-                 });
-                 return true;
-            }
-
-            // Batch conflict
-            const allDeptBatchesInNewClassTimetable = [...new Set(allTimetables.find(t => t.id === selectedTimetableId)?.timetable.flatMap(e => e.batches || []))];
-            const newClassBatches = newClass.type === 'Lecture' ? allDeptBatchesInNewClassTimetable : (newClass.batches || []);
-            
-            const allDeptBatchesInExistingTimetable = [...new Set(allTimetables.find(t => t.name === existingEntry.timetableName)?.timetable.flatMap(e => e.batches || []))];
-            const existingEntryBatches = existingEntry.type === 'Lecture' ? allDeptBatchesInExistingTimetable : (existingEntry.batches || []);
-
-            const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
-            if (conflictingBatch) {
-                 toast({
-                    variant: "destructive",
-                    title: "Batch Conflict",
-                    description: `Batch ${conflictingBatch} is scheduled at this time in "${existingEntry.timetableName}".`
-                });
-                return true;
-            }
-        }
-    }
-
-    return false;
-  }, [toast, allTimetables, selectedTimetableId]);
-
   const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
-    if (checkForConflicts(newClass)) return;
-
-    const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
-    
-    setAllTimetables(prev => prev.map(t => 
-        t.id === selectedTimetableId ? { ...t, timetable: [...t.timetable, newEntry] } : t
-    ));
-
-    toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
-  }, [activeTimetable, checkForConflicts, toast, selectedTimetableId]);
+    const success = addEntry(selectedTimetableId, newClass);
+    if(success) {
+      toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
+    }
+  }, [activeTimetable, addEntry, toast, selectedTimetableId]);
   
   const handleUpdateClass = useCallback(async (updatedClass: TimetableEntry) => {
     if (!activeTimetable) return;
-    if (checkForConflicts(updatedClass, updatedClass.id)) return;
-    
-    setAllTimetables(prev => prev.map(t => 
-        t.id === selectedTimetableId 
-        ? { ...t, timetable: t.timetable.map(entry => entry.id === updatedClass.id ? updatedClass : entry) } 
-        : t
-    ));
-
-    closeEditDialog();
-    toast({ title: "Class Updated!", description: `"${updatedClass.subject}" has been updated.` });
-  }, [activeTimetable, checkForConflicts, toast, closeEditDialog, selectedTimetableId]);
+    const success = updateEntry(selectedTimetableId, updatedClass)
+    if(success) {
+      closeEditDialog();
+      toast({ title: "Class Updated!", description: `"${updatedClass.subject}" has been updated.` });
+    }
+  }, [activeTimetable, updateEntry, toast, closeEditDialog, selectedTimetableId]);
   
   const handleDeleteClass = useCallback(async (classId: string) => {
     if (!activeTimetable) return;
-
     const classToDelete = activeTimetable.timetable.find(c => c.id === classId);
-    if (!classToDelete) return;
-    
-    setAllTimetables(prev => prev.map(t => 
-        t.id === selectedTimetableId 
-        ? { ...t, timetable: t.timetable.filter(c => c.id !== classId) }
-        : t
-    ));
-    
-    closeEditDialog();
-    toast({ title: "Class Deleted", description: `"${classToDelete.subject}" has been removed.`, variant: "destructive" });
-  }, [activeTimetable, closeEditDialog, toast, selectedTimetableId]);
+    if(classToDelete) {
+        deleteEntry(selectedTimetableId, classId);
+        closeEditDialog();
+        toast({ title: "Class Deleted", description: `"${classToDelete.subject}" has been removed.`, variant: "destructive" });
+    }
+  }, [activeTimetable, deleteEntry, closeEditDialog, toast, selectedTimetableId]);
 
   const toggleEditMode = useCallback(() => {
     setIsEditMode(prev => !prev);
@@ -265,10 +140,39 @@ export default function AdminDashboardPage() {
     XLSX.writeFile(workbook, `${activeTimetable.name}-Master-Timetable.xlsx`);
     toast({ title: "Export Successful" });
   }, [activeTimetable, toast]);
+
+  const handleCreateTimetable = async (name: string, year: string) => {
+    const newId = await addTimetable(name, year);
+    if(newId) {
+        setSelectedTimetableId(newId);
+    }
+    return newId;
+  };
+
+  const handleImportTimetable = async (newTimetable: TimetableData) => {
+    const newId = await importTimetable(newTimetable);
+    if(newId) {
+        setSelectedTimetableId(newId);
+    }
+    return newId;
+  };
+
+  const handleDeleteTimetable = async (id: string) => {
+    const timetableToDelete = allTimetables?.find(t => t.id === id);
+    if (timetableToDelete) {
+        deleteTimetable(id);
+        const remainingTimetables = allTimetables?.filter(t => t.id !== id);
+        if (remainingTimetables && remainingTimetables.length > 0) {
+            setSelectedTimetableId(remainingTimetables[0].id);
+        } else {
+            setSelectedTimetableId('');
+        }
+    }
+  };
   
   const hasTimetables = timetableMetadatas && timetableMetadatas.length > 0;
 
-  if (isLoading) {
+  if (loading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
             <Skeleton className="h-10 w-full max-w-lg ml-auto" />
@@ -283,9 +187,9 @@ export default function AdminDashboardPage() {
         timetables={timetableMetadatas || []}
         selectedTimetableId={selectedTimetableId}
         onSelectTimetable={handleSelectTimetable}
-        onCreateTimetable={addTimetable}
-        onDeleteTimetable={deleteTimetable}
-        onImportTimetable={importTimetable}
+        onCreateTimetable={handleCreateTimetable}
+        onDeleteTimetable={handleDeleteTimetable}
+        onImportTimetable={handleImportTimetable}
       />
      
      {hasTimetables ? (
@@ -309,7 +213,7 @@ export default function AdminDashboardPage() {
                                     Add New Class
                                 </DropdownMenuItem>
                             </AddClassDialog>
-                            <ImportTimetableDialog onImport={importTimetable}>
+                            <ImportTimetableDialog onImport={handleImportTimetable}>
                                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                     <Upload />
                                     Import from Sheet
@@ -350,7 +254,7 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
     
 
     
+
