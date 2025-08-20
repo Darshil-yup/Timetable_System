@@ -66,7 +66,7 @@
   }
   html:not(.dark) body {
     background-color: #FFFFFF;
-    background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 50%), radial-gradient(at 98% 2%, hsla(205, 68%, 56%, 0.3) 0px, transparent 50%);
+    background-image: radial-gradient(at 0% 100%, hsla(168, 76%, 40%, 0.35) 0px, transparent 70%), radial-gradient(at 98% 2%, hsla(205, 68%, 56%, 0.3) 0px, transparent 70%);
     background-attachment: fixed;
   }
   .dark body {
