@@ -19,6 +19,7 @@ import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
+import { ClassDetailsDialog } from '../shared/class-details-dialog';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -27,6 +28,7 @@ export const LabView: React.FC = React.memo(() => {
   const { toast } = useToast();
   const { allTimetables, loading } = useTimetables();
   const [selectedLab, setSelectedLab] = useState(ALL_LABS[0]);
+  const [viewingEntries, setViewingEntries] = useState<TimetableEntry[] | null>(null);
 
   const practicalTimetable = useMemo(() => {
     if (!allTimetables) return [];
@@ -44,6 +46,16 @@ export const LabView: React.FC = React.memo(() => {
     if (selectedLab === 'all') return practicalTimetable;
     return practicalTimetable.filter(e => e.room === selectedLab);
   }, [practicalTimetable, selectedLab]);
+
+  const handleCellClick = useCallback((entries: TimetableEntry[]) => {
+    if (entries.length > 0) {
+        setViewingEntries(entries);
+    }
+  }, []);
+
+  const closeDetailsDialog = useCallback(() => {
+    setViewingEntries(null);
+  }, []);
 
   const handleExportSheet = useCallback(() => {
     if (!filteredPracticalTimetable || filteredPracticalTimetable.length === 0) {
@@ -99,30 +111,39 @@ export const LabView: React.FC = React.memo(() => {
   }
 
   return (
-    <Card>
-      <CardHeader className="flex-row items-center justify-between gap-4">
-        <div>
-          <CardTitle>Consolidated Lab Timetable</CardTitle>
-          <CardDescription>View of all practicals scheduled in a lab across all timetables.</CardDescription>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={selectedLab} onValueChange={setSelectedLab}>
-            <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Labs</SelectItem>
-              {ALL_LABS.map(lab => <SelectItem key={lab} value={lab}>{lab}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" onClick={handleExportSheet}>
-            <FileSpreadsheet />
-            Export as Sheet
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Timetable entries={filteredPracticalTimetable} view="admin" />
-      </CardContent>
-    </Card>
+    <>
+        <Card>
+          <CardHeader className="flex-row items-center justify-between gap-4">
+            <div>
+              <CardTitle>Consolidated Lab Timetable</CardTitle>
+              <CardDescription>View of all practicals scheduled in a lab across all timetables.</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Select value={selectedLab} onValueChange={setSelectedLab}>
+                <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Labs</SelectItem>
+                  {ALL_LABS.map(lab => <SelectItem key={lab} value={lab}>{lab}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" onClick={handleExportSheet}>
+                <FileSpreadsheet />
+                Export as Sheet
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Timetable entries={filteredPracticalTimetable} view="admin" onCellClick={handleCellClick} />
+          </CardContent>
+        </Card>
+        {viewingEntries && (
+            <ClassDetailsDialog
+                isOpen={!!viewingEntries}
+                onOpenChange={(isOpen) => !isOpen && closeDetailsDialog()}
+                entries={viewingEntries}
+            />
+        )}
+    </>
   );
 });
 LabView.displayName = 'LabView';

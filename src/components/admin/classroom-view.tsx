@@ -1,5 +1,5 @@
 
-"use client";
+"use "use client";
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,7 @@ import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
+import { ClassDetailsDialog } from '../shared/class-details-dialog';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -27,6 +28,7 @@ export const ClassroomView: React.FC = React.memo(() => {
   const { toast } = useToast();
   const { allTimetables, loading } = useTimetables();
   const [selectedRoom, setSelectedRoom] = useState(ALL_CLASSROOMS[0]);
+  const [viewingEntries, setViewingEntries] = useState<TimetableEntry[] | null>(null);
 
   const lectureTimetable = useMemo(() => {
     if (!allTimetables) return [];
@@ -44,6 +46,16 @@ export const ClassroomView: React.FC = React.memo(() => {
     if (selectedRoom === 'all') return lectureTimetable;
     return lectureTimetable.filter(e => e.room === selectedRoom);
   }, [lectureTimetable, selectedRoom]);
+
+  const handleCellClick = useCallback((entries: TimetableEntry[]) => {
+    if (entries.length > 0) {
+        setViewingEntries(entries);
+    }
+  }, []);
+
+  const closeDetailsDialog = useCallback(() => {
+    setViewingEntries(null);
+  }, []);
 
   const handleExportSheet = useCallback(() => {
     if (!filteredLectureTimetable || filteredLectureTimetable.length === 0) {
@@ -99,30 +111,39 @@ export const ClassroomView: React.FC = React.memo(() => {
   }
 
   return (
-    <Card>
-      <CardHeader className="flex-row items-center justify-between gap-4">
-        <div>
-          <CardTitle>Consolidated Classroom Timetable</CardTitle>
-          <CardDescription>View of all lectures scheduled in a classroom across all timetables.</CardDescription>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={selectedRoom} onValueChange={setSelectedRoom}>
-            <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Classrooms</SelectItem>
-              {ALL_CLASSROOMS.map(room => <SelectItem key={room} value={room}>{room}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" onClick={handleExportSheet}>
-            <FileSpreadsheet />
-            Export as Sheet
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Timetable entries={filteredLectureTimetable} view="admin" />
-      </CardContent>
-    </Card>
+    <>
+        <Card>
+          <CardHeader className="flex-row items-center justify-between gap-4">
+            <div>
+              <CardTitle>Consolidated Classroom Timetable</CardTitle>
+              <CardDescription>View of all lectures scheduled in a classroom across all timetables.</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Select value={selectedRoom} onValueChange={setSelectedRoom}>
+                <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Classrooms</SelectItem>
+                  {ALL_CLASSROOMS.map(room => <SelectItem key={room} value={room}>{room}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" onClick={handleExportSheet}>
+                <FileSpreadsheet />
+                Export as Sheet
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Timetable entries={filteredLectureTimetable} view="admin" onCellClick={handleCellClick} />
+          </CardContent>
+        </Card>
+        {viewingEntries && (
+            <ClassDetailsDialog
+                isOpen={!!viewingEntries}
+                onOpenChange={(isOpen) => !isOpen && closeDetailsDialog()}
+                entries={viewingEntries}
+            />
+        )}
+    </>
   );
 });
 

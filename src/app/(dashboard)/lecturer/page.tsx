@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { TimetableEntry } from '@/lib/types';
+import { ClassDetailsDialog } from '@/components/shared/class-details-dialog';
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -29,6 +30,7 @@ export default function LecturerDashboardPage() {
   
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
+  const [viewingEntries, setViewingEntries] = useState<TimetableEntry[] | null>(null);
   
   useEffect(() => {
     if (LECTURERS.length > 0 && !selectedLecturer) {
@@ -66,6 +68,16 @@ export default function LecturerDashboardPage() {
     }
     return lecturerTimetable.filter(entry => entry.subject === selectedSubject);
   }, [lecturerTimetable, selectedSubject]);
+
+  const handleCellClick = useCallback((entries: TimetableEntry[]) => {
+    if (entries.length > 0) {
+        setViewingEntries(entries);
+    }
+  }, []);
+
+  const closeDetailsDialog = useCallback(() => {
+    setViewingEntries(null);
+  }, []);
 
   const handleExportSheet = useCallback(() => {
     if (!selectedLecturer || filteredTimetable.length === 0) {
@@ -186,6 +198,7 @@ if (timetablesLoading) {
                 <Timetable 
                     entries={filteredTimetable} 
                     view="lecturer"
+                    onCellClick={handleCellClick}
                 />
             </CardContent>
         </Card>
@@ -195,6 +208,14 @@ if (timetablesLoading) {
             <p className="text-muted-foreground text-center">Please select a lecturer to view their consolidated timetable.</p>
         </div>
        )}
+
+      {viewingEntries && (
+        <ClassDetailsDialog
+            isOpen={!!viewingEntries}
+            onOpenChange={(isOpen) => !isOpen && closeDetailsDialog()}
+            entries={viewingEntries}
+        />
+      )}
     </div>
   );
 }
