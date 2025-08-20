@@ -60,6 +60,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onCellClick, isHighlighted, i
   };
   
   const subjectPrefix = entry.type === 'Practical' && !entry.subject.toLowerCase().startsWith('lab:') ? 'LAB: ' : '';
+  const displaySubject = entry.abbreviation || entry.subject;
 
 
   const cardContent = isSpecial ? (
@@ -69,7 +70,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onCellClick, isHighlighted, i
       <CardHeader className="p-2 md:p-3">
         <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
           {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
-          <span className="truncate">{subjectPrefix}{entry.subject}</span>
+          <span className="truncate">{subjectPrefix}{displaySubject}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
@@ -199,7 +200,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
 
                 const combinedEntry: TimetableEntry = isMultiSlot ? {
                     id: group.map(e => e.id).join('/'),
-                    subject: group.map(e => e.subject).join(' / '),
+                    subject: group.map(e => e.abbreviation || e.subject).join(' / '),
                     lecturer: group.map(e => e.lecturer).join(' / '),
                     room: group.map(e => e.room).join(' / '),
                     day: group[0].day,
@@ -208,6 +209,7 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
                     duration,
                     batches: group.map(e => e.batches ? e.batches.join(', ') : '').join(' / '),
                     color: group[0].color,
+                    abbreviation: group.map(e => e.abbreviation || e.subject).join(' / '),
                 } : group[0];
                 
                 const isConflicting = group.some(e => conflictingIds.has(e.id));
