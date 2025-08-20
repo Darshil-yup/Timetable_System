@@ -84,7 +84,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
   }
 
   return (
-    <div className="flex items-center justify-start flex-wrap gap-4">
+    <div className="flex items-center justify-end flex-wrap gap-4">
       <div className="flex items-center gap-2 flex-wrap">
         <Select 
           value={selectedTimetableId} 
