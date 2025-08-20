@@ -256,7 +256,7 @@ export default function AdminDashboardPage() {
   
   return (
     <div className="container mx-auto p-8">
-      <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
+      <div className="flex items-center justify-start mb-6 flex-wrap gap-4">
         <TimetableSelector
           timetables={timetableMetadatas || []}
           selectedTimetableId={selectedTimetableId}
