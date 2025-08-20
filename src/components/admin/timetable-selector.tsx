@@ -86,21 +86,6 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
   return (
     <div className="flex items-center justify-end flex-wrap gap-4">
       <div className="flex items-center gap-2 flex-wrap">
-        <Select 
-          value={selectedTimetableId} 
-          onValueChange={onSelectTimetable} 
-          disabled={timetables.length === 0}
-        >
-          <SelectTrigger className="w-[320px]">
-            <SelectValue placeholder="Select a timetable" />
-          </SelectTrigger>
-          <SelectContent>
-            {timetables.map(timetable => (
-              <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         {!isReadOnly && (
           <>
             <DropdownMenu>
@@ -150,6 +135,20 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
             )}
           </>
         )}
+        <Select 
+          value={selectedTimetableId} 
+          onValueChange={onSelectTimetable} 
+          disabled={timetables.length === 0}
+        >
+          <SelectTrigger className="w-[320px]">
+            <SelectValue placeholder="Select a timetable" />
+          </SelectTrigger>
+          <SelectContent>
+            {timetables.map(timetable => (
+              <SelectItem key={timetable.id} value={timetable.id}>{timetable.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
