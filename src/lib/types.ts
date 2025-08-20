@@ -5,6 +5,7 @@ export type ClassType = 'Lecture' | 'Practical' | SpecialClassType;
 export type TimetableEntry = {
   id: string;
   subject: string;
+  abbreviation?: string;
   lecturer: string; // Can be a comma-separated list of names for labs
   room: string;
   day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday';

@@ -56,7 +56,10 @@ export function ClassDetailsDialog({
                             {entry.type === 'Practical' 
                                 ? <FlaskConical className="h-5 w-5 text-primary" /> 
                                 : <Book className="h-5 w-5 text-primary" />}
-                            <h4 className="font-semibold text-lg text-primary">{entry.subject}</h4>
+                            <h4 className="font-semibold text-lg text-primary">
+                                {entry.subject}
+                                {entry.abbreviation && <span className="text-sm text-muted-foreground ml-2">({entry.abbreviation})</span>}
+                            </h4>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <DetailItem icon={<User />} label="Lecturer(s)" value={entry.lecturer || 'N/A'} />

@@ -76,47 +76,47 @@ export const LECTURERS: Lecturer[] = [
 const CSE_IOT_3_SEM_TIMETABLE: TimetableEntry[] = [
     // Monday
     { id: 'ciot3-mon-1', subject: 'OE:1', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ciot3-mon-2', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-mon-2', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ciot3-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ciot3-mon-4', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-mon-4', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ciot3-mon-5', subject: 'Library', lecturer: 'Lata R. Tembhare', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Library', duration: 1, color: '#E0E0E0' },
-    { id: 'ciot3-mon-6', subject: 'DS', lecturer: 'Lata R. Tembhare, Rina Parteki', room: 'IOT Lab 3', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-4))' },
-    { id: 'ciot3-mon-7', subject: 'CWS', lecturer: 'Harsha Tembhekar, Sharayu Sangekar', room: 'IOT Lab 1', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4'], color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-mon-6', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Lata R. Tembhare, Rina Parteki', room: 'IOT Lab 3', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-mon-7', subject: 'Computer Workshop', abbreviation: 'Lab: CWS', lecturer: 'Harsha Tembhekar, Sharayu Sangekar', room: 'IOT Lab 1', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4'], color: 'hsl(var(--chart-4))' },
     
     // Tuesday
     { id: 'ciot3-tue-1', subject: 'OE:1', lecturer: 'N/A', room: 'ET-308', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ciot3-tue-2', subject: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-tue-2', subject: 'Basics of Python Programming', abbreviation: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'ciot3-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ciot3-tue-4', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ciot3-tue-5', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-tue-4', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-tue-5', subject: 'Microcontroller & Interfacing', abbreviation: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ciot3-tue-6', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '03:00-04:00', type: 'Sports', duration: 2, color: '#E0E0E0' },
 
     // Wednesday
-    { id: 'ciot3-wed-1', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ciot3-wed-2', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-wed-1', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-wed-2', subject: 'Microcontroller & Interfacing', abbreviation: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ciot3-wed-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ciot3-wed-4', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ciot3-wed-5', subject: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ciot3-wed-6', subject: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-wed-4', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-wed-5', subject: 'Basics of Python Programming', abbreviation: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-wed-6', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'ciot3-wed-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
 
     // Thursday
-    { id: 'ciot3-thu-1', subject: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ciot3-thu-2', subject: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-thu-1', subject: 'Basics of Python Programming', abbreviation: 'BPP', lecturer: 'Rina Parteki', room: 'ET-308', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-thu-2', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'N/A', room: 'ET-308', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'ciot3-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ciot3-thu-4', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ciot3-thu-5', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ciot3-thu-6', subject: 'DS', lecturer: 'Lata R. Tembhare, Charvi S. Suri', room: 'IOT Lab 4', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4'], color: 'hsl(var(--chart-4))' },
-    { id: 'ciot3-thu-7', subject: 'CWS', lecturer: 'Harsha Tembhekar, Sadaf Ansari', room: 'IOT Lab 2', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-thu-4', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-thu-5', subject: 'IoT Architecture and Protocol', abbreviation: 'MDM: IOT Arch', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-thu-6', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Lata R. Tembhare, Charvi S. Suri', room: 'IOT Lab 4', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4'], color: 'hsl(var(--chart-4))' },
+    { id: 'ciot3-thu-7', subject: 'Computer Workshop', abbreviation: 'Lab: CWS', lecturer: 'Harsha Tembhekar, Sadaf Ansari', room: 'IOT Lab 2', day: 'Thursday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-4))' },
     
     // Friday
-    { id: 'ciot3-fri-1', subject: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ciot3-fri-2', subject: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ciot3-fri-1', subject: 'Microcontroller & Interfacing', abbreviation: 'MI', lecturer: 'N/A', room: 'ET-308', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-fri-2', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Harsha Tembhekar', room: 'ET-308', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ciot3-fri-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ciot3-fri-4', subject: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ciot3-fri-5', subject: 'MDM 1: IOT Arch. Pro.', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ciot3-fri-6', subject: 'MI', lecturer: 'Dr. Rathkanthiwar, S. Khan', room: 'IOT Lab 2', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-5))' },
-    { id: 'ciot3-fri-7', subject: 'MI', lecturer: 'Kirti S., Dr. A. B. Thatere', room: 'IOT Lab 4', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4'], color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-fri-4', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Lata R. Tembhare', room: 'ET-308', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ciot3-fri-5', subject: 'IoT Architecture and Protocol', abbreviation: 'MDM: IOT Arch', lecturer: 'Priya Kotewar', room: 'ET-308', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
+    { id: 'ciot3-fri-6', subject: 'Microcontroller & Interfacing', abbreviation: 'Lab: MI', lecturer: 'Dr. Rathkanthiwar, S. Khan', room: 'IOT Lab 2', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1', 'A2'], color: 'hsl(var(--chart-5))' },
+    { id: 'ciot3-fri-7', subject: 'Microcontroller & Interfacing', abbreviation: 'Lab: MI', lecturer: 'Kirti S., Dr. A. B. Thatere', room: 'IOT Lab 4', day: 'Friday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3', 'A4'], color: 'hsl(var(--chart-5))' },
 ];
 
 const CSE_IOT_5_SEM_TIMETABLE: TimetableEntry[] = [
@@ -225,17 +225,17 @@ const CSE_IOT_7_SEM_TIMETABLE: TimetableEntry[] = [
 const CT_3_SEM_A_TIMETABLE: TimetableEntry[] = [
     // Monday
     { id: 'ct3a-mon-1', subject: 'OE:1', lecturer: '', room: 'EL-102', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3a-mon-2', subject: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-102', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-mon-2', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-102', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3a-mon-3', subject: 'Library', lecturer: 'Ashwini Gadwe', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Library', duration: 1, color: '#E0E0E0' },
     { id: 'ct3a-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ct3a-mon-5', subject: 'DMPT', lecturer: 'Ashwini Gadwe', room: 'EL-102', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3a-mon-6', subject: 'DS', lecturer: 'Gousia Ahmed,Ashwini Gadwe', room: 'CT-LAB-02', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3a-mon-6', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Gousia Ahmed,Ashwini Gadwe', room: 'CT-LAB-02', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-4))' },
     { id: 'ct3a-mon-7', subject: 'WT', lecturer: 'Sadaf Ansari,Radhika Tekade', room: 'CT-LAB-03', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4'], color: 'hsl(var(--chart-4))' },
     
     // Tuesday
     { id: 'ct3a-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-204', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3a-tue-2', subject: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-102', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3a-tue-3', subject: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-tue-2', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-102', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-tue-3', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3a-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ct3a-tue-5', subject: 'DMPT', lecturer: 'Ashwini Gadwe', room: 'EL-102', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3a-tue-6', subject: 'CL', lecturer: 'Rina Parteki', room: 'EL-102', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
@@ -243,78 +243,79 @@ const CT_3_SEM_A_TIMETABLE: TimetableEntry[] = [
 
     // Wednesday
     { id: 'ct3a-wed-1', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '10:00-11:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3a-wed-2', subject: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-102', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-wed-2', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-102', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'ct3a-wed-3', subject: 'DMPT', lecturer: 'Ashwini Gadwe', room: 'EL-102', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3a-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3a-wed-5', subject: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3a-wed-6', subject: 'DS', lecturer: 'Dr. Shivkumar Karale,Ashwini Gadwe', room: 'CT-LAB-02', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3a-wed-5', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-wed-6', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Dr. Shivkumar Karale,Ashwini Gadwe', room: 'CT-LAB-02', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4'], color: 'hsl(var(--chart-4))' },
     { id: 'ct3a-wed-7', subject: 'WT', lecturer: 'Sadaf Ansari,Radhika Tekade', room: 'CT-LAB-03', day: 'Wednesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-4))' },
 
     // Thursday
-    { id: 'ct3a-thu-1', subject: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-102', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3a-thu-2', subject: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-thu-1', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-102', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-thu-2', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Thursday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3a-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ct3a-thu-4', subject: 'MDM 1: FSE', lecturer: 'Sharayu Sangekar', room: 'EL-102', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3a-thu-4b', subject: 'MDM2: FAR-VR', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3a-thu-5', subject: 'CL', lecturer: 'Rina Parteki', room: 'EL-102', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3a-thu-6', subject: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-102', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-thu-6', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-102', day: 'Thursday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     
     // Friday
-    { id: 'ct3a-fri-1', subject: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-103', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3a-fri-1', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Roshni S. Khedgaokar', room: 'EL-103', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'ct3a-fri-2', subject: 'CL', lecturer: 'Rina Parteki', room: 'EL-102', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ct3a-fri-3', subject: 'DMPT', lecturer: 'Ashwini Gadwe', room: 'EL-102', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3a-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ct3a-fri-5', subject: 'MDM 1: FSE', lecturer: 'Sharayu Sangekar', room: 'EL-102', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3a-fri-5b', subject: 'MDM2: FAR-VR', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3a-fri-6', subject: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3a-fri-6', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Dr. Gendlal M. Vaidya', room: 'EL-102', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3a-fri-7', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '04:00-05:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
 ];
 
 const CT_3_SEM_B_TIMETABLE: TimetableEntry[] = [
     // Monday
     { id: 'ct3b-mon-1', subject: 'OE:1', lecturer: '', room: 'EL-103', day: 'Monday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3b-mon-2', subject: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3b-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3b-mon-4', subject: 'DMPT', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Monday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3b-mon-5', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3b-mon-6', subject: 'Library', lecturer: 'Nirmik Rathod', room: 'N/A', day: 'Monday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-mon-2', subject: 'Library', lecturer: 'S. Saba', room: 'N/A', day: 'Monday', time: '11:00-12:00', type: 'Library', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-mon-3', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-103', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-mon-5', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'P.V.Barekar', room: 'EL-103', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'ct3b-mon-6', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '02:00-03:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
+    { id: 'ct3b-mon-7', subject: 'Library', lecturer: 'Nirmik Rathod', room: 'N/A', day: 'Monday', time: '03:00-04:00', type: 'Library', duration: 1, color: '#E0E0E0' },
 
     // Tuesday
     { id: 'ct3b-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-103', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3b-tue-2', subject: 'FOME', lecturer: '', room: 'EL-103', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-tue-2', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: '', room: 'EL-103', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3b-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3b-tue-4', subject: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'ct3b-tue-5', subject: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
-    { id: 'ct3b-tue-6', subject: 'LAB: DS', lecturer: 'Dr. Shivkumar Karale,Nirmik Rathod', room: 'CT-LAB-02', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-4))' },
-    { id: 'ct3b-tue-7', subject: 'LAB: WT', lecturer: 'Sadaf Ansari,Priya Kotewar', room: 'CT-LAB-03', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-tue-4', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Tuesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-tue-5', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-tue-6', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Dr. Shivkumar Karale,Nirmik Rathod', room: 'CT-LAB-02', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-tue-7', subject: 'WT', lecturer: 'Sadaf Ansari,Priya Kotewar', room: 'CT-LAB-03', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-4))' },
 
     // Wednesday
-    { id: 'ct3b-wed-1', subject: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-wed-1', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3b-wed-2', subject: 'DMPT', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3b-wed-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'ct3b-wed-4', subject: 'CL', lecturer: 'Radhika Tekade', room: 'EL-103', day: 'Wednesday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'ct3b-wed-5', subject: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-wed-5', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'ct3b-wed-6', subject: 'DMPT', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'ct3b-wed-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
 
     // Thursday
     { id: 'ct3b-thu-1', subject: 'DMPI', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'ct3b-thu-2', subject: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'ct3b-thu-2', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Dr. Shivkumar Karale', room: 'EL-103', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'ct3b-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3b-thu-4', subject: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-thu-4', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3b-thu-5', subject: 'MDM 1: FSE', lecturer: 'Sharayu Sangekar', room: 'EL-102', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'ct3b-thu-5b', subject: 'MDM2: FAR-VR', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'ct3b-thu-6', subject: 'CL', lecturer: 'Radhika Tekade', room: 'EL-103', day: 'Thursday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'ct3b-thu-7', subject: 'Sports', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '04:00-05:00', type: 'Sports', duration: 1, color: '#E0E0E0' },
 
     // Friday
-    { id: 'ct3b-fri-1', subject: 'LAB: DS', lecturer: 'Gousia Ahmed,Nirmik Rathod', room: 'CT-LAB-02', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-4))' },
-    { id: 'ct3b-fri-1b', subject: 'LAB: WT', lecturer: 'Sadaf Ansari,Priya Kotewar', room: 'CT-LAB-03', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-fri-1', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Gousia Ahmed,Nirmik Rathod', room: 'CT-LAB-02', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-4))' },
+    { id: 'ct3b-fri-1b', subject: 'WT', lecturer: 'Sadaf Ansari,Priya Kotewar', room: 'CT-LAB-03', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-4))' },
     { id: 'ct3b-fri-2', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'ct3b-fri-3', subject: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-fri-3', subject: 'Computer Architecture Organization', abbreviation: 'CAO', lecturer: 'Snehal Khalatkar', room: 'EL-103', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3b-fri-4', subject: 'MDM 1: FSE', lecturer: 'Sharayu Sangekar', room: 'EL-102', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'ct3b-fri-4b', subject: 'MDM2: FAR-VR', lecturer: 'K. P. Khandait', room: 'EL-103', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'ct3b-fri-5', subject: 'FOME', lecturer: '', room: 'EL-103', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
+    { id: 'ct3b-fri-5', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: '', room: 'EL-103', day: 'Friday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'ct3b-fri-6', subject: 'CL', lecturer: 'Radhika Tekade', room: 'EL-103', day: 'Friday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
 ];
 
@@ -473,30 +474,30 @@ const AIDS_3_SEM_A_TIMETABLE: TimetableEntry[] = [
     { id: 'aids3a-mon-2', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-302', day: 'Monday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'aids3a-mon-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3a-mon-4', subject: 'Library', lecturer: 'Neha Ingole', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Library', duration: 1, color: '#E0E0E0' },
-    { id: 'aids3a-mon-5', subject: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-mon-5', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'aids3a-mon-6', subject: 'SDS', lecturer: 'S. A. Ghurde', room: 'EL-302', day: 'Monday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'aids3a-mon-7', subject: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-302', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids3a-mon-7', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-302', day: 'Monday', time: '04:00-05:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
 
     // Tuesday
     { id: 'aids3a-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-302', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
-    { id: 'aids3a-tue-2', subject: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-tue-2', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Tuesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'aids3a-tue-3', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-302', day: 'Tuesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'aids3a-tue-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3a-tue-5', subject: 'ESPM', lecturer: 'P. V. Gulhane', room: 'EL-302', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'aids3a-tue-6', subject: 'LAB: SDS', lecturer: 'S. A. Ghurde,Harsha Tembhekar', room: 'AIDS-LAB-02', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-4))' },
-    { id: 'aids3a-tue-7', subject: 'LAB: DS', lecturer: 'Prachi A. Bainalwar,S. Saba', room: 'AIDS-LAB-01', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4'], color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-tue-7', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Prachi A. Bainalwar,S. Saba', room: 'AIDS-LAB-01', day: 'Tuesday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['A3','A4'], color: 'hsl(var(--chart-4))' },
 
     // Wednesday
     { id: 'aids3a-wed-1', subject: 'SDS', lecturer: 'S. A. Ghurde', room: 'EL-302', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'aids3a-wed-2', subject: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
-    { id: 'aids3a-wed-3', subject: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-302', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids3a-wed-2', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-wed-3', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-302', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'aids3a-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3a-wed-5', subject: 'ESPM', lecturer: 'P. V. Gulhane', room: 'EL-302', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'aids3a-wed-6', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-302', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
 
     // Thursday
     { id: 'aids3a-thu-1', subject: 'SDS', lecturer: 'S. A. Ghurde', room: 'EL-302', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'aids3a-thu-2', subject: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3a-thu-2', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'Prachi A. Bainalwar', room: 'EL-302', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'aids3a-thu-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3a-thu-4', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-302', day: 'Thursday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'aids3a-thu-5', subject: 'MDM 1: BDS', lecturer: 'Ashwini Gadwe', room: 'EL-302', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -505,7 +506,7 @@ const AIDS_3_SEM_A_TIMETABLE: TimetableEntry[] = [
 
     // Friday
     { id: 'aids3a-fri-1', subject: 'LAB: SDS', lecturer: 'S. A. Ghurde,Neha Ingole', room: 'AIDS-LAB-02', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['A3','A4'], color: 'hsl(var(--chart-4))' },
-    { id: 'aids3a-fri-1b', subject: 'LAB: DS', lecturer: 'Prachi A. Bainalwar,S. Saba', room: 'AIDS-LAB-01', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-4))' },
+    { id: 'aids3a-fri-1b', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'Prachi A. Bainalwar,S. Saba', room: 'AIDS-LAB-01', day: 'Friday', time: '09:00-10:00', type: 'Practical', duration: 2, batches: ['A1','A2'], color: 'hsl(var(--chart-4))' },
     { id: 'aids3a-fri-2', subject: 'SDS', lecturer: 'S. A. Ghurde', room: 'EL-302', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'aids3a-fri-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '12:00-01:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3a-fri-4', subject: 'MDM 1: BDS', lecturer: 'Ashwini Gadwe', room: 'EL-302', day: 'Friday', time: '01:00-02:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
@@ -519,29 +520,29 @@ const AIDS_3_SEM_B_TIMETABLE: TimetableEntry[] = [
     { id: 'aids3b-mon-2', subject: 'Library', lecturer: 'S. Saba', room: 'N/A', day: 'Monday', time: '11:00-12:00', type: 'Library', duration: 1, color: '#E0E0E0' },
     { id: 'aids3b-mon-3', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-303', day: 'Monday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
     { id: 'aids3b-mon-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Monday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
-    { id: 'aids3b-mon-5', subject: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3b-mon-5', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Monday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'aids3b-mon-6', subject: 'LAB: SDS', lecturer: 'K. P. Khandait,P. V. Gulhane', room: 'AIDS-LAB-02', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-4))' },
-    { id: 'aids3b-mon-7', subject: 'LAB: DS', lecturer: 'P.V.Barekar, S. Saba', room: 'AIDS-LAB-01', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-4))' },
+    { id: 'aids3b-mon-7', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'P.V.Barekar, S. Saba', room: 'AIDS-LAB-01', day: 'Monday', time: '03:00-04:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-4))' },
 
     // Tuesday
     { id: 'aids3b-tue-1', subject: 'OE:1', lecturer: '', room: 'EL-303', day: 'Tuesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'aids3b-tue-2', subject: 'LAB: SDS', lecturer: 'K. P. Khandait,P. V. Gulhane', room: 'AIDS-LAB-02', day: 'Tuesday', time: '11:00-12:00', type: 'Practical', duration: 2, batches: ['B3','B4'], color: 'hsl(var(--chart-5))' },
-    { id: 'aids3b-tue-2b', subject: 'LAB: DS', lecturer: 'P.V.Barekar, S. Saba', room: 'AIDS-LAB-03', day: 'Tuesday', time: '11:00-12:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-5))' },
+    { id: 'aids3b-tue-2b', subject: 'Data Structures', abbreviation: 'Lab: DS', lecturer: 'P.V.Barekar, S. Saba', room: 'AIDS-LAB-03', day: 'Tuesday', time: '11:00-12:00', type: 'Practical', duration: 2, batches: ['B1','B2'], color: 'hsl(var(--chart-5))' },
     { id: 'aids3b-tue-3', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Tuesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3b-tue-4', subject: 'ESPM', lecturer: 'A. R. Banubakode', room: 'EL-303', day: 'Tuesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'aids3b-tue-5', subject: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3b-tue-5', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Tuesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
 
     // Wednesday
     { id: 'aids3b-wed-1', subject: 'SDS', lecturer: 'K. R. Satpute', room: 'EL-102', day: 'Wednesday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'aids3b-wed-2', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-303', day: 'Wednesday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'aids3b-wed-3', subject: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3b-wed-3', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Wednesday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'aids3b-wed-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Wednesday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3b-wed-5', subject: 'ESPM', lecturer: 'A. R. Banubakode', room: 'EL-303', day: 'Wednesday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'aids3b-wed-6', subject: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-303', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids3b-wed-6', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-303', day: 'Wednesday', time: '03:00-04:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
 
     // Thursday
     { id: 'aids3b-thu-1', subject: 'SDS', lecturer: 'K. R. Satpute', room: 'EL-102', day: 'Thursday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
-    { id: 'aids3b-thu-2', subject: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-303', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
+    { id: 'aids3b-thu-2', subject: 'Fundamentals of Economics & Management', abbreviation: 'FOME', lecturer: 'S. S. Narkhede', room: 'EL-303', day: 'Thursday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-5))' },
     { id: 'aids3b-thu-3', subject: 'Help Desk', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '12:00-01:00', type: 'Help Desk', duration: 1, color: '#E0E0E0' },
     { id: 'aids3b-thu-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Thursday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3b-thu-5', subject: 'MDM 1: BDS', lecturer: 'Ashwini Gadwe', room: 'EL-302', day: 'Thursday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
@@ -551,7 +552,7 @@ const AIDS_3_SEM_B_TIMETABLE: TimetableEntry[] = [
     // Friday
     { id: 'aids3b-fri-1', subject: 'SDS', lecturer: 'K. R. Satpute', room: 'EL-102', day: 'Friday', time: '10:00-11:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-4))' },
     { id: 'aids3b-fri-2', subject: 'LA', lecturer: 'Neha A. Bele', room: 'EL-303', day: 'Friday', time: '11:00-12:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-2))' },
-    { id: 'aids3b-fri-3', subject: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
+    { id: 'aids3b-fri-3', subject: 'Data Structures', abbreviation: 'DS', lecturer: 'P.V.Barekar', room: 'EL-303', day: 'Friday', time: '12:00-01:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-3))' },
     { id: 'aids3b-fri-4', subject: 'Recess', lecturer: 'N/A', room: 'N/A', day: 'Friday', time: '01:00-02:00', type: 'Recess', duration: 1, color: '#E0E0E0' },
     { id: 'aids3b-fri-5', subject: 'MDM 1: BDS', lecturer: 'Ashwini Gadwe', room: 'EL-302', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
     { id: 'aids3b-fri-5b', subject: 'MDM2:Front End', lecturer: 'Nirmik Rathod', room: 'EL-303', day: 'Friday', time: '02:00-03:00', type: 'Lecture', duration: 1, color: 'hsl(var(--chart-1))' },
