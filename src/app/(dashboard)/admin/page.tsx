@@ -229,12 +229,6 @@ export default function AdminDashboardPage() {
                                     Add New Class
                                 </DropdownMenuItem>
                             </AddClassDialog>
-                            <ImportTimetableDialog onImport={handleImportTimetable}>
-                                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                    <Upload />
-                                    Import from Sheet
-                                </DropdownMenuItem>
-                            </ImportTimetableDialog>
                             <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
                                 <FileSpreadsheet />
                                 Export as Sheet

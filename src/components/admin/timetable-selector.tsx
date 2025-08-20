@@ -86,6 +86,7 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
 
         {!isReadOnly && (
           <>
+            <ImportTimetableDialog onImport={onImportTimetable} />
             <AddTimetableDialog onCreateTimetable={onCreateTimetable} />
             {activeTimetable && (
               <AlertDialog>
