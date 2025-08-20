@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Trash2 } from "lucide-react";
 import type { TimetableEntry } from "@/lib/types";
-import { ClassForm } from "./class-form";
+import { ClassForm, type ClassFormValues } from "./class-form";
 
 type EditClassDialogProps = {
     isOpen: boolean;
@@ -41,8 +41,12 @@ export function EditClassDialog({
     onDeleteClass
 }: EditClassDialogProps) {
 
-  const handleFormSubmit = (data: Omit<TimetableEntry, 'id'>) => {
-    onUpdateClass({ ...data, id: classEntry.id });
+  const handleFormSubmit = (data: ClassFormValues) => {
+    const dataToSend = {
+      ...data,
+      batches: data.batches ? data.batches.split(',').map(b => b.trim()).filter(b => b) : [],
+    };
+    onUpdateClass({ ...dataToSend, id: classEntry.id });
   };
   
   const handleDelete = () => {

@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils"
 import type { TimetableEntry, SpecialClassType } from "@/lib/types";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { DialogFooter } from "@/components/ui/dialog";
+import { Switch } from "../ui/switch";
+import { Separator } from "../ui/separator";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -27,7 +29,7 @@ export const ALL_CLASSROOMS = [
 export const ALL_LABS = [
     'CT-LAB-01', 'CT-LAB-02', 'CT-LAB-03', 'CT-LAB-04', 'CT-LAB-05', 'CT-LAB-06', 'CT-LAB-07', 'CT-LAB-08',
     'AIDS-LAB-01', 'AIDS-LAB-02', 'AIDS-LAB-03', 'AIDS-LAB-04', 'AIDS-LAB-05', 'AIDS-LAB-06',
-    'IOT Lab 1,2', 'IOT Lab 3,4',
+    'IOT Lab 1', 'IOT Lab 2', 'IOT Lab 3', 'IOT Lab 4',
 ];
 
 
@@ -39,6 +41,15 @@ const PALETTE_COLORS = [
     'hsl(var(--chart-5))',
 ];
 
+const parallelPracticalSchema = z.object({
+    enabled: z.boolean().default(false),
+    subject: z.string().optional(),
+    lecturer: z.string().optional(),
+    room: z.string().optional(),
+    batches: z.string().optional(),
+    color: z.string().optional(),
+}).optional();
+
 const formSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   lecturer: z.string().optional(),
@@ -49,6 +60,7 @@ const formSchema = z.object({
   time: z.string().min(1, "Time is required"),
   duration: z.number().min(1).max(3),
   color: z.string().min(1, "Color is required"),
+  parallelPractical: parallelPracticalSchema,
 }).refine(data => {
     if (data.type === 'Practical') {
         return data.batches && data.batches.length > 0;
@@ -59,15 +71,32 @@ const formSchema = z.object({
     return data.lecturer && data.lecturer.length > 0 && data.room && data.room.length > 0;
 }, {
     message: "Lecturer, Room/Lab, and Batches are required for this class type.",
-    path: ['lecturer'], // You can choose which field to attach the error to
+    path: ['lecturer'], 
+}).refine(data => {
+    if (data.type === 'Practical' && data.parallelPractical?.enabled) {
+        const parallel = data.parallelPractical;
+        return parallel.subject && parallel.subject.length > 0 &&
+               parallel.lecturer && parallel.lecturer.length > 0 &&
+               parallel.room && parallel.room.length > 0 &&
+               parallel.batches && parallel.batches.length > 0 &&
+               parallel.color && parallel.color.length > 0;
+    }
+    return true;
+}, {
+    message: "All fields for the parallel practical are required.",
+    path: ['parallelPractical.subject'],
 });
 
 
-type FormValues = Omit<TimetableEntry, 'id' | 'batches'> & { batches?: string };
+type FormValues = Omit<TimetableEntry, 'id' | 'batches'> & { 
+    batches?: string,
+    parallelPractical?: z.infer<typeof parallelPracticalSchema>
+};
+export type ClassFormValues = FormValues;
 
 type ClassFormProps = {
     defaultValues?: TimetableEntry;
-    onSubmit: (data: Omit<TimetableEntry, 'id'>) => void;
+    onSubmit: (data: FormValues) => void;
     submitButtonText?: string;
     footerContent?: React.ReactNode;
 }
@@ -86,6 +115,14 @@ export const ClassForm = React.memo(({ defaultValues, onSubmit, submitButtonText
         day: '',
         time: '',
         batches: '',
+        parallelPractical: {
+            enabled: false,
+            subject: '',
+            lecturer: '',
+            room: '',
+            batches: '',
+            color: PALETTE_COLORS[1]
+        }
   };
   
   const form = useForm<FormValues>({
@@ -94,15 +131,12 @@ export const ClassForm = React.memo(({ defaultValues, onSubmit, submitButtonText
   });
 
   const handleSubmit = (values: FormValues) => {
-    const dataToSend = {
-      ...values,
-      batches: values.batches ? values.batches.split(',').map(b => b.trim()).filter(b => b) : [],
-    };
-    onSubmit(dataToSend);
+    onSubmit(values);
   };
   
   const classType = form.watch("type");
   const isSpecialType = SPECIAL_TYPES.includes(classType as SpecialClassType);
+  const parallelEnabled = form.watch("parallelPractical.enabled");
 
   const roomOptions = classType === 'Lecture' ? ALL_CLASSROOMS : classType === 'Practical' ? ALL_LABS : [];
   const roomLabel = classType === 'Lecture' ? 'Classroom' : classType === 'Practical' ? 'Lab' : 'Room/Lab';
@@ -118,8 +152,10 @@ export const ClassForm = React.memo(({ defaultValues, onSubmit, submitButtonText
         setValue('lecturer', 'N/A');
         setValue('room', 'N/A');
         setValue('batches', '');
+        setValue('parallelPractical.enabled', false);
     } else { // Lecture
         setValue('duration', 1);
+        setValue('parallelPractical.enabled', false);
         if (SPECIAL_TYPES.includes(getValues('subject') as SpecialClassType)) {
             setValue('subject', '');
             setValue('lecturer', '');
@@ -133,7 +169,7 @@ export const ClassForm = React.memo(({ defaultValues, onSubmit, submitButtonText
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="flex flex-col overflow-hidden h-full">
-        <div className="space-y-4 px-6 overflow-y-auto">
+        <div className="space-y-4 px-6 overflow-y-auto flex-1">
             <FormField
                 control={form.control}
                 name="type"
@@ -166,71 +202,213 @@ export const ClassForm = React.memo(({ defaultValues, onSubmit, submitButtonText
                 </FormItem>
                 )}
             />
-            <FormField
-                control={form.control}
-                name="subject"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Subject</FormLabel>
-                    <FormControl>
-                        <Input {...field} disabled={isSpecialType} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="lecturer"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Lecturer(s)</FormLabel>
-                    <FormControl>
-                        <Input {...field} disabled={isSpecialType} placeholder="e.g. John Doe, Jane Smith"/>
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
-             <FormField
-                control={form.control}
-                name="room"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>{roomLabel}</FormLabel>
-                     <Select 
-                        onValueChange={field.onChange} 
-                        value={field.value}
-                        disabled={isSpecialType || (classType !== 'Lecture' && classType !== 'Practical')}
-                    >
+
+            <div className={cn(classType === 'Practical' && "border p-4 rounded-md")}>
+                <FormField
+                    control={form.control}
+                    name="subject"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Subject</FormLabel>
                         <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder={`Select a ${roomLabel.toLowerCase()}`} />
-                            </SelectTrigger>
+                            <Input {...field} disabled={isSpecialType} />
                         </FormControl>
-                        <SelectContent>
-                        {roomOptions.map(room => (
-                            <SelectItem key={room} value={room}>{room}</SelectItem>
-                        ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
-            <FormField
-                control={form.control}
-                name="batches"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Batches</FormLabel>
-                    <FormControl>
-                        <Input {...field} disabled={classType !== 'Practical'} placeholder="e.g. A1, A2" />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="lecturer"
+                    render={({ field }) => (
+                    <FormItem className="mt-4">
+                        <FormLabel>Lecturer(s)</FormLabel>
+                        <FormControl>
+                            <Input {...field} disabled={isSpecialType} placeholder="e.g. John Doe, Jane Smith"/>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="room"
+                    render={({ field }) => (
+                    <FormItem className="mt-4">
+                        <FormLabel>{roomLabel}</FormLabel>
+                         <Select 
+                            onValueChange={field.onChange} 
+                            value={field.value}
+                            disabled={isSpecialType || (classType !== 'Lecture' && classType !== 'Practical')}
+                        >
+                            <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={`Select a ${roomLabel.toLowerCase()}`} />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {roomOptions.map(room => (
+                                <SelectItem key={room} value={room}>{room}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="batches"
+                    render={({ field }) => (
+                    <FormItem className="mt-4">
+                        <FormLabel>Batches</FormLabel>
+                        <FormControl>
+                            <Input {...field} disabled={classType !== 'Practical'} placeholder="e.g. A1, A2" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="color"
+                    render={({ field }) => (
+                    <FormItem className="mt-4">
+                        <FormLabel>Color</FormLabel>
+                        <FormControl>
+                             <RadioGroup
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                className="flex flex-wrap gap-2 pt-2"
+                            >
+                                {PALETTE_COLORS.map((color) => (
+                                    <FormItem key={color} className="flex items-center space-x-2">
+                                         <FormControl>
+                                            <RadioGroupItem value={color} id={color} className="sr-only" disabled={isSpecialType}/>
+                                         </FormControl>
+                                         <Label 
+                                            htmlFor={color}
+                                            className={cn(
+                                                "h-6 w-6 rounded-full border border-muted-foreground/50",
+                                                !isSpecialType ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+                                                "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
+                                            )}
+                                            style={{ backgroundColor: color }}
+                                        />
+                                    </FormItem>
+                                ))}
+                            </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+            </div>
+
+            {classType === 'Practical' && (
+                <div className="space-y-4">
+                    <div className="flex items-center space-x-2 pt-2">
+                        <FormField
+                            control={form.control}
+                            name="parallelPractical.enabled"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm w-full">
+                                <div className="space-y-0.5">
+                                    <FormLabel>Add Parallel Practical</FormLabel>
+                                </div>
+                                <FormControl>
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                     {parallelEnabled && (
+                        <div className="border p-4 rounded-md space-y-4">
+                             <p className="text-sm font-medium text-center">Parallel Practical Details</p>
+                             <Separator />
+                             <FormField
+                                control={form.control}
+                                name="parallelPractical.subject"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Subject</FormLabel>
+                                    <FormControl><Input {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="parallelPractical.lecturer"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Lecturer(s)</FormLabel>
+                                    <FormControl><Input {...field} placeholder="e.g. John Doe, Jane Smith"/></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="parallelPractical.room"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Lab</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Select a lab" /></SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {ALL_LABS.map(lab => <SelectItem key={lab} value={lab}>{lab}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="parallelPractical.batches"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Batches</FormLabel>
+                                    <FormControl><Input {...field} placeholder="e.g. A3, A4" /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="parallelPractical.color"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Color</FormLabel>
+                                    <FormControl>
+                                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-wrap gap-2 pt-2">
+                                            {PALETTE_COLORS.map((color) => (
+                                                <FormItem key={`p-${color}`} className="flex items-center space-x-2">
+                                                    <FormControl>
+                                                        <RadioGroupItem value={color} id={`p-${color}`} className="sr-only"/>
+                                                    </FormControl>
+                                                    <Label htmlFor={`p-${color}`} className={cn("h-6 w-6 rounded-full border border-muted-foreground/50 cursor-pointer", "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring")} style={{ backgroundColor: color }}/>
+                                                </FormItem>
+                                            ))}
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                        </div>
+                     )}
+                </div>
+            )}
+
+
              <FormField
                 control={form.control}
                 name="day"
@@ -275,42 +453,8 @@ export const ClassForm = React.memo(({ defaultValues, onSubmit, submitButtonText
                 </FormItem>
                 )}
             />
-             <FormField
-                control={form.control}
-                name="color"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Color</FormLabel>
-                    <FormControl>
-                         <RadioGroup
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            className="flex flex-wrap gap-2 pt-2"
-                        >
-                            {PALETTE_COLORS.map((color) => (
-                                <FormItem key={color} className="flex items-center space-x-2">
-                                     <FormControl>
-                                        <RadioGroupItem value={color} id={color} className="sr-only" disabled={isSpecialType}/>
-                                     </FormControl>
-                                     <Label 
-                                        htmlFor={color}
-                                        className={cn(
-                                            "h-6 w-6 rounded-full border border-muted-foreground/50",
-                                            !isSpecialType ? "cursor-pointer" : "cursor-not-allowed opacity-50",
-                                            "ring-offset-background [&:has([data-state=checked])]:ring-2 [&:has([data-state=checked])]:ring-ring",
-                                        )}
-                                        style={{ backgroundColor: color }}
-                                    />
-                                </FormItem>
-                            ))}
-                        </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
         </div>
-        <DialogFooter className="mt-auto px-6 py-4 bg-background flex justify-between w-full">
+        <DialogFooter className="mt-auto px-6 py-4 bg-background flex justify-between w-full sticky bottom-0">
             <div>
               {footerContent}
             </div>

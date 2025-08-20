@@ -15,7 +15,7 @@ interface TimetableContextType {
   addTimetable: (name: string, year: string) => Promise<string | null>;
   deleteTimetable: (id: string) => void;
   importTimetable: (newTimetable: TimetableData) => Promise<string | null>;
-  addEntry: (timetableId: string, newClass: Omit<TimetableEntry, 'id'>) => boolean;
+  addEntry: (timetableId: string, newClass: Omit<TimetableEntry, 'id'>, parallelClass?: Omit<TimetableEntry, 'id'>) => boolean;
   updateEntry: (timetableId: string, updatedClass: TimetableEntry) => boolean;
   deleteEntry: (timetableId: string, classId: string) => void;
 }
@@ -148,16 +148,44 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
     return newTimetable.id;
   }, [toast]);
 
-  const addEntry = useCallback((timetableId: string, newClass: Omit<TimetableEntry, 'id'>): boolean => {
+  const addEntry = useCallback((timetableId: string, newClass: Omit<TimetableEntry, 'id'>, parallelClass?: Omit<TimetableEntry, 'id'>): boolean => {
     if (!allTimetables) return false;
+    
     if (checkForConflicts(allTimetables, newClass, timetableId)) return false;
+    if (parallelClass && checkForConflicts(allTimetables, parallelClass, timetableId)) return false;
+    
+    if(parallelClass) {
+        // check for conflicts between the two new classes themselves
+        if(newClass.room === parallelClass.room) {
+             toast({ variant: "destructive", title: "Room Conflict", description: `Cannot add two practicals in the same room "${newClass.room}" at the same time.`});
+             return false;
+        }
+        const newClassLecturers = (newClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+        const parallelLecturers = (parallelClass.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+        if(newClassLecturers.some(l => parallelLecturers.includes(l))) {
+            toast({ variant: "destructive", title: "Lecturer Conflict", description: `Cannot schedule the same lecturer for parallel practicals.`});
+            return false;
+        }
+        const newClassBatches = newClass.batches || [];
+        const parallelBatches = parallelClass.batches || [];
+        if(newClassBatches.some(b => parallelBatches.includes(b))) {
+            toast({ variant: "destructive", title: "Batch Conflict", description: `Cannot schedule the same batch for parallel practicals.`});
+            return false;
+        }
+    }
+
 
     const newEntry: TimetableEntry = { ...newClass, id: `c${Date.now()}` };
+    const newEntries = [newEntry];
+    if (parallelClass) {
+        newEntries.push({ ...parallelClass, id: `c${Date.now() + 1}` });
+    }
+
     setAllTimetables(prev => (prev || []).map(t => 
-        t.id === timetableId ? { ...t, timetable: [...t.timetable, newEntry] } : t
+        t.id === timetableId ? { ...t, timetable: [...t.timetable, ...newEntries] } : t
     ));
     return true;
-  }, [allTimetables, checkForConflicts]);
+  }, [allTimetables, checkForConflicts, toast]);
 
   const updateEntry = useCallback((timetableId: string, updatedClass: TimetableEntry): boolean => {
     if (!allTimetables) return false;

@@ -14,19 +14,41 @@ import {
 } from "@/components/ui/dialog"
 import { PlusCircle } from "lucide-react"
 import type { TimetableEntry } from "@/lib/types";
-import { ClassForm } from "./class-form";
+import { ClassForm, type ClassFormValues } from "./class-form";
 
 
 type AddClassDialogProps = {
-    onAddClass: (newClass: Omit<TimetableEntry, 'id'>) => void;
+    onAddClass: (newClass: Omit<TimetableEntry, 'id'>, parallelClass?: Omit<TimetableEntry, 'id'>) => void;
     children?: React.ReactNode;
 }
 
 export function AddClassDialog({ onAddClass, children }: AddClassDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleFormSubmit = (data: Omit<TimetableEntry, 'id'>) => {
-    onAddClass(data);
+  const handleFormSubmit = (data: ClassFormValues) => {
+    const { parallelPractical, ...mainClassData } = data;
+    
+    const mainClass = {
+        ...mainClassData,
+        batches: mainClassData.batches ? mainClassData.batches.split(',').map(b => b.trim()).filter(b => b) : [],
+    };
+    
+    let parallelClass: Omit<TimetableEntry, 'id'> | undefined = undefined;
+
+    if (mainClass.type === 'Practical' && parallelPractical?.enabled && parallelPractical.subject) {
+        parallelClass = {
+            subject: parallelPractical.subject,
+            lecturer: parallelPractical.lecturer,
+            room: parallelPractical.room,
+            batches: parallelPractical.batches ? parallelPractical.batches.split(',').map(b => b.trim()).filter(b => b) : [],
+            day: mainClass.day,
+            time: mainClass.time,
+            type: 'Practical',
+            duration: mainClass.duration,
+            color: parallelPractical.color || mainClass.color,
+        }
+    }
+    onAddClass(mainClass, parallelClass);
     setIsOpen(false);
   }
 

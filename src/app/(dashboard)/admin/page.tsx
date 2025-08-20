@@ -68,11 +68,17 @@ export default function AdminDashboardPage() {
     setSelectedClass(null);
   }, []);
   
-  const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>) => {
+  const handleAddClass = useCallback(async (newClass: Omit<TimetableEntry, 'id'>, parallelClass?: Omit<TimetableEntry, 'id'>) => {
     if (!activeTimetable) return;
-    const success = addEntry(selectedTimetableId, newClass);
+
+    let success = addEntry(selectedTimetableId, newClass, parallelClass);
+    
     if(success) {
-      toast({ title: "Class Added!", description: `"${newClass.subject}" has been added.` });
+      let description = `"${newClass.subject}" has been added.`;
+      if (parallelClass) {
+        description += ` and "${parallelClass.subject}" has been added in parallel.`
+      }
+      toast({ title: "Class Added!", description: description });
     }
   }, [activeTimetable, addEntry, toast, selectedTimetableId]);
   
@@ -257,4 +263,3 @@ export default function AdminDashboardPage() {
     
 
     
-
