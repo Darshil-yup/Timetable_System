@@ -63,8 +63,9 @@ export const ClassroomView: React.FC = React.memo(() => {
         return;
     }
 
+    const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-      ["Day/Time", ...TIME_SLOTS],
+      header,
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -88,6 +89,33 @@ export const ClassroomView: React.FC = React.memo(() => {
     });
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
+    
+    // Set column widths
+    const columnWidths = [
+      { wch: 15 }, // Day/Time
+      ...TIME_SLOTS.map(() => ({ wch: 25 })) // Time slots
+    ];
+    worksheet['!cols'] = columnWidths;
+
+    // Apply bold formatting to headers and enable text wrapping
+    for (let C = 0; C < header.length; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
+        if(worksheet[cellAddress]) {
+            worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
+        }
+    }
+    
+    // Enable text wrapping for all cells
+    for(let R = 1; R < grid.length; ++R) {
+        for(let C = 0; C < grid[R].length; ++C) {
+            const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
+            if(worksheet[cellAddress]) {
+                 worksheet[cellAddress].s = { alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
+            }
+        }
+    }
+
+    // Handle merged cells
     worksheet['!merges'] = [];
     const processedMerges = new Set();
     filteredLectureTimetable.forEach(entry => {

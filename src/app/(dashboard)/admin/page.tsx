@@ -121,10 +121,14 @@ export default function AdminDashboardPage() {
   }, [isEditMode, toast]);
 
   const handleExportSheet = useCallback(() => {
-    if (!activeTimetable) return toast({ title: "Export Failed", variant: "destructive" });
+    if (!activeTimetable) {
+      toast({ title: "Export Failed", variant: "destructive" });
+      return;
+    }
 
+    const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-      ["Day/Time", ...TIME_SLOTS],
+      header,
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -144,22 +148,16 @@ export default function AdminDashboardPage() {
           (e.duration || 1) === duration
         );
         
-        let cellContent = '';
-        group.forEach((g, index) => {
+        const cellContent = group.map(g => {
             const subject = g.type === 'Practical' ? `LAB: ${g.subject}` : g.subject;
             const lecturer = g.lecturer;
             const room = g.room;
             const batches = g.batches?.join(', ');
-
-            cellContent += [subject, lecturer, room, batches].filter(Boolean).join('\n');
-            if (index < group.length - 1) {
-                cellContent += '\n---\n';
-            }
-        });
+            return [subject, lecturer, room, batches].filter(Boolean).join('\n');
+        }).join('\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
-
             group.forEach(g => placedEntries.add(g.id));
 
             for (let i = 1; i < duration; i++) {
@@ -169,10 +167,36 @@ export default function AdminDashboardPage() {
             }
         }
     });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(grid);
-    worksheet['!merges'] = [];
     
+    const worksheet = XLSX.utils.aoa_to_sheet(grid);
+
+    // Set column widths
+    const columnWidths = [
+      { wch: 15 }, // Day/Time
+      ...TIME_SLOTS.map(() => ({ wch: 25 })) // Time slots
+    ];
+    worksheet['!cols'] = columnWidths;
+
+    // Apply bold formatting to headers and enable text wrapping
+    for (let C = 0; C < header.length; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
+        if(worksheet[cellAddress]) {
+            worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
+        }
+    }
+    
+    // Enable text wrapping for all cells
+    for(let R = 1; R < grid.length; ++R) {
+        for(let C = 0; C < grid[R].length; ++C) {
+            const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
+            if(worksheet[cellAddress]) {
+                 worksheet[cellAddress].s = { alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
+            }
+        }
+    }
+
+    // Handle merged cells
+    worksheet['!merges'] = [];
     activeTimetable.timetable.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day) + 1;
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
