@@ -28,12 +28,13 @@ const SpecialCardContent = React.memo(({ entry }: { entry: TimetableEntry }) => 
 });
 SpecialCardContent.displayName = 'SpecialCardContent';
 
-const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConflicting }: {
+const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConflicting, onClick }: {
   entry: TimetableEntry;
   isEditMode?: boolean;
   onEdit?: (entry: TimetableEntry) => void;
   isHighlighted?: boolean;
   isConflicting?: boolean;
+  onClick?: () => void;
 }) => {
   const isSpecial = SPECIAL_TYPES.includes(entry.type as SpecialClassType);
 
@@ -53,10 +54,15 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
   }
 
   const handleEditClick = () => {
-    if (isEditMode && onEdit) {
+    if (onClick) {
+        onClick();
+    } else if (isEditMode && onEdit) {
       onEdit(entry);
     }
   };
+  
+  const subjectPrefix = entry.type === 'Practical' && !entry.subject.toLowerCase().startsWith('lab:') ? 'LAB: ' : '';
+
 
   const cardContent = isSpecial ? (
     <SpecialCardContent entry={entry} />
@@ -65,7 +71,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
       <CardHeader className="p-2 md:p-3">
         <CardTitle className="text-sm font-bold flex items-center gap-2" style={titleStyle}>
           {entry.type === 'Practical' ? <FlaskConical className="h-4 w-4 shrink-0" /> : <Book className="h-4 w-4 shrink-0" />}
-          <span className="truncate">{entry.subject}</span>
+          <span className="truncate">{subjectPrefix}{entry.subject}</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2 md:p-3 text-xs text-foreground/80 space-y-1 flex-grow overflow-hidden">
@@ -80,7 +86,7 @@ const ClassCard = React.memo(({ entry, isEditMode, onEdit, isHighlighted, isConf
         {entry.batches && entry.batches.length > 0 && (
           <div className="flex items-start gap-2">
             <Users className="h-3 w-3 shrink-0 mt-0.5" style={iconStyle} />
-            <span className="truncate">Batches: {entry.batches.join(', ')}</span>
+            <span className="truncate">Batches: {Array.isArray(entry.batches) ? entry.batches.join(', ') : entry.batches}</span>
           </div>
         )}
       </CardContent>
@@ -123,19 +129,35 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
     )
   }
 
-  const groupedEntries = React.useMemo(() => {
-    const groups: { [key: string]: TimetableEntry[] } = {};
-    entries.forEach(entry => {
-      const key = `${entry.day}-${entry.time}`;
-      if (!groups[key]) {
-        groups[key] = [];
-      }
-      groups[key].push(entry);
-    });
-    return groups;
-  }, [entries]);
-  
+  const gridData: (TimetableEntry | TimetableEntry[])[][] = DAYS.map(() => Array(TIME_SLOTS.length).fill(null));
   const placedEntries = new Set<string>();
+
+  entries.forEach(entry => {
+    if (placedEntries.has(entry.id)) return;
+
+    const dayIndex = DAYS.indexOf(entry.day);
+    const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+    
+    if (dayIndex === -1 || timeIndex === -1) return;
+
+    const key = `${entry.day}-${entry.time}`;
+    const group = entries.filter(e => e.day === entry.day && e.time === entry.time);
+
+    if (gridData[dayIndex][timeIndex] === null) {
+      gridData[dayIndex][timeIndex] = group.length > 1 ? group : entry;
+    }
+
+    const duration = entry.duration || 1;
+    for (let i = 0; i < duration; i++) {
+        const currentSlotIndex = timeIndex + i;
+        if (currentSlotIndex < TIME_SLOTS.length) {
+            const currentKey = `${entry.day}-${TIME_SLOTS[currentSlotIndex]}`;
+            const entriesInSlot = entries.filter(e => e.day === entry.day && e.time === TIME_SLOTS[currentSlotIndex]);
+            entriesInSlot.forEach(e => placedEntries.add(e.id));
+        }
+    }
+  });
+
 
   return (
     <div ref={ref} className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-x-auto">
@@ -165,76 +187,74 @@ export const Timetable = React.memo(React.forwardRef<HTMLDivElement, TimetablePr
             >
               {day}
             </div>
-             {TIME_SLOTS.map((time, timeIndex) => {
-                const key = `${day}-${time}`;
-                const group = groupedEntries[key];
-                
-                // If there's no entry for this slot, render an empty cell for grid structure
-                if (!group) {
+             {gridData[dayIndex].map((cellData, timeIndex) => {
+                if (!cellData) {
                     return (
                         <div
-                            key={key}
+                            key={`${day}-${timeIndex}`}
                             className="border-r border-b"
                             style={{ gridRow: dayIndex + 2, gridColumn: timeIndex + 2 }}
                         />
                     );
                 }
                 
-                const duration = Math.max(...group.map(e => e.duration || 1));
-                const alreadyPlaced = group.some(e => placedEntries.has(e.id));
-                
-                // If this entry has been placed by a multi-hour duration, skip rendering
-                if (alreadyPlaced) return null;
-                
-                group.forEach(e => {
-                  for (let i=0; i < (e.duration || 1); i++) {
-                     const nextTimeSlotIndex = timeIndex + i;
-                     if (nextTimeSlotIndex < TIME_SLOTS.length) {
-                       const nextTime = TIME_SLOTS[nextTimeSlotIndex];
-                       const nextKey = `${day}-${nextTime}`;
-                       // this is a bit tricky, we need to mark all entries in the next slots as placed
-                       const entriesInNextSlot = groupedEntries[nextKey];
-                       entriesInNextSlot?.forEach(entryInNextSlot => placedEntries.add(entryInNextSlot.id));
-                     }
-                  }
-                });
+                if (Array.isArray(cellData)) { // Grouped entries
+                    const group = cellData;
+                    const duration = Math.max(...group.map(e => e.duration || 1));
+                    const combinedEntry: TimetableEntry = {
+                        id: group.map(e => e.id).join('/'),
+                        subject: group.map(e => e.subject).join(' / '),
+                        lecturer: group.map(e => e.lecturer).join(' / '),
+                        room: group.map(e => e.room).join(' / '),
+                        day: group[0].day,
+                        time: group[0].time,
+                        type: group[0].type, // Assuming same type for combined view
+                        duration,
+                        batches: group.map(e => e.batches?.join(', ')).join(' / '),
+                        color: group[0].color,
+                    };
+                    const isConflicting = group.some(e => conflictingIds.has(e.id));
+                     const isHighlighted = highlightedLecturer ? group.some(e => e.lecturer.includes(highlightedLecturer)) : false;
 
+                    return (
+                        <div
+                            key={combinedEntry.id}
+                            className="border-r border-b p-1 relative"
+                            style={{
+                                gridRow: `${dayIndex + 2}`,
+                                gridColumn: `${timeIndex + 2} / span ${duration}`,
+                            }}
+                        >
+                          <ClassCard
+                            entry={combinedEntry}
+                            isEditMode={isEditMode}
+                            onEdit={isEditMode ? () => onEdit?.(group[0]) : undefined} // open first one
+                            onClick={isEditMode ? () => onEdit?.(group[0]) : undefined}
+                            isHighlighted={isHighlighted}
+                            isConflicting={isConflicting}
+                          />
+                        </div>
+                    )
+                }
+                
+                // Single entry
+                const entry = cellData as TimetableEntry;
                 return (
                     <div
-                      key={key}
+                      key={entry.id}
                       className="border-r border-b p-1 relative"
                       style={{
                         gridRow: `${dayIndex + 2}`,
-                        gridColumn: `${timeIndex + 2} / span ${duration}`,
+                        gridColumn: `${timeIndex + 2} / span ${entry.duration || 1}`,
                       }}
                     >
-                    {group.length > 1 ? (
-                        <ScrollArea className="h-full" style={{ maxHeight: '122px' }}>
-                            <div className="space-y-1 pr-3">
-                                {group.map(e => (
-                                    <div key={e.id} className="h-[122px] flex-shrink-0">
-                                        <ClassCard
-                                            entry={e}
-                                            isEditMode={isEditMode}
-                                            onEdit={onEdit}
-                                            isHighlighted={highlightedLecturer ? e.lecturer.includes(highlightedLecturer) : false}
-                                            isConflicting={conflictingIds.has(e.id)}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </ScrollArea>
-                    ) : (
-                        <div className="h-full">
-                            <ClassCard
-                                entry={group[0]}
-                                isEditMode={isEditMode}
-                                onEdit={onEdit}
-                                isHighlighted={highlightedLecturer ? group[0].lecturer.includes(highlightedLecturer) : false}
-                                isConflicting={conflictingIds.has(group[0].id)}
-                            />
-                        </div>
-                    )}
+                      <ClassCard
+                        entry={entry}
+                        isEditMode={isEditMode}
+                        onEdit={onEdit}
+                        isHighlighted={highlightedLecturer ? entry.lecturer.includes(highlightedLecturer) : false}
+                        isConflicting={conflictingIds.has(entry.id)}
+                      />
                     </div>
                 )
              })}
