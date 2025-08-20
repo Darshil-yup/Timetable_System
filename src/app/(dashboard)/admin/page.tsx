@@ -257,14 +257,16 @@ export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-8">
       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
-        <TimetableSelector
-          timetables={timetableMetadatas || []}
-          selectedTimetableId={selectedTimetableId}
-          onSelectTimetable={handleSelectTimetable}
-          onCreateTimetable={handleCreateTimetable}
-          onDeleteTimetable={handleDeleteTimetable}
-          onImportTimetable={handleImportTimetable}
-        />
+        <div className="flex-1 min-w-[320px]">
+             <TimetableSelector
+                timetables={timetableMetadatas || []}
+                selectedTimetableId={selectedTimetableId}
+                onSelectTimetable={handleSelectTimetable}
+                onCreateTimetable={handleCreateTimetable}
+                onDeleteTimetable={handleDeleteTimetable}
+                onImportTimetable={handleImportTimetable}
+            />
+        </div>
       </div>
 
      {hasTimetables ? (
