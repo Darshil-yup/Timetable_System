@@ -7,7 +7,7 @@ import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
-import { FileSpreadsheet, User } from 'lucide-react';
+import { FileSpreadsheet, User, Book } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -28,12 +28,18 @@ export default function LecturerDashboardPage() {
   const { allTimetables, loading: timetablesLoading } = useTimetables();
   
   const [selectedLecturer, setSelectedLecturer] = useState<string>('');
+  const [selectedSubject, setSelectedSubject] = useState<string>('all');
   
   useEffect(() => {
     if (LECTURERS.length > 0 && !selectedLecturer) {
         setSelectedLecturer(LECTURERS[0].name);
     }
   }, [selectedLecturer]);
+
+  const handleLecturerChange = (lecturerName: string) => {
+    setSelectedLecturer(lecturerName);
+    setSelectedSubject('all');
+  }
 
   const lecturerTimetable = useMemo(() => {
     if (!selectedLecturer || !allTimetables) return [];
@@ -48,11 +54,24 @@ export default function LecturerDashboardPage() {
     return allClasses;
   }, [selectedLecturer, allTimetables]);
 
+  const lecturerSubjects = useMemo(() => {
+    if (!lecturerTimetable) return [];
+    const subjects = new Set(lecturerTimetable.map(entry => entry.subject));
+    return ['All Subjects', ...Array.from(subjects)];
+  }, [lecturerTimetable]);
+
+  const filteredTimetable = useMemo(() => {
+    if (selectedSubject === 'all') {
+      return lecturerTimetable;
+    }
+    return lecturerTimetable.filter(entry => entry.subject === selectedSubject);
+  }, [lecturerTimetable, selectedSubject]);
+
   const handleExportSheet = useCallback(() => {
-    if (!selectedLecturer || lecturerTimetable.length === 0) {
+    if (!selectedLecturer || filteredTimetable.length === 0) {
         toast({
             title: "Export Failed",
-            description: "No timetable data available for the selected lecturer.",
+            description: "No timetable data available for the current selection.",
             variant: "destructive",
         });
         return;
@@ -65,7 +84,7 @@ export default function LecturerDashboardPage() {
         ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
 
-    lecturerTimetable.forEach(entry => {
+    filteredTimetable.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day) + 1;
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
         if (dayIndex > 0 && timeIndex > 0) {
@@ -85,7 +104,7 @@ export default function LecturerDashboardPage() {
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     worksheet['!merges'] = [];
-    lecturerTimetable.forEach(entry => {
+    filteredTimetable.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day) + 1;
         const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
         if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
@@ -101,7 +120,7 @@ export default function LecturerDashboardPage() {
     XLSX.writeFile(workbook, `${sheetName}.xlsx`);
 
     toast({ title: "Export Successful", description: `Timetable for ${selectedLecturer} has been exported.` });
-}, [selectedLecturer, lecturerTimetable, toast]);
+}, [selectedLecturer, filteredTimetable, toast]);
 
 if (timetablesLoading) {
     return (
@@ -118,7 +137,7 @@ if (timetablesLoading) {
   return (
     <div className="container mx-auto p-8">
        <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
-            <Select value={selectedLecturer} onValueChange={setSelectedLecturer}>
+            <Select value={selectedLecturer} onValueChange={handleLecturerChange}>
               <SelectTrigger className="w-[280px]">
                   <div className="flex items-center gap-2">
                      <User />
@@ -131,6 +150,21 @@ if (timetablesLoading) {
                   ))}
               </SelectContent>
             </Select>
+            <Select value={selectedSubject} onValueChange={setSelectedSubject} disabled={!selectedLecturer || lecturerSubjects.length <= 1}>
+                <SelectTrigger className="w-[280px]">
+                    <div className="flex items-center gap-2">
+                        <Book />
+                        <SelectValue placeholder="Select a Subject" />
+                    </div>
+                </SelectTrigger>
+                <SelectContent>
+                    {lecturerSubjects.map(subject => (
+                        <SelectItem key={subject} value={subject === 'All Subjects' ? 'all' : subject}>
+                            {subject}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             <Button variant="outline" onClick={handleExportSheet} disabled={!selectedLecturer}>
               <FileSpreadsheet />
               Export as Sheet
@@ -142,12 +176,15 @@ if (timetablesLoading) {
             <CardHeader>
                 <CardTitle>Consolidated Timetable for {selectedLecturer}</CardTitle>
                 <CardDescription>
-                    This is a combined weekly schedule for {selectedLecturer}, including all assigned classes and labs across all departments and semesters.
+                    {selectedSubject === 'all' 
+                        ? `This is a combined weekly schedule for ${selectedLecturer}, including all assigned classes and labs across all departments and semesters.`
+                        : `Weekly schedule for ${selectedLecturer} for the subject: ${selectedSubject}.`
+                    }
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <Timetable 
-                    entries={lecturerTimetable} 
+                    entries={filteredTimetable} 
                     view="lecturer"
                 />
             </CardContent>
@@ -161,5 +198,3 @@ if (timetablesLoading) {
     </div>
   );
 }
-
-    
