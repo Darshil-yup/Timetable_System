@@ -63,19 +63,23 @@ export const ClassroomView: React.FC = React.memo(() => {
         return;
     }
 
-    const grid = [
+    const grid: (string | null)[][] = [
       ["Day/Time", ...TIME_SLOTS],
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
     filteredLectureTimetable.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day) + 1;
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-        if (dayIndex > 0 && timeIndex > 0) {
-             const cellContent = [entry.subject, entry.lecturer, entry.room].filter(Boolean).join('\n');
+        const dayIndex = DAYS.indexOf(entry.day);
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+        if (dayIndex > -1 && timeIndex > -1) {
+            const cellContent = [entry.subject, entry.lecturer, entry.room].filter(Boolean).join('\n');
             for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + i < grid[0].length) {
-                    grid[dayIndex][timeIndex + i] = cellContent;
+                if (timeIndex + 1 + i < grid[0].length) {
+                    if (grid[dayIndex + 1][timeIndex + 1] === null) {
+                        grid[dayIndex + 1][timeIndex + 1] = cellContent;
+                    } else {
+                        grid[dayIndex + 1][timeIndex + 1] += `\n\n${cellContent}`;
+                    }
                 }
             }
         }
@@ -83,11 +87,14 @@ export const ClassroomView: React.FC = React.memo(() => {
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     worksheet['!merges'] = [];
+    const processedMerges = new Set();
     filteredLectureTimetable.forEach(entry => {
       const dayIndex = DAYS.indexOf(entry.day) + 1;
       const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
+      const mergeKey = `${dayIndex}-${timeIndex}`;
+      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1 && !processedMerges.has(mergeKey)) {
           worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
+          processedMerges.add(mergeKey);
       }
     });
 

@@ -123,19 +123,42 @@ export default function AdminDashboardPage() {
   const handleExportSheet = useCallback(() => {
     if (!activeTimetable) return toast({ title: "Export Failed", variant: "destructive" });
 
-    const grid = [
+    const grid: (string | null)[][] = [
       ["Day/Time", ...TIME_SLOTS],
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
+    const placedEntries = new Set<string>();
+
     activeTimetable.timetable.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day) + 1;
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-        if (dayIndex > 0 && timeIndex > 0) {
-             const cellContent = [entry.subject, entry.lecturer, entry.room, entry.batches?.join(', ')].filter(Boolean).join('\n');
-            for (let i = 0; i < (entry.duration || 1); i++) {
-                if (timeIndex + i < grid[0].length) {
-                    grid[dayIndex][timeIndex + i] = cellContent;
+        if (placedEntries.has(entry.id)) return;
+
+        const dayIndex = DAYS.indexOf(entry.day);
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
+        if (dayIndex === -1 || timeIndex === -1) return;
+
+        const duration = entry.duration || 1;
+        const group = activeTimetable.timetable.filter(e => 
+          e.day === entry.day && 
+          e.time === entry.time &&
+          (e.duration || 1) === duration
+        );
+        
+        const subjects = group.map(e => (e.type === 'Practical' ? `LAB: ${e.subject}` : e.subject)).join(' / ');
+        const lecturers = group.map(e => e.lecturer).join(' / ');
+        const rooms = group.map(e => e.room).join(' / ');
+        const batches = group.map(e => e.batches?.join(', ')).join(' / ');
+
+        const cellContent = [subjects, lecturers, rooms, batches].filter(Boolean).join('\n');
+        
+        if (grid[dayIndex + 1][timeIndex + 1] === null) {
+            grid[dayIndex + 1][timeIndex + 1] = cellContent;
+
+            group.forEach(g => placedEntries.add(g.id));
+
+            for (let i = 1; i < duration; i++) {
+                if (timeIndex + 1 + i < grid[0].length) {
+                    grid[dayIndex + 1][timeIndex + 1 + i] = ""; 
                 }
             }
         }
@@ -143,12 +166,16 @@ export default function AdminDashboardPage() {
 
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     worksheet['!merges'] = [];
+    
     activeTimetable.timetable.forEach(entry => {
-      const dayIndex = DAYS.indexOf(entry.day) + 1;
-      const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
-          worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
-      }
+        const dayIndex = DAYS.indexOf(entry.day) + 1;
+        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
+        if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
+            const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
+            if (!existingMerge) {
+                worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
+            }
+        }
     });
 
     const workbook = XLSX.utils.book_new();
