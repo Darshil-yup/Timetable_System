@@ -176,53 +176,6 @@ export const ClassroomView: React.FC = React.memo(() => {
     toast({ title: "Export Successful" });
   }, [generateGridData, selectedRoom, toast]);
 
-  const handleExportPDF = useCallback(() => {
-    const grid = generateGridData(true);
-    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
-
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt' });
-    const head = [grid[0]];
-    const body = grid.slice(1);
-    
-    (doc as any).autoTable({
-        head: head,
-        body: body,
-        theme: 'grid',
-        styles: {
-            font: 'helvetica',
-            fontSize: 8,
-            halign: 'center',
-            valign: 'middle',
-            cellPadding: 3,
-        },
-        headStyles: {
-            fillColor: [22, 160, 133],
-            textColor: 255,
-            fontStyle: 'bold',
-        },
-        didParseCell: (data: any) => {
-            if (data.row.section !== 'body' || !data.body[data.row.index]) return;
-
-            const day = data.body[data.row.index]?.cells[0].raw;
-            const timeSlot = data.table.head[0].cells[data.column.index]?.raw;
-            if(!day || !timeSlot) return;
-
-            const entry = filteredLectureTimetable.find(e => 
-              e.day === day &&
-              e.time.startsWith(timeSlot.split('-')[0])
-            );
-            
-            if (entry?.duration && entry.duration > 1) {
-                 data.cell.colSpan = entry.duration;
-            }
-        }
-    });
-    
-    const sheetName = selectedRoom === 'all' ? 'All Classrooms' : selectedRoom;
-    doc.save(`Consolidated-${sheetName}.pdf`);
-    toast({ title: "Export Successful" });
-  }, [generateGridData, selectedRoom, toast, filteredLectureTimetable]);
-
 
   if (loading) {
     return <Skeleton className="h-[700px] w-full" />
@@ -267,10 +220,6 @@ export const ClassroomView: React.FC = React.memo(() => {
                      <DropdownMenuItem onClick={handleExportCSV}>
                         <FileText />
                         Export as CSV
-                     </DropdownMenuItem>
-                     <DropdownMenuItem onClick={handleExportPDF}>
-                        <FileType />
-                        Export as PDF
                      </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

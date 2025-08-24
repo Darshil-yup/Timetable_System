@@ -227,59 +227,6 @@ export default function LecturerDashboardPage() {
     toast({ title: "Export Successful" });
   }, [activeTab, activeMasterTimetable, selectedLecturer, toast, generateGridData]);
 
-  const handleExportPDF = useCallback(() => {
-    const isMasterView = activeTab === 'master';
-    const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
-    const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
-    
-    if (!timetableToExport || timetableToExport.length === 0) { 
-        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); 
-        return; 
-    }
-
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt' });
-    const grid = generateGridData(true);
-    const head = [grid[0]];
-    const body = grid.slice(1);
-    
-    (doc as any).autoTable({
-        head: head,
-        body: body,
-        theme: 'grid',
-        styles: {
-            font: 'helvetica',
-            fontSize: 8,
-            halign: 'center',
-            valign: 'middle',
-            cellPadding: 3,
-        },
-        headStyles: {
-            fillColor: [22, 160, 133],
-            textColor: 255,
-            fontStyle: 'bold',
-        },
-        didParseCell: (data: any) => {
-            if (data.row.section !== 'body' || !data.body[data.row.index]) return;
-
-            const day = data.body[data.row.index]?.cells[0].raw;
-            const timeSlot = data.table.head[0].cells[data.column.index]?.raw;
-            if(!day || !timeSlot) return;
-
-            const entry = timetableToExport.find(e => 
-                e.day === day &&
-                e.time.startsWith(timeSlot.split('-')[0])
-            );
-
-            if (entry?.duration && entry.duration > 1) {
-                data.cell.colSpan = entry.duration;
-            }
-        }
-    });
-
-    doc.save(`${name}-Timetable.pdf`);
-    toast({ title: "Export Successful" });
-  }, [activeTab, activeMasterTimetable, filteredTimetable, selectedLecturer, toast, generateGridData]);
-
 if (timetablesLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
@@ -315,10 +262,6 @@ if (timetablesLoading) {
                        <DropdownMenuItem onClick={handleExportCSV}>
                           <FileText />
                           Export as CSV
-                       </DropdownMenuItem>
-                       <DropdownMenuItem onClick={handleExportPDF}>
-                          <FileType />
-                          Export as PDF
                        </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
