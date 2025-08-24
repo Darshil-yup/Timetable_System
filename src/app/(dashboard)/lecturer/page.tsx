@@ -259,7 +259,7 @@ export default function LecturerDashboardPage() {
             fontStyle: 'bold',
         },
         didParseCell: (data: any) => {
-            if (data.row.section !== 'body') return;
+            if (data.row.section !== 'body' || !data.body[data.row.index]) return;
 
             const day = data.body[data.row.index]?.cells[0].raw;
             const timeSlot = data.table.head[0].cells[data.column.index]?.raw;
@@ -428,8 +428,3 @@ if (timetablesLoading) {
     </div>
   );
 }
-
-
-    
-
-    
