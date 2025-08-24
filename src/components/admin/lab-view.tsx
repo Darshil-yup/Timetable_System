@@ -201,7 +201,6 @@ export const LabView: React.FC = React.memo(() => {
           <CardHeader className="flex-row items-center justify-between gap-4">
             <div className='flex-1'>
               <CardTitle>Consolidated Lab Timetable</CardTitle>
-              <CardDescription>View of all practicals scheduled in a lab across all timetables.</CardDescription>
             </div>
             <div className="flex items-center gap-2">
               <Select value={selectedLab} onValueChange={setSelectedLab}>

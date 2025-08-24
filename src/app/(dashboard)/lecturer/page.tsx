@@ -317,13 +317,7 @@ if (timetablesLoading) {
                  {selectedLecturer ? (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Consolidated Timetable for {selectedLecturer}</CardTitle>
-                            <CardDescription>
-                                {selectedSubject === 'all' 
-                                    ? `This is a combined weekly schedule for ${selectedLecturer}, including all assigned classes and labs across all departments and semesters.`
-                                    : `Weekly schedule for ${selectedLecturer} for the subject: ${selectedSubject}.`
-                                }
-                            </CardDescription>
+                            <CardTitle>Hello, {selectedLecturer}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <Timetable 
@@ -357,7 +351,6 @@ if (timetablesLoading) {
                      <Card>
                         <CardHeader>
                             <CardTitle>{activeMasterTimetable.name}</CardTitle>
-                            <CardDescription>Master view of the full timetable.</CardDescription>
                         </CardHeader>
                         <CardContent>
                              <Timetable

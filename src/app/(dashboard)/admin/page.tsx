@@ -294,7 +294,6 @@ export default function AdminDashboardPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex-1">
                   <CardTitle>Master Timetable</CardTitle>
-                  <CardDescription>Combined view of all classes. Add, edit, and manage timetable entries here.</CardDescription>
                 </div>
                 <div className="flex items-center justify-end gap-2 flex-wrap">
                     <DropdownMenu>

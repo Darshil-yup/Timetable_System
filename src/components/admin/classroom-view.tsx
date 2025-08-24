@@ -201,7 +201,6 @@ export const ClassroomView: React.FC = React.memo(() => {
           <CardHeader className="flex-row items-center justify-between gap-4">
             <div className="flex-1">
               <CardTitle>Consolidated Classroom Timetable</CardTitle>
-              <CardDescription>View of all lectures scheduled in a classroom across all timetables.</CardDescription>
             </div>
             <div className="flex items-center gap-2">
               <Select value={selectedRoom} onValueChange={setSelectedRoom}>
