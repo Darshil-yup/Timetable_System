@@ -11,14 +11,14 @@ import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload } from 'lucide-react';
-import { AddClassDialog } from '@/components/admin/add-class-dialog';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
-import { ClassDetailsDialog } from '@/components/shared/class-details-dialog';
 
+const AddClassDialog = dynamic(() => import('@/components/admin/add-class-dialog').then(mod => mod.AddClassDialog));
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
+const ClassDetailsDialog = dynamic(() => import('@/components/shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
+
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
@@ -256,16 +256,16 @@ export default function AdminDashboardPage() {
   
   return (
     <div className="container mx-auto p-8">
-      <div className="flex items-start justify-end mb-6 flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-             <TimetableSelector
-                timetables={timetableMetadatas || []}
-                selectedTimetableId={selectedTimetableId}
-                onSelectTimetable={handleSelectTimetable}
-                onCreateTimetable={handleCreateTimetable}
-                onDeleteTimetable={handleDeleteTimetable}
-                onImportTimetable={handleImportTimetable}
-            />
+       <div className="flex items-center justify-start mb-6 flex-wrap gap-4">
+        <div className="flex-grow">
+          <TimetableSelector
+            timetables={timetableMetadatas || []}
+            selectedTimetableId={selectedTimetableId}
+            onSelectTimetable={handleSelectTimetable}
+            onCreateTimetable={handleCreateTimetable}
+            onDeleteTimetable={handleDeleteTimetable}
+            onImportTimetable={handleImportTimetable}
+          />
         </div>
       </div>
 

@@ -11,7 +11,9 @@ import { Loader2, Eye, EyeOff } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
-const RegisterDialog = dynamic(() => import('./register-dialog').then(mod => mod.RegisterDialog));
+const RegisterDialog = dynamic(() => import('./register-dialog').then(mod => mod.RegisterDialog), {
+  loading: () => <Button className="w-full" disabled>Create Account</Button>
+});
 
 export function LoginForm() {
   const router = useRouter();

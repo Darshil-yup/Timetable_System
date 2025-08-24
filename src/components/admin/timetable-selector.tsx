@@ -23,9 +23,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2, PlusCircle, Upload } from 'lucide-react';
 import type { TimetableMetadata, TimetableData } from '@/lib/types';
-import { AddTimetableDialog } from '@/components/admin/add-timetable-dialog';
-import { ImportTimetableDialog } from '@/components/admin/import-timetable-dialog';
+import dynamic from 'next/dynamic';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
+const AddTimetableDialog = dynamic(() => import('@/components/admin/add-timetable-dialog').then(mod => mod.AddTimetableDialog));
+const ImportTimetableDialog = dynamic(() => import('@/components/admin/import-timetable-dialog').then(mod => mod.ImportTimetableDialog));
 
 interface TimetableSelectorProps {
   timetables: TimetableMetadata[];

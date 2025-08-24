@@ -19,7 +19,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { TimetableEntry } from '@/lib/types';
-import { ClassDetailsDialog } from '@/components/shared/class-details-dialog';
+import dynamic from 'next/dynamic';
+
+const ClassDetailsDialog = dynamic(() => import('@/components/shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
@@ -196,7 +198,7 @@ if (timetablesLoading) {
 
   return (
     <div className="container mx-auto p-8">
-       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+       <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center gap-4 flex-wrap">
                 <Select value={selectedLecturer} onValueChange={handleLecturerChange}>
                   <SelectTrigger className="w-[280px]">
@@ -227,10 +229,12 @@ if (timetablesLoading) {
                     </SelectContent>
                 </Select>
             </div>
-            <Button onClick={handleExportSheet} disabled={!selectedLecturer}>
-              <FileSpreadsheet />
-              Export as Sheet
-            </Button>
+            <div className="flex items-center">
+              <Button onClick={handleExportSheet} disabled={!selectedLecturer}>
+                <FileSpreadsheet />
+                Export as Sheet
+              </Button>
+            </div>
       </div>
 
       {selectedLecturer ? (
