@@ -37,16 +37,12 @@ export function ClassDetailsDialog({
 }: ClassDetailsDialogProps) {
 
   const title = entries.length > 1 ? "Parallel Class Details" : "Class Details";
-  const description = entries.length > 1 
-    ? "The following classes are scheduled in the same time slot."
-    : `Details for ${entries[0]?.subject}.`;
-
+  
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-2">
             {entries.map((entry, index) => (

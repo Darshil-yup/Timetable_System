@@ -149,9 +149,6 @@ export function ImportTimetableDialog({ onImport, children }: ImportTimetableDia
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Import Timetable</DialogTitle>
-          <DialogDescription>
-            Select an Excel (.xlsx, .xls) file to import. The file should have days in the first column and time slots in the first row.
-          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid w-full max-w-sm items-center gap-1.5">

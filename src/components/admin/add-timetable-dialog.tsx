@@ -73,9 +73,6 @@ export function AddTimetableDialog({ onCreateTimetable, children }: AddTimetable
       <DialogContent className="w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Timetable</DialogTitle>
-          <DialogDescription>
-            Select the department and academic year for the new timetable.
-          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
