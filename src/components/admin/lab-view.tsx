@@ -67,7 +67,7 @@ export const LabView: React.FC = React.memo(() => {
     
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-      header,
+      header.map(h => h || null),
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -108,7 +108,7 @@ export const LabView: React.FC = React.memo(() => {
     });
 
     if (forPDF) {
-        return grid;
+        return grid.map(row => row.filter(cell => cell !== "MERGED"));
     }
     return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
   }, [filteredPracticalTimetable]);
@@ -201,12 +201,17 @@ export const LabView: React.FC = React.memo(() => {
             fontStyle: 'bold',
         },
         didParseCell: (data: any) => {
+            const day = data.body[data.row.index].cells[0].raw;
+            const timeSlot = data.table.head[0].cells[data.column.index]?.raw;
+            if(!day || !timeSlot) return;
+
             const entry = filteredPracticalTimetable.find(e => 
-              DAYS.indexOf(e.day) === data.row.index && 
-              TIME_SLOTS.findIndex(slot => slot.startsWith(e.time.split('-')[0])) === (data.column.index - 1)
+              e.day === day &&
+              e.time.startsWith(timeSlot.split('-')[0])
             );
+            
             if (entry?.duration && entry.duration > 1) {
-                data.cell.colSpan = entry.duration;
+                 data.cell.colSpan = entry.duration;
             }
         }
     });

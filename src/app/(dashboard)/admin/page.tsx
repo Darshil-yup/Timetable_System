@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
     
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-      header,
+      header.map(h => h || null), // Ensure header has no undefined values
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -161,7 +161,6 @@ export default function AdminDashboardPage() {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    // For PDF, we'll use rowspan, for others, we mark as empty
                     grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
                 }
             }
@@ -169,7 +168,7 @@ export default function AdminDashboardPage() {
     });
 
     if (forPDF) {
-        return grid;
+        return grid.map(row => row.filter(cell => cell !== "MERGED"));
     }
     // Filter out "MERGED" placeholder for non-PDF exports
     return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
@@ -260,13 +259,17 @@ export default function AdminDashboardPage() {
             fontStyle: 'bold',
         },
         didParseCell: (data: any) => {
-            // Handle multi-hour class merging (rowspan)
+            const day = data.body[data.row.index].cells[0].raw;
+            const timeSlot = data.table.head[0].cells[data.column.index]?.raw;
+            if(!day || !timeSlot) return;
+
             const entry = activeTimetable.timetable.find(e => 
-              DAYS.indexOf(e.day) === data.row.index && 
-              TIME_SLOTS.findIndex(slot => slot.startsWith(e.time.split('-')[0])) === (data.column.index - 1)
+              e.day === day &&
+              e.time.startsWith(timeSlot.split('-')[0])
             );
+            
             if (entry?.duration && entry.duration > 1) {
-                data.cell.colSpan = entry.duration;
+                 data.cell.colSpan = entry.duration;
             }
         }
     });
@@ -318,11 +321,7 @@ export default function AdminDashboardPage() {
   
   return (
     <div className="container mx-auto p-8">
-       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <div className="flex items-center gap-4">
-            {/* This space can be used for a title or other controls if needed */}
-        </div>
-        <div className="flex items-center gap-2">
+       <div className="flex items-center justify-end mb-6 flex-wrap gap-4">
           <TimetableSelector
             timetables={timetableMetadatas || []}
             selectedTimetableId={selectedTimetableId}
@@ -331,7 +330,6 @@ export default function AdminDashboardPage() {
             onDeleteTimetable={handleDeleteTimetable}
             onImportTimetable={handleImportTimetable}
           />
-        </div>
       </div>
 
      {hasTimetables ? (
