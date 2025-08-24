@@ -112,7 +112,7 @@ ClassCard.displayName = 'ClassCard';
 
 interface TimetableProps {
     entries: TimetableEntry[];
-    view: 'admin' | 'lecturer';
+    view?: 'admin' | 'lecturer';
     isEditMode?: boolean;
     onCellClick?: (entries: TimetableEntry[]) => void;
     highlightedLecturer?: string;

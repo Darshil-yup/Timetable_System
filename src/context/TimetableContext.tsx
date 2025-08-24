@@ -193,7 +193,7 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
         : t
     ));
     return true;
-  }, [allTimetables, checkForConflicts]);
+  }, [allTimetables, checkForConflicts, toast]);
 
   const deleteEntry = useCallback((timetableId: string, classId: string) => {
     setAllTimetables(prev => (prev || []).map(t => 

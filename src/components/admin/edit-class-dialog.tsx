@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -57,6 +58,9 @@ export function EditClassDialog({
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] flex flex-col">
         <DialogHeader className="px-6 pt-6">
           <DialogTitle>Edit Class</DialogTitle>
+          <DialogDescription>
+            Modify the details of the class. Click save when you're done.
+          </DialogDescription>
         </DialogHeader>
         <ClassForm
           defaultValues={classEntry}
@@ -73,9 +77,6 @@ export function EditClassDialog({
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete this class entry.
-                  </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>

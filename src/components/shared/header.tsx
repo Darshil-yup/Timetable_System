@@ -41,7 +41,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative h-9 w-9 rounded-full bg-transparent hover:bg-accent"
+                className="relative h-9 w-9 rounded-full hover:bg-accent"
               >
                 <MoreVertical />
               </Button>

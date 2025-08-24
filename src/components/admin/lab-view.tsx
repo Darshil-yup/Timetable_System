@@ -129,7 +129,7 @@ export const LabView: React.FC = React.memo(() => {
             </div>
           </CardHeader>
           <CardContent>
-            <Timetable entries={filteredPracticalTimetable} view="admin" onCellClick={handleCellClick} />
+            <Timetable entries={filteredPracticalTimetable} onCellClick={handleCellClick} />
           </CardContent>
         </Card>
         {viewingEntries && (

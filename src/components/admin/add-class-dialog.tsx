@@ -65,6 +65,9 @@ export function AddClassDialog({ onAddClass, children }: AddClassDialogProps) {
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] flex flex-col">
           <DialogHeader className="px-6 pt-6">
             <DialogTitle>Add New Class</DialogTitle>
+            <DialogDescription>
+              Fill in the details to add a new class to the timetable.
+            </DialogDescription>
           </DialogHeader>
           <ClassForm 
             onSubmit={handleFormSubmit}

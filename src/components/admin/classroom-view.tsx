@@ -129,7 +129,7 @@ export const ClassroomView: React.FC = React.memo(() => {
             </div>
           </CardHeader>
           <CardContent>
-            <Timetable entries={filteredLectureTimetable} view="admin" onCellClick={handleCellClick} />
+            <Timetable entries={filteredLectureTimetable} onCellClick={handleCellClick} />
           </CardContent>
         </Card>
         {viewingEntries && (
