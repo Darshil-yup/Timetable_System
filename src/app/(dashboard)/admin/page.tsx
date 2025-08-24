@@ -122,7 +122,7 @@ export default function AdminDashboardPage() {
     });
   }, [isEditMode, toast]);
 
-  const generateGridData = useCallback(() => {
+  const generateGridData = useCallback((forPDF = false) => {
     if (!activeTimetable) return [];
     
     const header = ["Day/Time", ...TIME_SLOTS];
@@ -153,7 +153,7 @@ export default function AdminDashboardPage() {
             const room = g.room;
             const batches = g.batches?.join(', ');
             return [subject, lecturer, room, batches].filter(Boolean).join('\n');
-        }).join('\n---\n');
+        }).join(forPDF ? '\n\n' : '\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
@@ -161,19 +161,26 @@ export default function AdminDashboardPage() {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = ""; 
+                    // For PDF, we'll use rowspan, for others, we mark as empty
+                    grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
                 }
             }
         }
     });
-    return grid;
+
+    if (forPDF) {
+        return grid;
+    }
+    // Filter out "MERGED" placeholder for non-PDF exports
+    return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
+
   }, [activeTimetable]);
   
   const handleExportXLSX = useCallback(() => {
     if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
     
     const grid = generateGridData();
-    const worksheet = XLSX.utils.aoa_to_sheet(grid);
+    const worksheet = XLSX.utils.aoa_to_sheet(grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell)));
 
     const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
     worksheet['!cols'] = columnWidths;
@@ -230,26 +237,37 @@ export default function AdminDashboardPage() {
 
   const handleExportPDF = useCallback(() => {
     if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
-    const doc = new jsPDF({ orientation: 'landscape' });
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt' });
 
-    const grid = generateGridData();
-    const body = grid.slice(1).map(row => row.map(cell => cell || ''));
+    const grid = generateGridData(true);
+    const head = [grid[0]];
+    const body = grid.slice(1);
     
     (doc as any).autoTable({
-        head: [grid[0]],
+        head: head,
         body: body,
-        styles: { halign: 'center', valign: 'middle', cellPadding: 2, fontSize: 8 },
-        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
-        didDrawCell: (data: any) => {
-          if (data.section === 'body') {
+        theme: 'grid',
+        styles: {
+            font: 'helvetica',
+            fontSize: 8,
+            halign: 'center',
+            valign: 'middle',
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [22, 160, 133], // A teal color
+            textColor: 255,
+            fontStyle: 'bold',
+        },
+        didParseCell: (data: any) => {
+            // Handle multi-hour class merging (rowspan)
             const entry = activeTimetable.timetable.find(e => 
               DAYS.indexOf(e.day) === data.row.index && 
               TIME_SLOTS.findIndex(slot => slot.startsWith(e.time.split('-')[0])) === (data.column.index - 1)
             );
             if (entry?.duration && entry.duration > 1) {
-              doc.rect(data.cell.x, data.cell.y, data.cell.width * entry.duration, data.cell.height, 'S');
+                data.cell.colSpan = entry.duration;
             }
-          }
         }
     });
 
@@ -304,7 +322,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-4">
             {/* This space can be used for a title or other controls if needed */}
         </div>
-        <div className="flex-grow flex justify-end">
+        <div className="flex items-center gap-2">
           <TimetableSelector
             timetables={timetableMetadatas || []}
             selectedTimetableId={selectedTimetableId}
@@ -407,4 +425,6 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+    
+
     

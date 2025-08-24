@@ -102,7 +102,7 @@ export default function LecturerDashboardPage() {
     setViewingEntries(null);
   }, []);
 
-  const generateGridData = useCallback(() => {
+  const generateGridData = useCallback((forPDF = false) => {
     const isMasterView = activeTab === 'master';
     const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
 
@@ -136,7 +136,7 @@ export default function LecturerDashboardPage() {
             const lecturer = isMasterView ? g.lecturer : undefined;
             const batches = g.batches?.join(', ');
             return [subject, lecturer, room, batches].filter(Boolean).join('\n');
-        }).join('\n---\n');
+        }).join(forPDF ? '\n\n' : '\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
@@ -144,13 +144,16 @@ export default function LecturerDashboardPage() {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = ""; 
+                    grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
                 }
             }
         }
     });
 
-    return grid;
+    if (forPDF) {
+        return grid;
+    }
+    return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
   }, [activeTab, activeMasterTimetable, filteredTimetable]);
 
   const handleExportXLSX = useCallback(() => {
@@ -227,22 +230,48 @@ export default function LecturerDashboardPage() {
   const handleExportPDF = useCallback(() => {
     const isMasterView = activeTab === 'master';
     const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
-    const grid = generateGridData();
-    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
+    const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
+    
+    if (!timetableToExport || timetableToExport.length === 0) { 
+        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); 
+        return; 
+    }
 
-    const doc = new jsPDF({ orientation: 'landscape' });
-    const body = grid.slice(1).map(row => row.map(cell => cell || ''));
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt' });
+    const grid = generateGridData(true);
+    const head = [grid[0]];
+    const body = grid.slice(1);
     
     (doc as any).autoTable({
-        head: [grid[0]],
+        head: head,
         body: body,
-        styles: { halign: 'center', valign: 'middle', cellPadding: 2, fontSize: 8 },
-        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' }
+        theme: 'grid',
+        styles: {
+            font: 'helvetica',
+            fontSize: 8,
+            halign: 'center',
+            valign: 'middle',
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [22, 160, 133],
+            textColor: 255,
+            fontStyle: 'bold',
+        },
+        didParseCell: (data: any) => {
+            const entry = timetableToExport.find(e => 
+              DAYS.indexOf(e.day) === data.row.index && 
+              TIME_SLOTS.findIndex(slot => slot.startsWith(e.time.split('-')[0])) === (data.column.index - 1)
+            );
+            if (entry?.duration && entry.duration > 1) {
+                data.cell.colSpan = entry.duration;
+            }
+        }
     });
 
     doc.save(`${name}-Timetable.pdf`);
     toast({ title: "Export Successful" });
-  }, [activeTab, activeMasterTimetable, selectedLecturer, toast, generateGridData]);
+  }, [activeTab, activeMasterTimetable, filteredTimetable, selectedLecturer, toast, generateGridData]);
 
 if (timetablesLoading) {
     return (
@@ -393,5 +422,7 @@ if (timetablesLoading) {
   );
 }
 
+
+    
 
     

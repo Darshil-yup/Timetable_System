@@ -62,7 +62,7 @@ export const LabView: React.FC = React.memo(() => {
     setViewingEntries(null);
   }, []);
 
-  const generateGridData = useCallback(() => {
+  const generateGridData = useCallback((forPDF = false) => {
     if (!filteredPracticalTimetable) return [];
     
     const header = ["Day/Time", ...TIME_SLOTS];
@@ -93,7 +93,7 @@ export const LabView: React.FC = React.memo(() => {
             const lecturer = g.lecturer;
             const batches = g.batches?.join(', ');
             return [subject, lecturer, batches].filter(Boolean).join('\n');
-        }).join('\n---\n');
+        }).join(forPDF ? '\n\n' : '\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
@@ -101,13 +101,16 @@ export const LabView: React.FC = React.memo(() => {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = "";
+                    grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
                 }
             }
         }
     });
 
-    return grid;
+    if (forPDF) {
+        return grid;
+    }
+    return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
   }, [filteredPracticalTimetable]);
 
   const handleExportXLSX = useCallback(() => {
@@ -174,23 +177,44 @@ export const LabView: React.FC = React.memo(() => {
   }, [generateGridData, selectedLab, toast]);
 
   const handleExportPDF = useCallback(() => {
-    const grid = generateGridData();
+    const grid = generateGridData(true);
     if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
 
-    const doc = new jsPDF({ orientation: 'landscape' });
-    const body = grid.slice(1).map(row => row.map(cell => cell || ''));
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt' });
+    const head = [grid[0]];
+    const body = grid.slice(1);
 
     (doc as any).autoTable({
-        head: [grid[0]],
+        head: head,
         body: body,
-        styles: { halign: 'center', valign: 'middle', cellPadding: 2, fontSize: 8 },
-        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' }
+        theme: 'grid',
+        styles: {
+            font: 'helvetica',
+            fontSize: 8,
+            halign: 'center',
+            valign: 'middle',
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [22, 160, 133],
+            textColor: 255,
+            fontStyle: 'bold',
+        },
+        didParseCell: (data: any) => {
+            const entry = filteredPracticalTimetable.find(e => 
+              DAYS.indexOf(e.day) === data.row.index && 
+              TIME_SLOTS.findIndex(slot => slot.startsWith(e.time.split('-')[0])) === (data.column.index - 1)
+            );
+            if (entry?.duration && entry.duration > 1) {
+                data.cell.colSpan = entry.duration;
+            }
+        }
     });
 
     const sheetName = selectedLab === 'all' ? 'All Labs' : selectedLab;
     doc.save(`Consolidated-${sheetName}.pdf`);
     toast({ title: "Export Successful" });
-  }, [generateGridData, selectedLab, toast]);
+  }, [generateGridData, selectedLab, toast, filteredPracticalTimetable]);
 
   if (loading) {
     return <Skeleton className="h-[700px] w-full" />
@@ -259,3 +283,5 @@ export const LabView: React.FC = React.memo(() => {
   );
 });
 LabView.displayName = 'LabView';
+
+    
