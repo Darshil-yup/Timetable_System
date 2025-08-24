@@ -259,5 +259,3 @@ export const LabView: React.FC = React.memo(() => {
   );
 });
 LabView.displayName = 'LabView';
-
-    

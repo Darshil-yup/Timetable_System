@@ -260,5 +260,3 @@ export const ClassroomView: React.FC = React.memo(() => {
 });
 
 ClassroomView.displayName = 'ClassroomView';
-
-    

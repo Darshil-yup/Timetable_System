@@ -301,7 +301,10 @@ export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-8">
        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-        <div className="flex-grow">
+        <div className="flex items-center gap-4">
+            {/* This space can be used for a title or other controls if needed */}
+        </div>
+        <div className="flex-grow flex justify-end">
           <TimetableSelector
             timetables={timetableMetadatas || []}
             selectedTimetableId={selectedTimetableId}
@@ -404,14 +407,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-    
-
-    
-
-
-
-    
-
-    
-
     
