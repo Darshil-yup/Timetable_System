@@ -13,8 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload, FileDown, FileText, FileType } from 'lucide-react';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { exportTimetableToPDF } from '@/lib/pdf-export';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuPortal } from '@/components/ui/dropdown-menu';
 
 const AddClassDialog = dynamic(() => import('@/components/admin/add-class-dialog').then(mod => mod.AddClassDialog));
@@ -122,12 +121,12 @@ export default function AdminDashboardPage() {
     });
   }, [isEditMode, toast]);
 
-  const generateGridData = useCallback((forPDF = false) => {
+  const generateGridData = useCallback(() => {
     if (!activeTimetable) return [];
     
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-      header.map(h => h || null), // Ensure header has no undefined values
+      header,
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -153,7 +152,7 @@ export default function AdminDashboardPage() {
             const room = g.room;
             const batches = g.batches?.join(', ');
             return [subject, lecturer, room, batches].filter(Boolean).join('\n');
-        }).join(forPDF ? '\n\n' : '\n---\n');
+        }).join('\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
@@ -161,16 +160,12 @@ export default function AdminDashboardPage() {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
+                    grid[dayIndex + 1][timeIndex + 1 + i] = "MERGED";
                 }
             }
         }
     });
 
-    if (forPDF) {
-        return grid.map(row => row.filter(cell => cell !== "MERGED"));
-    }
-    // Filter out "MERGED" placeholder for non-PDF exports
     return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
 
   }, [activeTimetable]);
@@ -233,6 +228,12 @@ export default function AdminDashboardPage() {
     document.body.removeChild(link);
     toast({ title: "Export Successful" });
   }, [activeTimetable, toast, generateGridData]);
+
+  const handleExportPDF = useCallback(() => {
+    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
+    exportTimetableToPDF(activeTimetable.timetable, `${activeTimetable.name} - Master Timetable`, true);
+    toast({ title: "Export Successful" });
+  }, [activeTimetable, toast]);
 
   const handleCreateTimetable = async (name: string, year: string) => {
     const newId = await addTimetable(name, year);
@@ -324,6 +325,10 @@ export default function AdminDashboardPage() {
                                             <FileText />
                                             Export as CSV
                                         </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={handleExportPDF} disabled={!activeTimetable}>
+                                            <FileType />
+                                            Export as PDF
+                                        </DropdownMenuItem>
                                     </DropdownMenuSubContent>
                                 </DropdownMenuPortal>
                             </DropdownMenuSub>
@@ -374,4 +379,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-    

@@ -21,8 +21,7 @@ import { Skeleton } from '../ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import dynamic from 'next/dynamic';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { exportTimetableToPDF } from '@/lib/pdf-export';
 
 const ClassDetailsDialog = dynamic(() => import('../shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
 
@@ -62,12 +61,12 @@ export const LabView: React.FC = React.memo(() => {
     setViewingEntries(null);
   }, []);
 
-  const generateGridData = useCallback((forPDF = false) => {
+  const generateGridData = useCallback(() => {
     if (!filteredPracticalTimetable) return [];
     
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-      header.map(h => h || null),
+      header,
       ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -93,7 +92,7 @@ export const LabView: React.FC = React.memo(() => {
             const lecturer = g.lecturer;
             const batches = g.batches?.join(', ');
             return [subject, lecturer, batches].filter(Boolean).join('\n');
-        }).join(forPDF ? '\n\n' : '\n---\n');
+        }).join('\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
@@ -101,15 +100,12 @@ export const LabView: React.FC = React.memo(() => {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
+                    grid[dayIndex + 1][timeIndex + 1 + i] = "MERGED";
                 }
             }
         }
     });
 
-    if (forPDF) {
-        return grid.map(row => row.filter(cell => cell !== "MERGED"));
-    }
     return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
   }, [filteredPracticalTimetable]);
 
@@ -176,6 +172,17 @@ export const LabView: React.FC = React.memo(() => {
     toast({ title: "Export Successful" });
   }, [generateGridData, selectedLab, toast]);
 
+  const handleExportPDF = useCallback(() => {
+    const title = `Timetable for ${selectedLab === 'all' ? 'All Labs' : selectedLab}`;
+    if (!filteredPracticalTimetable || filteredPracticalTimetable.length === 0) {
+        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
+        return;
+    }
+    exportTimetableToPDF(filteredPracticalTimetable, title, true);
+    toast({ title: "Export Successful" });
+  }, [filteredPracticalTimetable, selectedLab, toast]);
+
+
   if (loading) {
     return <Skeleton className="h-[700px] w-full" />
   }
@@ -219,6 +226,10 @@ export const LabView: React.FC = React.memo(() => {
                      <DropdownMenuItem onClick={handleExportCSV}>
                         <FileText />
                         Export as CSV
+                     </DropdownMenuItem>
+                     <DropdownMenuItem onClick={handleExportPDF}>
+                        <FileType />
+                        Export as PDF
                      </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

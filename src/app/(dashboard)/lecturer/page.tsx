@@ -21,8 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { TimetableEntry, TimetableMetadata } from '@/lib/types';
 import dynamic from 'next/dynamic';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { exportTimetableToPDF } from '@/lib/pdf-export';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const ClassDetailsDialog = dynamic(() => import('@/components/shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
@@ -102,7 +101,7 @@ export default function LecturerDashboardPage() {
     setViewingEntries(null);
   }, []);
 
-  const generateGridData = useCallback((forPDF = false) => {
+  const generateGridData = useCallback(() => {
     const isMasterView = activeTab === 'master';
     const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
 
@@ -110,7 +109,7 @@ export default function LecturerDashboardPage() {
 
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
-        header.map(h => h || null),
+        header,
         ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
     ];
     
@@ -136,7 +135,7 @@ export default function LecturerDashboardPage() {
             const lecturer = isMasterView ? g.lecturer : undefined;
             const batches = g.batches?.join(', ');
             return [subject, lecturer, room, batches].filter(Boolean).join('\n');
-        }).join(forPDF ? '\n\n' : '\n---\n');
+        }).join('\n---\n');
         
         if (grid[dayIndex + 1][timeIndex + 1] === null) {
             grid[dayIndex + 1][timeIndex + 1] = cellContent;
@@ -144,15 +143,12 @@ export default function LecturerDashboardPage() {
 
             for (let i = 1; i < duration; i++) {
                 if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = forPDF ? "" : "MERGED";
+                    grid[dayIndex + 1][timeIndex + 1 + i] = "MERGED";
                 }
             }
         }
     });
 
-    if (forPDF) {
-        return grid.map(row => row.filter(cell => cell !== "MERGED"));
-    }
     return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
   }, [activeTab, activeMasterTimetable, filteredTimetable]);
 
@@ -227,6 +223,21 @@ export default function LecturerDashboardPage() {
     toast({ title: "Export Successful" });
   }, [activeTab, activeMasterTimetable, selectedLecturer, toast, generateGridData]);
 
+  const handleExportPDF = useCallback(() => {
+    const isMasterView = activeTab === 'master';
+    const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
+    const title = isMasterView ? `${activeMasterTimetable?.name} - Timetable` : `Timetable for ${selectedLecturer}`;
+
+    if (!timetableToExport || timetableToExport.length === 0) {
+        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
+        return;
+    }
+    
+    exportTimetableToPDF(timetableToExport, title, isMasterView);
+    toast({ title: "Export Successful" });
+  }, [activeTab, activeMasterTimetable, filteredTimetable, selectedLecturer, toast]);
+
+
 if (timetablesLoading) {
     return (
         <div className="container mx-auto p-8 space-y-8">
@@ -262,6 +273,10 @@ if (timetablesLoading) {
                        <DropdownMenuItem onClick={handleExportCSV}>
                           <FileText />
                           Export as CSV
+                       </DropdownMenuItem>
+                       <DropdownMenuItem onClick={handleExportPDF}>
+                          <FileType />
+                          Export as PDF
                        </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
