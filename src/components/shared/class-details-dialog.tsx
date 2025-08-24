@@ -43,6 +43,9 @@ export function ClassDetailsDialog({
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+           <DialogDescription>
+                Details for {entries.map(e => e.subject).join(' & ')}.
+           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-2">
             {entries.map((entry, index) => (
