@@ -14,12 +14,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Timetable } from '@/components/shared/timetable';
 import { ALL_CLASSROOMS } from './class-form';
 import type { TimetableData, TimetableEntry } from '@/lib/types';
-import { FileSpreadsheet } from 'lucide-react';
+import { FileSpreadsheet, FileDown, FileText, FileType } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import dynamic from 'next/dynamic';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ClassDetailsDialog = dynamic(() => import('../shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
 
@@ -58,13 +61,10 @@ export const ClassroomView: React.FC = React.memo(() => {
   const closeDetailsDialog = useCallback(() => {
     setViewingEntries(null);
   }, []);
-
-  const handleExportSheet = useCallback(() => {
-    if (!filteredLectureTimetable || filteredLectureTimetable.length === 0) {
-        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
-        return;
-    }
-
+  
+  const generateGridData = useCallback(() => {
+    if (!filteredLectureTimetable) return [];
+    
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
       header,
@@ -106,25 +106,26 @@ export const ClassroomView: React.FC = React.memo(() => {
             }
         }
     });
+    return grid;
+  }, [filteredLectureTimetable]);
 
+
+  const handleExportXLSX = useCallback(() => {
+    if (!filteredLectureTimetable || filteredLectureTimetable.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
+
+    const grid = generateGridData();
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     
-    // Set column widths
-    const columnWidths = [
-      { wch: 15 }, // Day/Time
-      ...TIME_SLOTS.map(() => ({ wch: 25 })) // Time slots
-    ];
+    const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
     worksheet['!cols'] = columnWidths;
 
-    // Apply bold formatting to headers and enable text wrapping
-    for (let C = 0; C < header.length; ++C) {
+    for (let C = 0; C < grid[0].length; ++C) {
         const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
         if(worksheet[cellAddress]) {
             worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
         }
     }
     
-    // Enable text wrapping for all cells
     for(let R = 1; R < grid.length; ++R) {
         for(let C = 0; C < grid[R].length; ++C) {
             const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
@@ -134,7 +135,6 @@ export const ClassroomView: React.FC = React.memo(() => {
         }
     }
 
-    // Handle merged cells
     worksheet['!merges'] = [];
     filteredLectureTimetable.forEach(entry => {
       const dayIndex = DAYS.indexOf(entry.day) + 1;
@@ -152,7 +152,45 @@ export const ClassroomView: React.FC = React.memo(() => {
     XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     XLSX.writeFile(workbook, `Consolidated-${sheetName}.xlsx`);
     toast({ title: "Export Successful" });
-  }, [filteredLectureTimetable, selectedRoom, toast]);
+  }, [filteredLectureTimetable, selectedRoom, toast, generateGridData]);
+  
+  const handleExportCSV = useCallback(() => {
+    const grid = generateGridData();
+    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
+    
+    const csvContent = grid.map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const sheetName = selectedRoom === 'all' ? 'All Classrooms' : selectedRoom;
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Consolidated-${sheetName}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "Export Successful" });
+  }, [generateGridData, selectedRoom, toast]);
+
+  const handleExportPDF = useCallback(() => {
+    const grid = generateGridData();
+    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
+
+    const doc = new jsPDF({ orientation: 'landscape' });
+    const body = grid.slice(1).map(row => row.map(cell => cell || ''));
+    
+    (doc as any).autoTable({
+        head: [grid[0]],
+        body: body,
+        styles: { halign: 'center', valign: 'middle', cellPadding: 2, fontSize: 8 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' }
+    });
+    
+    const sheetName = selectedRoom === 'all' ? 'All Classrooms' : selectedRoom;
+    doc.save(`Consolidated-${sheetName}.pdf`);
+    toast({ title: "Export Successful" });
+  }, [generateGridData, selectedRoom, toast]);
+
 
   if (loading) {
     return <Skeleton className="h-[700px] w-full" />
@@ -182,10 +220,28 @@ export const ClassroomView: React.FC = React.memo(() => {
                   {ALL_CLASSROOMS.map(room => <SelectItem key={room} value={room}>{room}</SelectItem>)}
                 </SelectContent>
               </Select>
-              <Button onClick={handleExportSheet}>
-                <FileSpreadsheet />
-                Export as Sheet
-              </Button>
+               <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button>
+                      <FileDown />
+                      Export
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                     <DropdownMenuItem onClick={handleExportXLSX}>
+                        <FileSpreadsheet />
+                        Export as XLSX
+                     </DropdownMenuItem>
+                     <DropdownMenuItem onClick={handleExportCSV}>
+                        <FileText />
+                        Export as CSV
+                     </DropdownMenuItem>
+                     <DropdownMenuItem onClick={handleExportPDF}>
+                        <FileType />
+                        Export as PDF
+                     </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
             </div>
           </CardHeader>
           <CardContent>
@@ -204,3 +260,5 @@ export const ClassroomView: React.FC = React.memo(() => {
 });
 
 ClassroomView.displayName = 'ClassroomView';
+
+    

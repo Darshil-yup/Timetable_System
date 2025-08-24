@@ -7,7 +7,7 @@ import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import { useTimetables } from '@/context/TimetableContext';
 import { Button } from '@/components/ui/button';
-import { FileSpreadsheet, User, Book } from 'lucide-react';
+import { FileSpreadsheet, User, Book, FileDown, FileText, FileType } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -21,6 +21,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { TimetableEntry, TimetableMetadata } from '@/lib/types';
 import dynamic from 'next/dynamic';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, DropdownMenuPortal } from '@/components/ui/dropdown-menu';
 
 const ClassDetailsDialog = dynamic(() => import('@/components/shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
 
@@ -99,21 +102,12 @@ export default function LecturerDashboardPage() {
     setViewingEntries(null);
   }, []);
 
-  const handleExportSheet = useCallback(() => {
+  const generateGridData = useCallback(() => {
     const isMasterView = activeTab === 'master';
     const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
-    const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
 
-    if (!timetableToExport || timetableToExport.length === 0) {
-        toast({
-            title: "Export Failed",
-            description: "No timetable data available for the current selection.",
-            variant: "destructive",
-        });
-        return;
-    }
+    if (!timetableToExport) return [];
 
-    const sheetName = `${name}-Timetable`;
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
         header,
@@ -156,24 +150,32 @@ export default function LecturerDashboardPage() {
         }
     });
 
+    return grid;
+  }, [activeTab, activeMasterTimetable, filteredTimetable]);
+
+  const handleExportXLSX = useCallback(() => {
+    const isMasterView = activeTab === 'master';
+    const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
+    const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
+
+    if (!timetableToExport || timetableToExport.length === 0) {
+        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
+        return;
+    }
+
+    const grid = generateGridData();
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
     
-    // Set column widths
-    const columnWidths = [
-      { wch: 15 }, // Day/Time
-      ...TIME_SLOTS.map(() => ({ wch: 25 })) // Time slots
-    ];
+    const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
     worksheet['!cols'] = columnWidths;
 
-    // Apply bold formatting to headers and enable text wrapping
-    for (let C = 0; C < header.length; ++C) {
+    for (let C = 0; C < grid[0].length; ++C) {
         const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
         if(worksheet[cellAddress]) {
             worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
         }
     }
     
-    // Enable text wrapping for all cells
     for(let R = 1; R < grid.length; ++R) {
         for(let C = 0; C < grid[R].length; ++C) {
             const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
@@ -183,7 +185,6 @@ export default function LecturerDashboardPage() {
         }
     }
 
-    // Handle merged cells
     worksheet['!merges'] = [];
     timetableToExport.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day) + 1;
@@ -192,20 +193,56 @@ export default function LecturerDashboardPage() {
         if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
              const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
             if (!existingMerge) {
-                worksheet['!merges']?.push({
-                    s: { r: dayIndex, c: timeIndex },
-                    e: { r: dayIndex, c: timeIndex + entry.duration - 1 }
-                });
+                worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
             }
         }
     });
 
     const workbook = XLSX.utils.book_new();
+    const sheetName = `${name}-Timetable`;
     XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
     XLSX.writeFile(workbook, `${sheetName}.xlsx`);
+    toast({ title: "Export Successful" });
+  }, [activeTab, activeMasterTimetable, filteredTimetable, selectedLecturer, toast, generateGridData]);
 
-    toast({ title: "Export Successful", description: `Timetable for ${name} has been exported.` });
-}, [selectedLecturer, filteredTimetable, toast, activeTab, activeMasterTimetable]);
+  const handleExportCSV = useCallback(() => {
+    const isMasterView = activeTab === 'master';
+    const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
+    const grid = generateGridData();
+    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
+    
+    const csvContent = grid.map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${name}-Timetable.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "Export Successful" });
+  }, [activeTab, activeMasterTimetable, selectedLecturer, toast, generateGridData]);
+
+  const handleExportPDF = useCallback(() => {
+    const isMasterView = activeTab === 'master';
+    const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
+    const grid = generateGridData();
+    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
+
+    const doc = new jsPDF({ orientation: 'landscape' });
+    const body = grid.slice(1).map(row => row.map(cell => cell || ''));
+    
+    (doc as any).autoTable({
+        head: [grid[0]],
+        body: body,
+        styles: { halign: 'center', valign: 'middle', cellPadding: 2, fontSize: 8 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' }
+    });
+
+    doc.save(`${name}-Timetable.pdf`);
+    toast({ title: "Export Successful" });
+  }, [activeTab, activeMasterTimetable, selectedLecturer, toast, generateGridData]);
 
 if (timetablesLoading) {
     return (
@@ -227,10 +264,28 @@ if (timetablesLoading) {
                     <TabsTrigger value="personal">My Timetable</TabsTrigger>
                     <TabsTrigger value="master">Master View</TabsTrigger>
                 </TabsList>
-                 <Button onClick={handleExportSheet}>
-                    <FileSpreadsheet />
-                    Export as Sheet
-                 </Button>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button>
+                        <FileDown />
+                        Export
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                       <DropdownMenuItem onClick={handleExportXLSX}>
+                          <FileSpreadsheet />
+                          Export as XLSX
+                       </DropdownMenuItem>
+                       <DropdownMenuItem onClick={handleExportCSV}>
+                          <FileText />
+                          Export as CSV
+                       </DropdownMenuItem>
+                       <DropdownMenuItem onClick={handleExportPDF}>
+                          <FileType />
+                          Export as PDF
+                       </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
             </div>
             <TabsContent value="personal">
                 <div className="flex items-start justify-start mb-6 flex-wrap gap-4">
@@ -338,5 +393,7 @@ if (timetablesLoading) {
   );
 }
 
+
+    
 
     

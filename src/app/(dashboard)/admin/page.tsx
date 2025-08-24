@@ -10,10 +10,12 @@ import { useTimetables } from '@/context/TimetableContext';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload } from 'lucide-react';
+import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload, FileDown, FileText, FileType } from 'lucide-react';
 import { Timetable } from '@/components/shared/timetable';
 import * as XLSX from 'xlsx';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuPortal } from '@/components/ui/dropdown-menu';
 
 const AddClassDialog = dynamic(() => import('@/components/admin/add-class-dialog').then(mod => mod.AddClassDialog));
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
@@ -120,12 +122,9 @@ export default function AdminDashboardPage() {
     });
   }, [isEditMode, toast]);
 
-  const handleExportSheet = useCallback(() => {
-    if (!activeTimetable) {
-      toast({ title: "Export Failed", variant: "destructive" });
-      return;
-    }
-
+  const generateGridData = useCallback(() => {
+    if (!activeTimetable) return [];
+    
     const header = ["Day/Time", ...TIME_SLOTS];
     const grid: (string | null)[][] = [
       header,
@@ -167,25 +166,25 @@ export default function AdminDashboardPage() {
             }
         }
     });
+    return grid;
+  }, [activeTimetable]);
+  
+  const handleExportXLSX = useCallback(() => {
+    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
     
+    const grid = generateGridData();
     const worksheet = XLSX.utils.aoa_to_sheet(grid);
 
-    // Set column widths
-    const columnWidths = [
-      { wch: 15 }, // Day/Time
-      ...TIME_SLOTS.map(() => ({ wch: 25 })) // Time slots
-    ];
+    const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
     worksheet['!cols'] = columnWidths;
 
-    // Apply bold formatting to headers and enable text wrapping
-    for (let C = 0; C < header.length; ++C) {
+    for (let C = 0; C < grid[0].length; ++C) {
         const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
         if(worksheet[cellAddress]) {
             worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
         }
     }
     
-    // Enable text wrapping for all cells
     for(let R = 1; R < grid.length; ++R) {
         for(let C = 0; C < grid[R].length; ++C) {
             const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
@@ -195,7 +194,6 @@ export default function AdminDashboardPage() {
         }
     }
 
-    // Handle merged cells
     worksheet['!merges'] = [];
     activeTimetable.timetable.forEach(entry => {
         const dayIndex = DAYS.indexOf(entry.day) + 1;
@@ -212,7 +210,53 @@ export default function AdminDashboardPage() {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Master Timetable');
     XLSX.writeFile(workbook, `${activeTimetable.name}-Master-Timetable.xlsx`);
     toast({ title: "Export Successful" });
-  }, [activeTimetable, toast]);
+  }, [activeTimetable, toast, generateGridData]);
+
+  const handleExportCSV = useCallback(() => {
+    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
+    const grid = generateGridData();
+    const csvContent = grid.map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${activeTimetable.name}-Master-Timetable.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "Export Successful" });
+  }, [activeTimetable, toast, generateGridData]);
+
+  const handleExportPDF = useCallback(() => {
+    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
+    const doc = new jsPDF({ orientation: 'landscape' });
+
+    const grid = generateGridData();
+    const body = grid.slice(1).map(row => row.map(cell => cell || ''));
+    
+    (doc as any).autoTable({
+        head: [grid[0]],
+        body: body,
+        styles: { halign: 'center', valign: 'middle', cellPadding: 2, fontSize: 8 },
+        headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
+        didDrawCell: (data: any) => {
+          if (data.section === 'body') {
+            const entry = activeTimetable.timetable.find(e => 
+              DAYS.indexOf(e.day) === data.row.index && 
+              TIME_SLOTS.findIndex(slot => slot.startsWith(e.time.split('-')[0])) === (data.column.index - 1)
+            );
+            if (entry?.duration && entry.duration > 1) {
+              doc.rect(data.cell.x, data.cell.y, data.cell.width * entry.duration, data.cell.height, 'S');
+            }
+          }
+        }
+    });
+
+    doc.save(`${activeTimetable.name}-Master-Timetable.pdf`);
+    toast({ title: "Export Successful" });
+  }, [activeTimetable, toast, generateGridData]);
+
 
   const handleCreateTimetable = async (name: string, year: string) => {
     const newId = await addTimetable(name, year);
@@ -256,7 +300,7 @@ export default function AdminDashboardPage() {
   
   return (
     <div className="container mx-auto p-8">
-       <div className="flex items-center justify-start mb-6 flex-wrap gap-4">
+       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div className="flex-grow">
           <TimetableSelector
             timetables={timetableMetadatas || []}
@@ -280,7 +324,7 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-end gap-2 flex-wrap">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline">
+                            <Button>
                                 <MoreVertical />
                             </Button>
                         </DropdownMenuTrigger>
@@ -291,10 +335,28 @@ export default function AdminDashboardPage() {
                                     Add New Class
                                 </DropdownMenuItem>
                             </AddClassDialog>
-                            <DropdownMenuItem onClick={handleExportSheet} disabled={!activeTimetable}>
-                                <FileSpreadsheet />
-                                Export as Sheet
-                            </DropdownMenuItem>
+                             <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>
+                                    <FileDown />
+                                    Export
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <DropdownMenuItem onClick={handleExportXLSX} disabled={!activeTimetable}>
+                                            <FileSpreadsheet />
+                                            Export as XLSX
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={handleExportCSV} disabled={!activeTimetable}>
+                                            <FileText />
+                                            Export as CSV
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={handleExportPDF} disabled={!activeTimetable}>
+                                            <FileType />
+                                            Export as PDF
+                                        </DropdownMenuItem>
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
                             <DropdownMenuItem onClick={toggleEditMode}>
                                 {isEditMode ? <XCircle /> : <Pencil />}
                                 {isEditMode ? 'Exit Edit Mode' : 'Modify Timetable'}
@@ -347,6 +409,8 @@ export default function AdminDashboardPage() {
     
 
 
+
+    
 
     
 
