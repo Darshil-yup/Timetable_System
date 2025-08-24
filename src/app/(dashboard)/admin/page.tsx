@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Pencil, FileSpreadsheet, XCircle, PlusCircle, MoreVertical, Upload, FileDown, FileText, FileType } from 'lucide-react';
 import { Timetable } from '@/components/shared/timetable';
-import * as XLSX from 'xlsx';
+import { handleExportCSV, handleExportXLSX } from '@/lib/export';
 import { exportTimetableToPDF } from '@/lib/pdf-export';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuPortal } from '@/components/ui/dropdown-menu';
 
@@ -20,14 +20,12 @@ const AddClassDialog = dynamic(() => import('@/components/admin/add-class-dialog
 const EditClassDialog = dynamic(() => import('@/components/admin/edit-class-dialog').then(mod => mod.EditClassDialog));
 const ClassDetailsDialog = dynamic(() => import('@/components/shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
+const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sports'];
 
 export default function AdminDashboardPage() {
   const { 
     allTimetables,
     loading,
-    conflictingEntryIds,
     addTimetable,
     deleteTimetable,
     importTimetable,
@@ -42,6 +40,7 @@ export default function AdminDashboardPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<TimetableEntry | null>(null);
   const [viewingEntries, setViewingEntries] = useState<TimetableEntry[] | null>(null);
+  const [conflictingEntryIds, setConflictingEntryIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!loading && allTimetables && allTimetables.length > 0 && !selectedTimetableId) {
@@ -56,6 +55,64 @@ export default function AdminDashboardPage() {
   const activeTimetable = useMemo(() => {
     return allTimetables?.find(t => t.id === selectedTimetableId) || null;
   }, [allTimetables, selectedTimetableId]);
+
+  useEffect(() => {
+    if (!allTimetables || !activeTimetable) {
+        setConflictingEntryIds(new Set());
+        return;
+    };
+
+    const newConflictingIds = new Set<string>();
+    const allEntries = allTimetables.flatMap(t => t.timetable.map(entry => ({ ...entry, timetableId: t.id, timetableName: t.name })));
+
+    for (let i = 0; i < allEntries.length; i++) {
+        for (let j = i + 1; j < allEntries.length; j++) {
+            const entryA = allEntries[i];
+            const entryB = allEntries[j];
+
+            if (entryA.day !== entryB.day || SPECIAL_TYPES.includes(entryA.type as SpecialClassType) || SPECIAL_TYPES.includes(entryB.type as SpecialClassType)) {
+                continue;
+            }
+
+            const startA = parseInt(entryA.time.split('-')[0].split(':')[0]);
+            const endA = startA + (entryA.duration || 1);
+            const startB = parseInt(entryB.time.split('-')[0].split(':')[0]);
+            const endB = startB + (entryB.duration || 1);
+
+            const timeOverlap = startA < endB && endA > startB;
+            if (!timeOverlap) continue;
+
+            // Room conflict
+            if (entryA.room && entryB.room && entryA.room !== 'N/A' && entryA.room === entryB.room) {
+                newConflictingIds.add(entryA.id);
+                newConflictingIds.add(entryB.id);
+            }
+
+            // Lecturer conflict
+            const lecturersA = (entryA.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+            const lecturersB = (entryB.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
+            if (lecturersA.some(l => lecturersB.includes(l))) {
+                newConflictingIds.add(entryA.id);
+                newConflictingIds.add(entryB.id);
+            }
+
+            // Batch conflict
+            if (entryA.timetableId === entryB.timetableId) { // Only within same timetable
+                const batchesA = entryA.batches || [];
+                const batchesB = entryB.batches || [];
+                
+                const isALecture = entryA.type === 'Lecture';
+                const isBLecture = entryB.type === 'Lecture';
+                
+                if ((isALecture && batchesB.length > 0) || (isBLecture && batchesA.length > 0) || (batchesA.length > 0 && batchesB.length > 0 && batchesA.some(b => batchesB.includes(b)))) {
+                    newConflictingIds.add(entryA.id);
+                    newConflictingIds.add(entryB.id);
+                }
+            }
+        }
+    }
+    setConflictingEntryIds(newConflictingIds);
+  }, [allTimetables, activeTimetable]);
 
   const handleSelectTimetable = useCallback((id: string) => {
     setSelectedTimetableId(id);
@@ -121,117 +178,21 @@ export default function AdminDashboardPage() {
     });
   }, [isEditMode, toast]);
 
-  const generateGridData = useCallback(() => {
-    if (!activeTimetable) return [];
-    
-    const header = ["Day/Time", ...TIME_SLOTS];
-    const grid: (string | null)[][] = [
-      header,
-      ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
-    ];
-    
-    const placedEntries = new Set<string>();
-
-    activeTimetable.timetable.forEach(entry => {
-        if (placedEntries.has(entry.id)) return;
-
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex === -1 || timeIndex === -1) return;
-
-        const duration = entry.duration || 1;
-        const group = activeTimetable.timetable.filter(e => 
-          e.day === entry.day && 
-          e.time === entry.time &&
-          (e.duration || 1) === duration
-        );
-        
-        const cellContent = group.map(g => {
-            const subject = g.type === 'Practical' ? `LAB: ${g.subject}` : g.subject;
-            const lecturer = g.lecturer;
-            const room = g.room;
-            const batches = g.batches?.join(', ');
-            return [subject, lecturer, room, batches].filter(Boolean).join('\n');
-        }).join('\n---\n');
-        
-        if (grid[dayIndex + 1][timeIndex + 1] === null) {
-            grid[dayIndex + 1][timeIndex + 1] = cellContent;
-            group.forEach(g => placedEntries.add(g.id));
-
-            for (let i = 1; i < duration; i++) {
-                if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = "MERGED";
-                }
-            }
-        }
-    });
-
-    return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
-
-  }, [activeTimetable]);
-  
-  const handleExportXLSX = useCallback(() => {
-    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
-    
-    const grid = generateGridData();
-    const worksheet = XLSX.utils.aoa_to_sheet(grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell)));
-
-    const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
-    worksheet['!cols'] = columnWidths;
-
-    for (let C = 0; C < grid[0].length; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
-        if(worksheet[cellAddress]) {
-            worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
-        }
+  const handleExport = useCallback((format: 'xlsx' | 'csv' | 'pdf') => {
+    if (!activeTimetable) { 
+        toast({ title: "Export Failed", variant: "destructive" }); 
+        return; 
     }
+    const filename = `${activeTimetable.name}-Master-Timetable`;
+    const title = `${activeTimetable.name} - Master Timetable`;
     
-    for(let R = 1; R < grid.length; ++R) {
-        for(let C = 0; C < grid[R].length; ++C) {
-            const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
-            if(worksheet[cellAddress]) {
-                 worksheet[cellAddress].s = { alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
-            }
-        }
+    if (format === 'xlsx') {
+        handleExportXLSX(activeTimetable.timetable, filename, true);
+    } else if (format === 'csv') {
+        handleExportCSV(activeTimetable.timetable, filename, true);
+    } else if (format === 'pdf') {
+        exportTimetableToPDF(activeTimetable.timetable, title, true);
     }
-
-    worksheet['!merges'] = [];
-    activeTimetable.timetable.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day) + 1;
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-        if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
-            const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
-            if (!existingMerge) {
-                worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
-            }
-        }
-    });
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Master Timetable');
-    XLSX.writeFile(workbook, `${activeTimetable.name}-Master-Timetable.xlsx`);
-    toast({ title: "Export Successful" });
-  }, [activeTimetable, toast, generateGridData]);
-
-  const handleExportCSV = useCallback(() => {
-    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
-    const grid = generateGridData();
-    const csvContent = grid.map(e => e.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${activeTimetable.name}-Master-Timetable.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast({ title: "Export Successful" });
-  }, [activeTimetable, toast, generateGridData]);
-
-  const handleExportPDF = useCallback(() => {
-    if (!activeTimetable) { toast({ title: "Export Failed", variant: "destructive" }); return; }
-    exportTimetableToPDF(activeTimetable.timetable, `${activeTimetable.name} - Master Timetable`, true);
     toast({ title: "Export Successful" });
   }, [activeTimetable, toast]);
 
@@ -319,15 +280,15 @@ export default function AdminDashboardPage() {
                                 </DropdownMenuSubTrigger>
                                 <DropdownMenuPortal>
                                     <DropdownMenuSubContent>
-                                        <DropdownMenuItem onClick={handleExportXLSX} disabled={!activeTimetable}>
+                                        <DropdownMenuItem onClick={() => handleExport('xlsx')} disabled={!activeTimetable}>
                                             <FileSpreadsheet />
                                             Export as XLSX
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={handleExportCSV} disabled={!activeTimetable}>
+                                        <DropdownMenuItem onClick={() => handleExport('csv')} disabled={!activeTimetable}>
                                             <FileText />
                                             Export as CSV
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={handleExportPDF} disabled={!activeTimetable}>
+                                        <DropdownMenuItem onClick={() => handleExport('pdf')} disabled={!activeTimetable}>
                                             <FileType />
                                             Export as PDF
                                         </DropdownMenuItem>

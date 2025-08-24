@@ -13,20 +13,17 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Timetable } from '@/components/shared/timetable';
 import { ALL_LABS } from './class-form';
-import type { TimetableData, TimetableEntry } from '@/lib/types';
+import type { TimetableEntry } from '@/lib/types';
 import { FileSpreadsheet, FileDown, FileText, FileType } from 'lucide-react';
-import * as XLSX from 'xlsx';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '../ui/skeleton';
 import { useTimetables } from '@/context/TimetableContext';
 import dynamic from 'next/dynamic';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { exportTimetableToPDF } from '@/lib/pdf-export';
+import { handleExportCSV, handleExportXLSX } from '@/lib/export';
 
 const ClassDetailsDialog = dynamic(() => import('../shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
-
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 export const LabView: React.FC = React.memo(() => {
   const { toast } = useToast();
@@ -61,124 +58,21 @@ export const LabView: React.FC = React.memo(() => {
     setViewingEntries(null);
   }, []);
 
-  const generateGridData = useCallback(() => {
-    if (!filteredPracticalTimetable) return [];
-    
-    const header = ["Day/Time", ...TIME_SLOTS];
-    const grid: (string | null)[][] = [
-      header,
-      ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
-    ];
-    
-    const placedEntries = new Set<string>();
-
-    filteredPracticalTimetable.forEach(entry => {
-        if (placedEntries.has(entry.id)) return;
-
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex === -1 || timeIndex === -1) return;
-
-        const duration = entry.duration || 1;
-        const group = filteredPracticalTimetable.filter(e => 
-          e.day === entry.day && 
-          e.time === entry.time &&
-          (e.duration || 1) === duration &&
-          e.room === entry.room
-        );
-        
-        const cellContent = group.map(g => {
-            const subject = `LAB: ${g.subject}`;
-            const lecturer = g.lecturer;
-            const batches = g.batches?.join(', ');
-            return [subject, lecturer, batches].filter(Boolean).join('\n');
-        }).join('\n---\n');
-        
-        if (grid[dayIndex + 1][timeIndex + 1] === null) {
-            grid[dayIndex + 1][timeIndex + 1] = cellContent;
-            group.forEach(g => placedEntries.add(g.id));
-
-            for (let i = 1; i < duration; i++) {
-                if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = "MERGED";
-                }
-            }
-        }
-    });
-
-    return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
-  }, [filteredPracticalTimetable]);
-
-  const handleExportXLSX = useCallback(() => {
-    if (!filteredPracticalTimetable || filteredPracticalTimetable.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
-    
-    const grid = generateGridData();
-    const worksheet = XLSX.utils.aoa_to_sheet(grid);
-    
-    const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
-    worksheet['!cols'] = columnWidths;
-
-    for (let C = 0; C < grid[0].length; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
-        if(worksheet[cellAddress]) {
-            worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
-        }
+  const handleExport = useCallback((format: 'xlsx' | 'csv' | 'pdf') => {
+    if (!filteredPracticalTimetable || filteredPracticalTimetable.length === 0) { 
+        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); 
+        return; 
     }
-    
-    for(let R = 1; R < grid.length; ++R) {
-        for(let C = 0; C < grid[R].length; ++C) {
-            const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
-            if(worksheet[cellAddress]) {
-                 worksheet[cellAddress].s = { alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
-            }
-        }
-    }
-    
-    worksheet['!merges'] = [];
-    filteredPracticalTimetable.forEach(entry => {
-      const dayIndex = DAYS.indexOf(entry.day) + 1;
-      const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-      
-      if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
-          const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
-          if (!existingMerge) {
-            worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
-          }
-      }
-    });
-
-    const workbook = XLSX.utils.book_new();
-    const sheetName = selectedLab === 'all' ? 'All Labs' : selectedLab;
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-    XLSX.writeFile(workbook, `Consolidated-${sheetName}.xlsx`);
-    toast({ title: "Export Successful" });
-  }, [filteredPracticalTimetable, selectedLab, toast, generateGridData]);
-  
-  const handleExportCSV = useCallback(() => {
-    const grid = generateGridData();
-    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
-
-    const csvContent = grid.map(e => e.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    const sheetName = selectedLab === 'all' ? 'All Labs' : selectedLab;
-    link.setAttribute("href", url);
-    link.setAttribute("download", `Consolidated-${sheetName}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast({ title: "Export Successful" });
-  }, [generateGridData, selectedLab, toast]);
-
-  const handleExportPDF = useCallback(() => {
+    const filename = `Consolidated-${selectedLab === 'all' ? 'All-Labs' : selectedLab}`;
     const title = `Timetable for ${selectedLab === 'all' ? 'All Labs' : selectedLab}`;
-    if (!filteredPracticalTimetable || filteredPracticalTimetable.length === 0) {
-        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
-        return;
+    
+    if (format === 'xlsx') {
+        handleExportXLSX(filteredPracticalTimetable, filename, true);
+    } else if (format === 'csv') {
+        handleExportCSV(filteredPracticalTimetable, filename, true);
+    } else if (format === 'pdf') {
+        exportTimetableToPDF(filteredPracticalTimetable, title, true);
     }
-    exportTimetableToPDF(filteredPracticalTimetable, title, true);
     toast({ title: "Export Successful" });
   }, [filteredPracticalTimetable, selectedLab, toast]);
 
@@ -218,15 +112,15 @@ export const LabView: React.FC = React.memo(() => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                     <DropdownMenuItem onClick={handleExportXLSX}>
+                     <DropdownMenuItem onClick={() => handleExport('xlsx')}>
                         <FileSpreadsheet />
                         Export as XLSX
                      </DropdownMenuItem>
-                     <DropdownMenuItem onClick={handleExportCSV}>
+                     <DropdownMenuItem onClick={() => handleExport('csv')}>
                         <FileText />
                         Export as CSV
                      </DropdownMenuItem>
-                     <DropdownMenuItem onClick={handleExportPDF}>
+                     <DropdownMenuItem onClick={() => handleExport('pdf')}>
                         <FileType />
                         Export as PDF
                      </DropdownMenuItem>

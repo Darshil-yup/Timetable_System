@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import * as XLSX from 'xlsx';
 import { Timetable } from '@/components/shared/timetable';
 import { LECTURERS } from '@/lib/mock-data';
 import { useTimetables } from '@/context/TimetableContext';
@@ -23,11 +22,9 @@ import dynamic from 'next/dynamic';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { exportTimetableToPDF } from '@/lib/pdf-export';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { handleExportCSV, handleExportXLSX } from '@/lib/export';
 
 const ClassDetailsDialog = dynamic(() => import('@/components/shared/class-details-dialog').then(mod => mod.ClassDetailsDialog));
-
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const TIME_SLOTS = ["09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-01:00", "01:00-02:00", "02:00-03:00", "03:00-04:00", "04:00-05:00"];
 
 export default function LecturerDashboardPage() {
   const { toast } = useToast();
@@ -101,139 +98,26 @@ export default function LecturerDashboardPage() {
     setViewingEntries(null);
   }, []);
 
-  const generateGridData = useCallback(() => {
-    const isMasterView = activeTab === 'master';
-    const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
-
-    if (!timetableToExport) return [];
-
-    const header = ["Day/Time", ...TIME_SLOTS];
-    const grid: (string | null)[][] = [
-        header,
-        ...DAYS.map(day => [day, ...Array(TIME_SLOTS.length).fill(null)])
-    ];
-    
-    const placedEntries = new Set<string>();
-
-    timetableToExport.forEach(entry => {
-        if (placedEntries.has(entry.id)) return;
-
-        const dayIndex = DAYS.indexOf(entry.day);
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0]));
-        if (dayIndex === -1 || timeIndex === -1) return;
-
-        const duration = entry.duration || 1;
-        const group = timetableToExport.filter(e => 
-          e.day === entry.day && 
-          e.time === entry.time &&
-          (e.duration || 1) === duration
-        );
-        
-        const cellContent = group.map(g => {
-            const subject = g.type === 'Practical' ? `LAB: ${g.subject}` : g.subject;
-            const room = g.room;
-            const lecturer = isMasterView ? g.lecturer : undefined;
-            const batches = g.batches?.join(', ');
-            return [subject, lecturer, room, batches].filter(Boolean).join('\n');
-        }).join('\n---\n');
-        
-        if (grid[dayIndex + 1][timeIndex + 1] === null) {
-            grid[dayIndex + 1][timeIndex + 1] = cellContent;
-            group.forEach(g => placedEntries.add(g.id));
-
-            for (let i = 1; i < duration; i++) {
-                if (timeIndex + 1 + i < grid[0].length) {
-                    grid[dayIndex + 1][timeIndex + 1 + i] = "MERGED";
-                }
-            }
-        }
-    });
-
-    return grid.map(row => row.map(cell => cell === "MERGED" ? "" : cell));
-  }, [activeTab, activeMasterTimetable, filteredTimetable]);
-
-  const handleExportXLSX = useCallback(() => {
+  const handleExport = useCallback((format: 'xlsx' | 'csv' | 'pdf') => {
     const isMasterView = activeTab === 'master';
     const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
     const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
-
-    if (!timetableToExport || timetableToExport.length === 0) {
-        toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
-        return;
-    }
-
-    const grid = generateGridData();
-    const worksheet = XLSX.utils.aoa_to_sheet(grid);
-    
-    const columnWidths = [ { wch: 15 }, ...TIME_SLOTS.map(() => ({ wch: 25 })) ];
-    worksheet['!cols'] = columnWidths;
-
-    for (let C = 0; C < grid[0].length; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({c: C, r: 0});
-        if(worksheet[cellAddress]) {
-            worksheet[cellAddress].s = { font: { bold: true }, alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
-        }
-    }
-    
-    for(let R = 1; R < grid.length; ++R) {
-        for(let C = 0; C < grid[R].length; ++C) {
-            const cellAddress = XLSX.utils.encode_cell({c: C, r: R});
-            if(worksheet[cellAddress]) {
-                 worksheet[cellAddress].s = { alignment: { wrapText: true, vertical: 'top', horizontal: 'center' } };
-            }
-        }
-    }
-
-    worksheet['!merges'] = [];
-    timetableToExport.forEach(entry => {
-        const dayIndex = DAYS.indexOf(entry.day) + 1;
-        const timeIndex = TIME_SLOTS.findIndex(slot => slot.startsWith(entry.time.split('-')[0])) + 1;
-        
-        if (dayIndex > 0 && timeIndex > 0 && entry.duration && entry.duration > 1) {
-             const existingMerge = worksheet['!merges']?.find(m => m.s.r === dayIndex && m.s.c === timeIndex);
-            if (!existingMerge) {
-                worksheet['!merges']?.push({ s: { r: dayIndex, c: timeIndex }, e: { r: dayIndex, c: timeIndex + entry.duration - 1 } });
-            }
-        }
-    });
-
-    const workbook = XLSX.utils.book_new();
-    const sheetName = `${name}-Timetable`;
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
-    XLSX.writeFile(workbook, `${sheetName}.xlsx`);
-    toast({ title: "Export Successful" });
-  }, [activeTab, activeMasterTimetable, filteredTimetable, selectedLecturer, toast, generateGridData]);
-
-  const handleExportCSV = useCallback(() => {
-    const isMasterView = activeTab === 'master';
-    const name = isMasterView ? activeMasterTimetable?.name : selectedLecturer;
-    const grid = generateGridData();
-    if (grid.length === 0) { toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" }); return; }
-    
-    const csvContent = grid.map(e => e.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `${name}-Timetable.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast({ title: "Export Successful" });
-  }, [activeTab, activeMasterTimetable, selectedLecturer, toast, generateGridData]);
-
-  const handleExportPDF = useCallback(() => {
-    const isMasterView = activeTab === 'master';
-    const timetableToExport = isMasterView ? activeMasterTimetable?.timetable : filteredTimetable;
     const title = isMasterView ? `${activeMasterTimetable?.name} - Timetable` : `Timetable for ${selectedLecturer}`;
-
+    
     if (!timetableToExport || timetableToExport.length === 0) {
         toast({ title: "Export Failed", description: "No data to export.", variant: "destructive" });
         return;
     }
-    
-    exportTimetableToPDF(timetableToExport, title, isMasterView);
+
+    const filename = `${name}-Timetable`;
+
+    if (format === 'xlsx') {
+        handleExportXLSX(timetableToExport, filename, isMasterView);
+    } else if (format === 'csv') {
+        handleExportCSV(timetableToExport, filename, isMasterView);
+    } else if (format === 'pdf') {
+        exportTimetableToPDF(timetableToExport, title, isMasterView);
+    }
     toast({ title: "Export Successful" });
   }, [activeTab, activeMasterTimetable, filteredTimetable, selectedLecturer, toast]);
 
@@ -266,15 +150,15 @@ if (timetablesLoading) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                       <DropdownMenuItem onClick={handleExportXLSX}>
+                       <DropdownMenuItem onClick={() => handleExport('xlsx')}>
                           <FileSpreadsheet />
                           Export as XLSX
                        </DropdownMenuItem>
-                       <DropdownMenuItem onClick={handleExportCSV}>
+                       <DropdownMenuItem onClick={() => handleExport('csv')}>
                           <FileText />
                           Export as CSV
                        </DropdownMenuItem>
-                       <DropdownMenuItem onClick={handleExportPDF}>
+                       <DropdownMenuItem onClick={() => handleExport('pdf')}>
                           <FileType />
                           Export as PDF
                        </DropdownMenuItem>

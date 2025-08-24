@@ -123,6 +123,9 @@ export const TimetableSelector: React.FC<TimetableSelectorProps> = React.memo(({
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This will permanently delete the "{activeTimetable.name}" timetable. This action cannot be undone.
+                    </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>

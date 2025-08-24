@@ -11,7 +11,6 @@ const SPECIAL_TYPES: SpecialClassType[] = ['Recess', 'Library', 'Help Desk', 'Sp
 interface TimetableContextType {
   allTimetables: TimetableData[] | null;
   loading: boolean;
-  conflictingEntryIds: Set<string>;
   addTimetable: (name: string, year: string) => Promise<string | null>;
   deleteTimetable: (id: string) => void;
   importTimetable: (newTimetable: TimetableData) => Promise<string | null>;
@@ -25,7 +24,6 @@ const TimetableContext = createContext<TimetableContextType | undefined>(undefin
 export function TimetableProvider({ children }: { children: ReactNode }) {
   const [allTimetables, setAllTimetables] = useState<TimetableData[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [conflictingEntryIds, setConflictingEntryIds] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -85,24 +83,22 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
                 }
 
                 // Batch conflict logic
-                if (timetable.id === timetableId) { // Only check batch conflicts within the same timetable
+                if (timetable.id === timetableId) {
                     const newClassBatches = newClass.type === 'Practical' ? (newClass.batches || []) : [];
                     const existingEntryBatches = existingEntry.type === 'Practical' ? (existingEntry.batches || []) : [];
                     
-                    if (newClass.type === 'Lecture') {
-                        // A lecture for a department implicitly includes all batches of that department's timetable
-                         const allBatchesInTimetable = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
-                         if (existingEntryBatches.some(b => allBatchesInTimetable.includes(b))) {
-                            toast({ variant: "destructive", title: "Batch Conflict", description: `A batch is busy in a practical at this time.` });
-                            return true;
-                         }
-                    } else if (existingEntry.type === 'Lecture') {
-                        const allBatchesInTimetable = [...new Set(timetable.timetable.flatMap(e => e.batches || []))];
-                         if (newClassBatches.some(b => allBatchesInTimetable.includes(b))) {
-                            toast({ variant: "destructive", title: "Batch Conflict", description: `Batch in new practical is busy in a lecture.` });
-                            return true;
-                         }
-                    } else { // Both are practicals
+                    const isNewLecture = newClass.type === 'Lecture';
+                    const isExistingLecture = existingEntry.type === 'Lecture';
+
+                    if (isNewLecture && existingEntryBatches.length > 0) {
+                        toast({ variant: "destructive", title: "Batch Conflict", description: `A batch is busy in a practical at this time.` });
+                        return true;
+                    }
+                    if (isExistingLecture && newClassBatches.length > 0) {
+                        toast({ variant: "destructive", title: "Batch Conflict", description: `A batch in the new practical is busy in a lecture.` });
+                        return true;
+                    }
+                    if (!isNewLecture && !isExistingLecture) {
                         const conflictingBatch = newClassBatches.find(b => existingEntryBatches.includes(b));
                         if (conflictingBatch) {
                             toast({ variant: "destructive", title: "Batch Conflict", description: `Batch ${conflictingBatch} is already scheduled.` });
@@ -207,69 +203,8 @@ export function TimetableProvider({ children }: { children: ReactNode }) {
     ));
   }, []);
 
-  useEffect(() => {
-    if (!allTimetables) return;
-    const newConflictingIds = new Set<string>();
-    const allEntries = allTimetables.flatMap(t => t.timetable.map(entry => ({...entry, timetableId: t.id})));
-
-    for (let i = 0; i < allEntries.length; i++) {
-        for (let j = i + 1; j < allEntries.length; j++) {
-            const entryA = allEntries[i];
-            const entryB = allEntries[j];
-
-            if (entryA.day !== entryB.day || SPECIAL_TYPES.includes(entryA.type as SpecialClassType) || SPECIAL_TYPES.includes(entryB.type as SpecialClassType)) {
-                continue;
-            }
-
-            const startA = parseInt(entryA.time.split('-')[0].split(':')[0]);
-            const endA = startA + (entryA.duration || 1);
-            const startB = parseInt(entryB.time.split('-')[0].split(':')[0]);
-            const endB = startB + (entryB.duration || 1);
-
-            const timeOverlap = startA < endB && endA > startB;
-            if (!timeOverlap) continue;
-
-            // Room conflict
-            if (entryA.room && entryB.room && entryA.room !== 'N/A' && entryA.room === entryB.room) {
-                newConflictingIds.add(entryA.id);
-                newConflictingIds.add(entryB.id);
-            }
-
-            // Lecturer conflict
-            const lecturersA = (entryA.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-            const lecturersB = (entryB.lecturer || "").split(',').map(l => l.trim()).filter(Boolean);
-            if (lecturersA.some(l => lecturersB.includes(l))) {
-                newConflictingIds.add(entryA.id);
-                newConflictingIds.add(entryB.id);
-            }
-
-            // Batch conflict (only within the same timetable)
-            if (entryA.timetableId === entryB.timetableId) {
-                const batchesA = entryA.batches || [];
-                const batchesB = entryB.batches || [];
-                
-                const isALecture = entryA.type === 'Lecture';
-                const isBLecture = entryB.type === 'Lecture';
-                
-                const timetable = allTimetables.find(t => t.id === entryA.timetableId);
-                const allBatchesInTimetable = timetable ? [...new Set(timetable.timetable.flatMap(e => e.batches || []))] : [];
-
-                const effectiveBatchesA = isALecture ? allBatchesInTimetable : batchesA;
-                const effectiveBatchesB = isBLecture ? allBatchesInTimetable : batchesB;
-
-                if (effectiveBatchesA.some(b => effectiveBatchesB.includes(b))) {
-                    newConflictingIds.add(entryA.id);
-                    newConflictingIds.add(entryB.id);
-                }
-            }
-        }
-    }
-    setConflictingEntryIds(newConflictingIds);
-  }, [allTimetables]);
-
-
   return (
-    <TimetableContext.Provider value={{ allTimetables, loading, conflictingEntryIds, addTimetable, deleteTimetable, importTimetable, addEntry, updateEntry, deleteEntry }}>
+    <TimetableContext.Provider value={{ allTimetables, loading, addTimetable, deleteTimetable, importTimetable, addEntry, updateEntry, deleteEntry }}>
       {children}
     </TimetableContext.Provider>
   );
